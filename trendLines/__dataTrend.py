@@ -116,9 +116,17 @@ class AtobaUAV:
         self.isCombustion = True
 
 
-def plotUavs(listUavs, xName, yName, stellaUav=None, type=None, save=False):
-    x = [getattr(uav, xName) for uav in listUavs if 5 < uav.wingSpan < 20]
-    y = [getattr(uav, yName) for uav in listUavs if 5 < uav.wingSpan < 20]
+def plotUavs(listUavs, xName, yName, stellaUav=None, save=False, lowerLimit=0, upperLimit=100):
+    x = []
+    y = []
+    for uav in listUavs:
+        xValue = getattr(uav, xName)
+        yValue = getattr(uav, yName)
+        if type(xValue) == int or type(xValue) == float:
+            if lowerLimit < xValue < upperLimit \
+                    and type(yValue) == int or type(yValue) == float:
+                x.append(xValue)
+                y.append(yValue)
 
     ax = sns.JointGrid(x=x, y=y)
     # ax = sns.jointplot(x=x, y=y,

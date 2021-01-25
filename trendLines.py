@@ -10,8 +10,10 @@ atoba = AtobaUAV()
 listUav = [Uav(*row[0:17]) for index, row in uavDataFrame.df.iterrows()]
 
 # Plot
-plotUavs(listUav, "wingSpan", "mtow", atoba, save=True)
-plotUavs(listUav, "wingSpan", "payload", atoba, save=True)
-plotUavs(listUav, "wingSpan", "range", atoba, save=True)
-plotUavs(listUav, "wingSpan", "endurance", atoba, save=True)
-plotUavs(listUav, "wingSpan", "aspectRatio", atoba, save=True)
+wingSpanMin = 0
+wingSpanMax = 40
+plotUavs(listUav, "wingSpan", "mtow", atoba, lowerLimit=wingSpanMin, upperLimit=wingSpanMax, save=True)
+plotUavs(listUav, "wingSpan", "payload", atoba, lowerLimit=wingSpanMin, upperLimit=wingSpanMax, save=True)
+plotUavs(listUav, "wingSpan", "range", atoba, lowerLimit=wingSpanMin, upperLimit=wingSpanMax, save=True)
+plotUavs(listUav, "wingSpan", "endurance", atoba, lowerLimit=wingSpanMin, upperLimit=wingSpanMax, save=True)
+plotUavs(listUav, "wingSpan", "aspectRatio", atoba, lowerLimit=wingSpanMin, upperLimit=wingSpanMax, save=True)

@@ -11,7 +11,7 @@ listUav = [Uav(*row[0:17]) for index, row in uavDataFrame.df.iterrows()]
 
 # Plot
 wingSpanMin = 0
-wingSpanMax = 40
+wingSpanMax = 20
 plotUavs(listUav, "wingSpan", "mtow", atoba, lowerLimit=wingSpanMin, upperLimit=wingSpanMax, save=True)
 plotUavs(listUav, "wingSpan", "payload", atoba, lowerLimit=wingSpanMin, upperLimit=wingSpanMax, save=True)
 plotUavs(listUav, "wingSpan", "range", atoba, lowerLimit=wingSpanMin, upperLimit=wingSpanMax, save=True)

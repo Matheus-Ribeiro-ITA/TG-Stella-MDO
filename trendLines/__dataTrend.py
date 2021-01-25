@@ -119,12 +119,12 @@ class AtobaUAV:
 def plotUavs(listUavs, xName, yName, stellaUav=None, save=False, lowerLimit=0, upperLimit=100):
     x = []
     y = []
+
     for uav in listUavs:
         xValue = getattr(uav, xName)
         yValue = getattr(uav, yName)
         if type(xValue) == int or type(xValue) == float:
-            if lowerLimit < xValue < upperLimit \
-                    and type(yValue) == int or type(yValue) == float:
+            if lowerLimit < xValue < upperLimit and (type(yValue) == int or type(yValue) == float):
                 x.append(xValue)
                 y.append(yValue)
 

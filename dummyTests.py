@@ -1,5 +1,12 @@
-myVariable = 'A string'
-if type(myVariable) == int or type(myVariable) == float:
-    print('The variable a number')
-else:
-    print('The variable is not a number')
+from abc import ABC, abstractmethod
+
+class Employee(ABC):
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+    @abstractmethod
+    def calculate_payroll(self):
+        pass
+
+Employee()

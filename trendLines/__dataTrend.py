@@ -110,7 +110,7 @@ class AtobaUAV:
         self.ceiling = 3050
         self.altitude = None
         self.airfoil = "ls417mod-il"
-        self.aspectRatio = 5.5
+        self.aspectRatio = 11*11/9.185
         self.chord = 0.66
         self.isEletric = False
         self.isCombustion = True
@@ -139,9 +139,12 @@ def plotUavs(listUavs, xName, yName, stellaUav=None, save=False, lowerLimit=0, u
     ax.plot(sns.regplot, sns.boxplot)
     sns.set(style="white", color_codes=True)
     ax.set_axis_labels(xlabel=xName, ylabel=yName, fontsize=16)
+
+    plt.gcf().subplots_adjust(bottom=0.25, left=0.25)
+    if save: plt.savefig(f'images/TrendLine_{xName}_{yName}.png', dpi=200)
     plt.show()
 
-    if save: plt.savefig(f'images/TrendLine_{xName}_{yName}.png')
+
 
 # uavDataFrame = UavDataFrame()
 # atoba = AtobaUAV()

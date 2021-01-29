@@ -16,11 +16,16 @@ wing_root_le_pnt = avl.Point(0, 0, 0)
 wing_tip_le_pnt = avl.Point(x=0.5 * wing_span * tan(wing_le_sweep),
                             y=0.5 * wing_span,
                             z=0.5 * wing_span * tan(wing_dihedral))
+wing_point_2 = avl.Point(3, 7, 0)
 
 root_section = avl.Section(leading_edge_point=wing_root_le_pnt,
                            chord=wing_root_chord,
                            airfoil=avl.NacaAirfoil('2414'))
 tip_section = avl.Section(leading_edge_point=wing_tip_le_pnt,
+                          chord=wing_tip_chord,
+                          airfoil=avl.NacaAirfoil('2410'))
+
+tip_section_2 = avl.Section(leading_edge_point=wing_point_2,
                           chord=wing_tip_chord,
                           airfoil=avl.NacaAirfoil('2410'))
 
@@ -31,7 +36,7 @@ wing = avl.Surface(name='wing',
                    n_spanwise=20,
                    span_spacing=avl.Spacing.cosine,
                    y_duplicate=0.0,
-                   sections=[root_section, tip_section])
+                   sections=[root_section, tip_section, tip_section_2])
 
 # ----------------------------------------------------------------------------------------------------------
 ht_span = 5
@@ -107,14 +112,14 @@ aircraft = avl.Aircraft(name='aircraft',
 
 
 # # create a session with only the geometry
-# session = avl.Session(geometry=aircraft)
+session = avl.Session(geometry=aircraft)
 #
-# # check if we have ghostscript
-# if 'gs_bin' in session.config.settings:
-#     img = session.save_geometry_plot()[0]
-#     avl.show_image(img)
-# else:
-#     session.show_geometry()
+# check if we have ghostscript
+if 'gs_bin' in session.config.settings:
+    img = session.save_geometry_plot()[0]
+    avl.show_image(img)
+else:
+    session.show_geometry()
 
 
 # ---------------------------------------------------------------------------------------------------------

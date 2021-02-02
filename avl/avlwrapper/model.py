@@ -6,7 +6,7 @@ import re
 from typing import Iterable, List, Optional, Union
 import warnings
 
-from avlwrapper import VERSION
+from avl.avlwrapper import VERSION
 
 
 class InputError(ValueError):
@@ -680,7 +680,7 @@ class Aircraft(ModelInput):
                 "#iYsym iZsym Zsym",
                 f"{self.y_symmetry} {self.z_symmetry} {self.z_symmetry_plane}",
                 "#Sref Cref Bref",
-                f"{self.reference_area} {self.reference_span}  {self.reference_chord}",
+                f"{self.reference_area} {self.reference_chord}  {self.reference_span}",
                 f"#Xref Yref Zref\n{self.reference_point}",
                 f"{self.cd_p}",
                 *map(str, self.surfaces),

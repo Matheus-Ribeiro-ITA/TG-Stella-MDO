@@ -1,6 +1,6 @@
 from itertools import product
 
-from avlwrapper import Case
+from avl.avlwrapper import Case
 
 
 def create_sweep_cases(base_case, parameters):

@@ -1,8 +1,16 @@
 # TG-Stella-MDO
 Welcome to the Multi Disciplinary Optimization (MDO) software built for Stella Aviation as an ITA undergraduate final theses.
 
+## We Love Standards
+#### Variables Units
+[S.I units](https://en.wikipedia.org/wiki/International_System_of_Units) are always used unless explicit on the variable name. Ex: aoaDeg.
+#### Naming Convention
+ - <b>Variables, Functions:</b>  lowerCamelCase. Ex: numberOfSecs
+ - <b>Classes (instances):</b> UpperCamelCase. Ex: Aircraft()
+ - <b>Dict Keys:</b> camel_Snake_Case. Ex: chord_Wing_Root
 ## Dependencies
  - Python 3.7+
+ - AvlWrapper
  
 ## Contributing, Versioning, and Other Details
 We loosely use [semantic versioning](https://semver.org/). 

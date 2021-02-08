@@ -199,6 +199,10 @@ session = avl.Session(geometry=aircraft, cases=[trim_case])
 startTime = time.time()
 
 result = session.run_all_cases()
+
+with open("results/resultExample.json", "wt") as out:
+    out.write(json.dumps(result, indent=4))
+
 print("CL = {}".format(json.dumps(result['trimmed'], indent=4)))
 
 print(f"Tempo médio: {(time.time() - startTime)} s")

@@ -1,71 +1,3 @@
-from dataclasses import dataclass
-from _collections import OrderedDict
-
-stateVariables = {
-    "wing": OrderedDict({
-        "root": {
-            "chord": 0.3,
-            "aoa": 0,
-            "x": 0,
-            "y": 0,
-            "z": 0,
-            "airfoil": "2414"
-        },
-        "middle": {
-            "chord": 0.3,
-            "b": 1,
-            "sweepLE": 0,
-            "aoa": 0,
-            "dihedral": 0,
-            "airfoil": "2414"
-        },
-        "tip": {
-            "chord": 0.1,
-            "b": 0.6,
-            "sweepLE": 0,
-            "aoa": 0,
-            "dihedral": 0,
-            "airfoil": "2414"
-        },
-    }),
-    "horizontal": OrderedDict({
-        "root": {
-            "chord": 0.2,
-            "aoa": 0,
-            "x": 2,
-            "y": 0,
-            "z": 0,
-            "airfoil": "0012"
-        },
-        "tip": {
-            "chord": 0.2,
-            "b": 0.4,
-            "sweepLE": 0,
-            "aoa": 0,
-            "dihedral": 0,
-            "airfoil": "0012"
-        }
-    }),
-    "vertical": OrderedDict({
-        "root": {
-            "chord": 0.2,
-            "aoa": 0,
-            "x": 2,
-            "y": 0,
-            "z": 0.5,
-            "airfoil": "0012"
-        },
-        "tip": {
-            "chord": 0.2,
-            "b": 0.4,
-            "sweepLE": 0,
-            "aoa": 0,
-            "dihedral": 0,
-            "airfoil": "0012"
-        }
-    })
-}
-
 
 class AircraftInfo:
     def __init__(self, stateVariables):
@@ -87,6 +19,9 @@ class AircraftInfo:
         self.wingArea = wingArea
         self.meanChord = wingMAC
         self.wingSpan = wingSpan
+
+        self.mass = 10
+        self.cLMax = 1.5
 
 
 def infoSurface(surfaceDict):

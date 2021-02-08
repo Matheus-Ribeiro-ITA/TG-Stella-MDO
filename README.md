@@ -3,7 +3,8 @@ Welcome to the Multi Disciplinary Optimization (MDO) software built for Stella A
 
 ## We Love Standards
 #### Variables Units
-[S.I units](https://en.wikipedia.org/wiki/International_System_of_Units) are always used unless explicit on the variable name. Ex: aoaDeg.
+[S.I units](https://en.wikipedia.org/wiki/International_System_of_Unitsuote
+    ) are always used unless explicit on the variable name. Ex: aoaDeg.
 #### Naming Convention
  - <b>Variables, Functions:</b>  lowerCamelCase. Ex: numberOfSecs
  - <b>Classes (instances):</b> UpperCamelCase. Ex: Aircraft()

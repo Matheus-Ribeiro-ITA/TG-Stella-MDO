@@ -1,5 +1,7 @@
 from _collections import OrderedDict
-
+import avl
+from aircraftInfo import AircraftInfo
+import json
 
 stateVariables = {
     "wing": OrderedDict({
@@ -104,3 +106,16 @@ mission = {
     }
 
 }
+
+
+aircraftInfo = AircraftInfo(stateVariables)
+
+aircraftAvl = avl.avlGeoBuild(stateVariables, controlVariables)
+
+cases = avl.avlRunBuild(mission, aircraftInfo)
+
+results = avl.avlRun(aircraftAvl, cases)
+
+
+with open("avl/results/resultExample.json", "wt") as file:
+    file.write(json.dumps(results, indent=4))

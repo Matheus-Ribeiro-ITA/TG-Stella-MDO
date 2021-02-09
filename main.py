@@ -1,3 +1,4 @@
+
 import json
 import time
 from _collections import OrderedDict
@@ -125,6 +126,7 @@ engineFC = {
 }  # Check figure 2.1 for correct value. Slide 248
 
 # Calculation
+
 aircraftInfo = AircraftInfo(stateVariables)
 
 aircraftAvl = avl.avlGeoBuild(stateVariables, controlVariables)

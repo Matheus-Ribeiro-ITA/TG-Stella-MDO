@@ -106,11 +106,9 @@ def avlRunBuild(mission, aircraftInfo):
     if "cruize" in mission:
         T, p, rho, mi = _atmosphere(mission["cruize"]["altitude"])
         vCruise = mission["cruize"]["vCruise"]
-
         cl = 2 * mass*g / (rho * vCruise ** 2 * wingArea)
         clParam = avl.Parameter(name='alpha', setting='CL', value=cl)
         trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
-
         cases.append(avl.Case(name='trimmed',
                               alpha=clParam,
                               elevator=trimParam))
@@ -144,6 +142,13 @@ def avlRunBuild(mission, aircraftInfo):
                               alpha=clParam,
                               roll_rate=qParam,
                               elevator=trimParam))
-        # ----------------------
+
+    if "polar" in mission:
+        for i, cL in enumerate(mission["polar"]["cLPoints"]):
+            clParam = avl.Parameter(name='alpha', setting='CL', value=cL)
+            trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
+            cases.append(avl.Case(name="PolarTrimmed_" + str(i),
+                                  alpha=clParam,
+                                  elevator=trimParam))
 
     return cases

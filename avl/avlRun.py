@@ -15,4 +15,7 @@ def avlRun(geometry, cases):
     """
     session = avl.Session(geometry=geometry, cases=cases)
     results = session.run_all_cases()
+
+    #Export avl for manual testing
+    session.export_run_files()
     return results

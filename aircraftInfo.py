@@ -23,6 +23,17 @@ class AircraftInfo:
         self.mass = 10
         self.cLMax = 1.5
 
+        self.massEmpty = 380
+        self.massFuel = 120
+        self.MTOW = self.mass + self.massFuel
+
+        self.cD0 = None
+        self.k = None
+
+        self.cLCruise =None
+
+        self.loiterTime = 3600
+
 
 def infoSurface(surfaceDict):
     """

@@ -103,11 +103,11 @@ def avlRunBuild(mission, aircraftInfo):
     meanChord = aircraftInfo.meanChord
     cLMax = aircraftInfo.cLMax
     cases = []
-    if "cruize" in mission:
-        T, p, rho, mi = _atmosphere(mission["cruize"]["altitude"])
-        vCruise = mission["cruize"]["vCruise"]
-        cl = 2 * mass*g / (rho * vCruise ** 2 * wingArea)
-        clParam = avl.Parameter(name='alpha', setting='CL', value=cl)
+    if "cruise" in mission:
+        T, p, rho, mi = _atmosphere(mission["cruise"]["altitude"])
+        vCruise = mission["cruise"]["vCruise"]
+        aircraftInfo.cLCruise = 2 * mass*g / (rho * vCruise ** 2 * wingArea)
+        clParam = avl.Parameter(name='alpha', setting='CL', value=aircraftInfo.cLCruise)
         trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
         cases.append(avl.Case(name='trimmed',
                               alpha=clParam,

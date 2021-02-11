@@ -1,4 +1,3 @@
-
 import json
 import time
 from _collections import OrderedDict
@@ -98,7 +97,7 @@ controlVariables = {
 }
 
 mission = {
-    "cruize": {
+    "cruise": {
         "altitude": 1000,
         "vCruise": 20,
         "range": 230000
@@ -119,10 +118,15 @@ mission = {
 }
 
 engineFC = {
-    'engineValue': 0.998,
-    'taxi': 0.998,
-    'takeOff': 0.998,
-    'climb': 0.995,
+    "fuelFrac": {
+        'engineValue': 0.998,
+        'taxi': 0.998,
+        'takeOff': 0.998,
+        'climb': 0.995,
+        "descent": 0.990,
+        "landing": 0.992
+    },
+    "cCruise": 1,
 }  # Check figure 2.1 for correct value. Slide 248
 
 # Calculation
@@ -142,6 +146,10 @@ results = avl.avlRun(aircraftAvl, cases)
 deflections = checks.Deflections(results)
 print(deflections.max)
 
-cD0, k = aero.polar(results)
-print("Polar:", cD0, k)
+aircraftInfo.cD0, aircraftInfo.k = aero.polar(results)
+print("Polar:", aircraftInfo.cD0, aircraftInfo.k)
+
+rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)
+
+print(f"Range: {rangeCruise}")
 print(f"Tempo médio: {(time.time() - startTime)} s")

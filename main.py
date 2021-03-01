@@ -13,7 +13,7 @@ startTime = time.time()
 stateVariables = {
     "wing": OrderedDict({
         "root": {
-            "chord": 0.3,
+            "chord": 0.9,
             "aoa": 0,
             "x": 0,
             "y": 0,
@@ -21,16 +21,16 @@ stateVariables = {
             "airfoil": "2414"
         },
         "middle": {
-            "chord": 0.3,
-            "b": 1,
+            "chord": 0.7,
+            "b": 3.6,
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
             "airfoil": "2414"
         },
         "tip": {
-            "chord": 0.1,
-            "b": 0.6,
+            "chord": 0.675,
+            "b": 1.6,
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
@@ -39,7 +39,7 @@ stateVariables = {
     }),
     "horizontal": OrderedDict({
         "root": {
-            "chord": 0.2,
+            "chord": 0.675,
             "aoa": 0,
             "x": 2,
             "y": 0,
@@ -47,8 +47,8 @@ stateVariables = {
             "airfoil": "0012"
         },
         "tip": {
-            "chord": 0.2,
-            "b": 0.4,
+            "chord": 0.675,
+            "b": 1.85,
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
@@ -57,7 +57,7 @@ stateVariables = {
     }),
     "vertical": OrderedDict({
         "root": {
-            "chord": 0.2,
+            "chord": 0.5,
             "aoa": 0,
             "x": 2,
             "y": 0,
@@ -65,8 +65,8 @@ stateVariables = {
             "airfoil": "0012"
         },
         "tip": {
-            "chord": 0.2,
-            "b": 0.4,
+            "chord": 0.5,
+            "b": 0.8,
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
@@ -99,23 +99,25 @@ controlVariables = {
 mission = {
     "cruise": {
         "altitude": 1000,
-        "vCruise": 20,
-        "range": 230000
-    },
+        "vCruise": 120/3.6,
+    }, # Cruise trimmed (W/L = 1), change
     "roll": {
         "altitude": 1000,
         "vCruise": 20,
         "rollRate": 1,
-    },
+    },  # save for later
     "dive": {
         "altitude": 1000,
         "vDive": 30,
         "loadFactor": 1.5
+    },  # Change to Clmax
+    "Clmax":{
+
     },
     "polar": {
         "cLPoints": [-0.4, 0, 0.4]
     }
-}
+} # 6 trimagem
 
 engineFC = {
     "fuelFrac": {
@@ -126,12 +128,15 @@ engineFC = {
         "descent": 0.990,
         "landing": 0.992
     },
-    "cCruise": 1,
+    "cCruise": 0.03794037940379404,  # 0.068 standard value
+    "consumptionMaxLperH": 12,  # liters/hour
+    "consumptionCruiseLperH": 7,  # liters/hour
+    "fuelDensityGperL": 0.8,  # gram/liter
 }  # Check figure 2.1 for correct value. Slide 248
 
 # Calculation
 
-aircraftInfo = AircraftInfo(stateVariables)
+aircraftInfo = AircraftInfo(stateVariables, controlVariables)
 
 aircraftAvl = avl.avlGeoBuild(stateVariables, controlVariables)
 

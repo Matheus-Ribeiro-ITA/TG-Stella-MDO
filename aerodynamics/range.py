@@ -22,8 +22,7 @@ def rangeCruise(engineFC, mission, aircraftInfo):
 
     ffLoiter = ffLoiter()
     ffCruise = mfFinal / (mfCruise * fuelFrac["descent"] * fuelFrac["landing"]*ffLoiter)
-
-    cD = cD0Cruise + kCruise*cLCruise
+    cD = cD0Cruise + kCruise*cLCruise**2
     rangeCruise = np.log(ffCruise)*vCruise*cLCruise/(cCruise*cD)# fuel fraction brequet equation
 
     return rangeCruise

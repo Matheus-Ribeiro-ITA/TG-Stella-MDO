@@ -1,6 +1,7 @@
 import time
 from _collections import OrderedDict
 
+import json
 import avl
 from aircraftInfo import AircraftInfo
 import MDO
@@ -135,20 +136,40 @@ cases = avl.avlRunBuild(mission, aircraftInfo)
 
 results = avl.avlRun(aircraftAvl, cases)
 
-# Data View
+# ----------------------------------------------
+# Save results
+
+# with open("aircraft/results.json", "w", encoding="utf-8") as file:
+#     json.dump(results, file, indent=4)
+#     file.close()
+
 # with open("avl/results/resultExample.json", "wt") as file:
 #     file.write(json.dumps(results, indent=4))
 
+# ----------------------------------------------
+# Deflections Check
 deflections = MDO.checks.Deflections(results)
 print("------------------------------")
 print("Max deflections:")
 print(deflections.max)
 
+# ----------------------------------------------
+# Polar
 aircraftInfo.cD0, aircraftInfo.k = aero.polar(results)
 print("Polar:", aircraftInfo.cD0, aircraftInfo.k)
 
-rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)
+# ----------------------------------------------
+# Stall
+aero.stall(results, aircraftInfo)
+print("Stall: ", aircraftInfo.alphaStall, " at ", aircraftInfo.stallPosition, "m")
 
+aero.plotStall(aircraftInfo)
+# ----------------------------------------------
+# Range
+rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)
 print(f"Range: {rangeCruise}")
+
+# ----------------------------------------------
+# Process time
 print("------------------------------")
-print(f"Tempo médio: {(time.time() - startTime)} s")
+print(f"Process Time: {(time.time() - startTime)} s")

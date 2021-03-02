@@ -84,6 +84,11 @@ class AircraftInfo:
 
         self.cgEmpty = cgEmpty
 
+        # Stall
+        self.alphaStalls = None
+        self.alphaStall = None
+        self.stallPosition = None
+        self.yStrips = None
 
 
 

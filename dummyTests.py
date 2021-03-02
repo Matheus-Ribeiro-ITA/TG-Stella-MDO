@@ -1,11 +1,7 @@
-import json
 import time
 from _collections import OrderedDict
 
-import avl
 from aircraftInfo import AircraftInfo
-import checks
-import aerodynamics as aero
 
 startTime = time.time()
 

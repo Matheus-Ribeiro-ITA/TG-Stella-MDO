@@ -98,7 +98,7 @@ def avlRunBuild(mission, aircraftInfo):
     - cases [list(dict)]: Cases to run on AVL.
     """
     g = 9.81
-    mass = aircraftInfo.mass
+    weight = aircraftInfo.MTOW
     wingArea = aircraftInfo.wingArea
     meanChord = aircraftInfo.meanChord
     cLMax = aircraftInfo.cLMax
@@ -106,7 +106,7 @@ def avlRunBuild(mission, aircraftInfo):
     if "cruise" in mission:
         T, p, rho, mi = _atmosphere(mission["cruise"]["altitude"])
         vCruise = mission["cruise"]["vCruise"]
-        aircraftInfo.cLCruise = 2 * mass*g / (rho * vCruise ** 2 * wingArea)
+        aircraftInfo.cLCruise = 2 * weight / (rho * vCruise ** 2 * wingArea)
         clParam = avl.Parameter(name='alpha', setting='CL', value=aircraftInfo.cLCruise)
         trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
         cases.append(avl.Case(name='trimmed',
@@ -117,7 +117,7 @@ def avlRunBuild(mission, aircraftInfo):
         # AVL good in: -0.10 < pb/2V < 0.10
         T, p, rho, mi = _atmosphere(mission["roll"]["altitude"])
         vCruise = mission["roll"]["vCruise"]
-        cl = 2 * mass*g / (rho * vCruise ** 2 * wingArea)
+        cl = 2 * weight / (rho * vCruise ** 2 * wingArea)
         clParam = avl.Parameter(name='alpha', setting='CL', value=cl)
         rParam = avl.Parameter(name='roll_rate', setting='pb/2V', value=mission["roll"]["rollRate"])
         trimParam = avl.Parameter(name='aileron', setting='Cl', value=0.0)
@@ -131,7 +131,7 @@ def avlRunBuild(mission, aircraftInfo):
         T, p, rho, mi = _atmosphere(mission["dive"]["altitude"])
         loadFactor = mission["dive"]["loadFactor"]
         cLDive = aircraftInfo.cLMax
-        vDive = np.sqrt(2 * mass * g * (loadFactor + 1) / (rho * cLDive * wingArea))
+        vDive = np.sqrt(2 * weight * (loadFactor + 1) / (rho * cLDive * wingArea))
         q = g*loadFactor/vDive
         qc2v = q*meanChord/(2*vDive)
 

@@ -30,7 +30,7 @@ def avlGeoBuild(stateVariables, controlVariables):
                                     y_duplicate=0.0,
                                     sections=sections))
 
-    surfaceArea, surfaceMAC, surfaceSpan = infoSurface(stateVariables['wing'])
+    surfaceArea, surfaceMAC, surfaceSpan, surfaceSweep = infoSurface(stateVariables['wing'])
     ref_pnt = avl.Point(x=0, y=0, z=0)
     aircraftAvl = avl.Aircraft(name='aircraft',
                                reference_area=surfaceArea,

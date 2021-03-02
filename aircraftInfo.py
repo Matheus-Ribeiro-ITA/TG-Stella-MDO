@@ -1,4 +1,4 @@
-import weight
+import MDO
 import numpy as np
 
 class AircraftInfo:
@@ -70,13 +70,14 @@ class AircraftInfo:
         # Flight Info
         self.cLCruise = None
         self.loiterTime = 3600
+        self.cLMax = 1.5  # TODO:
 
         # Weight and Cg Info
         self.engineWeight = 63*9.81  # Atobá Data
         self.xEngine = -2.5  # TODO
 
         self.initalMTOW = 480 * 9.81
-        weightEmpty, cgEmpty = weight.weightCalc(self, method="Raymer")
+        weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
         self.weightEmpty = weightEmpty
         self.weightFuel = 120 * 9.81
         self.MTOW = self.weightEmpty + self.weightFuel

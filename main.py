@@ -1,11 +1,10 @@
-import json
 import time
 from _collections import OrderedDict
 
 import avl
 from aircraftInfo import AircraftInfo
-import checks
-import aerodynamics as aero
+import MDO
+from MDO import aerodynamics as aero
 
 startTime = time.time()
 
@@ -99,21 +98,13 @@ controlVariables = {
 mission = {
     "cruise": {
         "altitude": 1000,
-        "vCruise": 120/3.6,
-    }, # Cruise trimmed (W/L = 1), change
-    "roll": {
-        "altitude": 1000,
-        "vCruise": 20,
-        "rollRate": 1,
-    },  # save for later
+        "vCruise": 120 / 3.6,
+    },  # Cruise trimmed (W/L = 1), change
     "dive": {
         "altitude": 1000,
         "vDive": 30,
         "loadFactor": 1.5
     },  # Change to Clmax
-    "Clmax":{
-
-    },
     "polar": {
         "cLPoints": [-0.4, 0, 0.4]
     }
@@ -148,7 +139,9 @@ results = avl.avlRun(aircraftAvl, cases)
 # with open("avl/results/resultExample.json", "wt") as file:
 #     file.write(json.dumps(results, indent=4))
 
-deflections = checks.Deflections(results)
+deflections = MDO.checks.Deflections(results)
+print("------------------------------")
+print("Max deflections:")
 print(deflections.max)
 
 aircraftInfo.cD0, aircraftInfo.k = aero.polar(results)
@@ -157,4 +150,5 @@ print("Polar:", aircraftInfo.cD0, aircraftInfo.k)
 rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)
 
 print(f"Range: {rangeCruise}")
+print("------------------------------")
 print(f"Tempo médio: {(time.time() - startTime)} s")

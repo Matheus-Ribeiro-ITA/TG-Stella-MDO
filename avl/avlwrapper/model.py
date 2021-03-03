@@ -364,7 +364,7 @@ class ProfileDrag(ModelInput):
 
     def __str__(self):
         header = "CDCL\n"
-        body = "\n".join([f"{cl} {cd}" for cl, cd in zip(self.cl, self.cd)])
+        body = " ".join([f"{cl} {cd}" for cl, cd in zip(self.cl, self.cd)])
         return header + body + "\n"
 
     @classmethod
@@ -743,7 +743,8 @@ class Aircraft(ModelInput):
         for surface in self.surfaces:
             for section in surface.sections:
                 if hasattr(section.airfoil, "filename"):
-                    files.add(section.airfoil.filename)
+                    files.add(section.airfoil.filename)  # Changed
+                    # files.add("MDO\\airfoils\\coord_seligFmt\\" + section.airfoil.filename)
         for body in self.bodies:
             files.add(body.body_section)
         return list(files)

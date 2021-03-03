@@ -3,11 +3,13 @@
 # TODO: Check airfoil polar
 # TODO: Adjust fuel consumption. Check units
 
-# TODO: Ask for formula for LEMAC (Leading Edge MAC) [Waiting Response]
-# TODO: Weight estimation (Doing)
+# TODO: Weight estimation [Doing]
 # TODO: Fuel capacity estimation
 
-# TODO: CLmax with linear extrapolation from 2 points trimmed. Can use the polar to calculate all.
 # TODO: Return elevator deflection on middle CG cruise and change horizontal to zero the elevator deflection.
+# TODO: Look raymer for weight aircraft and fuel fraction. [Found on paper and ney]
 
-# TODO: Look raymer for weight aircraft and fuel fraction. Found on paper and ney
+------------------DONE List---------------------------------
+
+# DONE: Ask for formula for LEMAC (Leading Edge MAC)
+# DONE: CLmax with linear extrapolation from 2 points trimmed. Can use the polar to calculate all.

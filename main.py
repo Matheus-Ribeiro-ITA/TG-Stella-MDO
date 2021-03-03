@@ -8,6 +8,7 @@ import MDO
 from MDO import aerodynamics as aero
 
 startTime = time.time()
+DEBUG = False
 
 # Declarations
 stateVariables = {
@@ -18,7 +19,7 @@ stateVariables = {
             "x": 0,
             "y": 0,
             "z": 0,
-            "airfoil": "2414"
+            "airfoil": MDO.airfoils.AirfoilData("n2414")
         },
         "middle": {
             "chord": 0.7,
@@ -26,7 +27,7 @@ stateVariables = {
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": "2414"
+            "airfoil": MDO.airfoils.AirfoilData("n2414")
         },
         "tip": {
             "chord": 0.675,
@@ -34,7 +35,7 @@ stateVariables = {
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": "2414"
+            "airfoil": MDO.airfoils.AirfoilData("n2414")
         },
     }),
     "horizontal": OrderedDict({
@@ -44,7 +45,7 @@ stateVariables = {
             "x": 2,
             "y": 0,
             "z": 0,
-            "airfoil": "0012"
+            "airfoil": MDO.airfoils.AirfoilData("n0012")
         },
         "tip": {
             "chord": 0.675,
@@ -52,7 +53,7 @@ stateVariables = {
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": "0012"
+            "airfoil": MDO.airfoils.AirfoilData("n0012")
         }
     }),
     "vertical": OrderedDict({
@@ -62,7 +63,7 @@ stateVariables = {
             "x": 2,
             "y": 0,
             "z": 0.5,
-            "airfoil": "0012"
+            "airfoil": MDO.airfoils.AirfoilData("n0012")
         },
         "tip": {
             "chord": 0.5,
@@ -70,7 +71,7 @@ stateVariables = {
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": "0012"
+            "airfoil": MDO.airfoils.AirfoilData("n0012")
         }
     })
 }
@@ -99,7 +100,7 @@ controlVariables = {
 mission = {
     "cruise": {
         "altitude": 1000,
-        "vCruise": 120 / 3.6,
+        "vCruise": 150 / 3.6,
     },  # Cruise trimmed (W/L = 1), change
     "dive": {
         "altitude": 1000,
@@ -109,7 +110,7 @@ mission = {
     "polar": {
         "cLPoints": [-0.4, 0, 0.4]
     }
-} # 6 trimagem
+}  # 6 trimagem
 
 engineFC = {
     "fuelFrac": {
@@ -126,15 +127,25 @@ engineFC = {
     "fuelDensityGperL": 0.8,  # gram/liter
 }  # Check figure 2.1 for correct value. Slide 248
 
-# Calculation
-
+# ----------------------------------------------
+# Aircraft Info Class
 aircraftInfo = AircraftInfo(stateVariables, controlVariables)
 
+# ----------------------------------------------
+# Avl Geo
 aircraftAvl = avl.avlGeoBuild(stateVariables, controlVariables)
+
+# ----------------------------------------------
+# Avl cases
 
 cases = avl.avlRunBuild(mission, aircraftInfo)
 
-results = avl.avlRun(aircraftAvl, cases)
+for case in cases:
+    print(case.parameters)
+# ----------------------------------------------
+# Avl Run
+print("ok")
+results = avl.avlRun(aircraftAvl, cases, DEBUG=DEBUG)
 
 # ----------------------------------------------
 # Save results
@@ -163,7 +174,7 @@ print("Polar:", aircraftInfo.cD0, aircraftInfo.k)
 aero.stall(results, aircraftInfo)
 print("Stall: ", aircraftInfo.alphaStall, " at ", aircraftInfo.stallPosition, "m")
 
-aero.plotStall(aircraftInfo)
+# aero.plotStall(aircraftInfo)
 # ----------------------------------------------
 # Range
 rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)

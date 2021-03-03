@@ -13,86 +13,126 @@ wing
 #NChordwise ChordSpacing NSpanwise SpanSpacing
 12 1 20 1
 YDUPLICATE
-0.0
+0
 SECTION
 #Xle Yle Zle Chord Angle
 0 0 0 0.9 0.0
-NACA  
-2414
+AFILE  
+n2414.dat
+CDCL
+-0.17 0.0345 0.55 0.009 1.615 0.044
+CLAF
+1.1078
 SECTION
 #Xle Yle Zle Chord Angle
 0.0 3.6 0.0 0.7 0.0
-NACA  
-2414
+AFILE  
+n2414.dat
+CDCL
+-0.17 0.0345 0.55 0.009 1.615 0.044
+CLAF
+1.1078
 SECTION
 #Xle Yle Zle Chord Angle
 0.0 4.16 0.0 0.69125 0.0
-NACA  
-2414
+AFILE  
+n2414.dat
 CONTROL
 #Name Gain XHinge Vector SgnDup
 aileron 1.0 0.6 0 0 0 -1
+CDCL
+-0.17 0.0345 0.55 0.009 1.615 0.044
+CLAF
+1.1078
 SECTION
 #Xle Yle Zle Chord Angle
 0.0 5.2 0.0 0.675 0.0
-NACA  
-2414
+AFILE  
+n2414.dat
 CONTROL
 #Name Gain XHinge Vector SgnDup
 aileron 1.0 0.6 0 0 0 -1
+CDCL
+-0.17 0.0345 0.55 0.009 1.615 0.044
+CLAF
+1.1078
 
 SURFACE
 horizontal
 #NChordwise ChordSpacing NSpanwise SpanSpacing
 12 1 20 1
 YDUPLICATE
-0.0
+0
 SECTION
 #Xle Yle Zle Chord Angle
 2 0 0 0.675 0.0
-NACA  
-0012
+AFILE  
+n0012.dat
+CDCL
+-1.14 0.0358 0 0.008 1.14 0.0358
+CLAF
+0.9434
 SECTION
 #Xle Yle Zle Chord Angle
 2.0 0.7400000000000001 0.0 0.675 0.0
-NACA  
-0012
+AFILE  
+n0012.dat
 CONTROL
 #Name Gain XHinge Vector SgnDup
 elevator 1.0 0.6 0 0 0 1
+CDCL
+-1.14 0.0358 0 0.008 1.14 0.0358
+CLAF
+0.9434
 SECTION
 #Xle Yle Zle Chord Angle
 2.0 1.85 0.0 0.675 0.0
-NACA  
-0012
+AFILE  
+n0012.dat
 CONTROL
 #Name Gain XHinge Vector SgnDup
 elevator 1.0 0.6 0 0 0 1
+CDCL
+-1.14 0.0358 0 0.008 1.14 0.0358
+CLAF
+0.9434
 
 SURFACE
 vertical
 #NChordwise ChordSpacing NSpanwise SpanSpacing
 12 1 20 1
 YDUPLICATE
-0.0
+1
 SECTION
 #Xle Yle Zle Chord Angle
 2 0 0.5 0.5 0.0
-NACA  
-0012
+AFILE  
+n0012.dat
+CDCL
+-1.14 0.0358 0 0.008 1.14 0.0358
+CLAF
+0.9434
 SECTION
 #Xle Yle Zle Chord Angle
 2.0 0.0 0.8200000000000001 0.5 0.0
-NACA  
-0012
+AFILE  
+n0012.dat
 CONTROL
 #Name Gain XHinge Vector SgnDup
 rudder 1.0 0.6 0 0 0 1
+CDCL
+-1.14 0.0358 0 0.008 1.14 0.0358
+CLAF
+0.9434
 SECTION
 #Xle Yle Zle Chord Angle
 2.0 0.0 1.3 0.5 0.0
-NACA  
-0012
+AFILE  
+n0012.dat
 CONTROL
 #Name Gain XHinge Vector SgnDup
 rudder 1.0 0.6 0 0 0 1
+CDCL
+-1.14 0.0358 0 0.008 1.14 0.0358
+CLAF
+0.9434

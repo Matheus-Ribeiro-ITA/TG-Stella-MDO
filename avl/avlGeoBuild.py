@@ -2,17 +2,11 @@ import json
 from math import radians, sqrt, tan
 import avl.avlwrapper as avl
 from _collections import OrderedDict
-from pprint import pprint
 from aircraftInfo import infoSurface
 
 
 def avlGeoBuild(stateVariables, controlVariables):
     stateVariables = _addControl2States(stateVariables, controlVariables)
-    # print("K and V:")
-    # for k, v in stateVariables["wing"].items():
-    #     print(k, v)
-    # pprint(stateVariables)
-    # print("")
 
     surfaces = []
     for surfaceName, surfaceDict in stateVariables.items():
@@ -22,12 +16,18 @@ def avlGeoBuild(stateVariables, controlVariables):
             section, secPoint = _translateSec(secName, secData, secPoint, surfaceName=surfaceName)
             sections.append(section)
 
+        # Not duplicate the vertical
+        if surfaceName.lower() == "vertical":
+            yDuplicate = 1
+        else:
+            yDuplicate = 0
+
         surfaces.append(avl.Surface(name=surfaceName,
                                     n_chordwise=12,
                                     chord_spacing=avl.Spacing.cosine,
                                     n_spanwise=20,
                                     span_spacing=avl.Spacing.cosine,
-                                    y_duplicate=0.0,
+                                    y_duplicate=yDuplicate,
                                     sections=sections))
 
     surfaceArea, surfaceMAC, surfaceSpan, surfaceSweep = infoSurface(stateVariables['wing'])
@@ -73,7 +73,9 @@ def _translateSec(secName, secData, secPoint, surfaceName=None):
 
     section = avl.Section(leading_edge_point=sec_le_pnt,
                           chord=secData['chord'],
-                          airfoil=avl.NacaAirfoil(secData['airfoil']),
+                          airfoil=avl.FileAirfoil(secData['airfoil'].name + ".dat"),
+                          cl_alpha_scaling=secData['airfoil'].claf,
+                          profile_drag=avl.ProfileDrag(cd=secData['airfoil'].cd, cl=secData['airfoil'].cl),
                           controls=[controlSurfaces])
     return section, secPoint
 

@@ -3,21 +3,28 @@ from math import radians, sqrt, tan
 import avl.avlwrapper as avl
 from _collections import OrderedDict
 from aircraftInfo import infoSurface
+import copy
 
 
-def avlGeoBuild(stateVariables, controlVariables):
-    stateVariables = _addControl2States(stateVariables, controlVariables)
+def avlGeoBuild(stateVariables, controlVariables, verticalType="conventional"):
+    stateVariables = _addControl2States(stateVariables, controlVariables, verticalType)
 
     surfaces = []
+
     for surfaceName, surfaceDict in stateVariables.items():
         secPoint = []
         sections = []
-        for secName, secData in surfaceDict.items():
-            section, secPoint = _translateSec(secName, secData, secPoint, surfaceName=surfaceName)
-            sections.append(section)
+        # Especial case for H vertical
+        if "vertical" in surfaceName.lower() and verticalType == "h":
+            sections = _sectionsVerticalH(surfaceDict)
 
-        # Not duplicate the vertical
-        if surfaceName.lower() == "vertical":
+        else:
+            for secName, secData in surfaceDict.items():
+                section, secPoint = _translateSec(secName, secData, secPoint, surfaceName=surfaceName)
+                sections.append(section)
+
+        # Not duplicate the conventional vertical (H is duplicated)
+        if "vertical" in surfaceName.lower() and verticalType == "conventional":
             yDuplicate = 1
         else:
             yDuplicate = 0
@@ -39,6 +46,7 @@ def avlGeoBuild(stateVariables, controlVariables):
                                reference_point=ref_pnt,
                                mach=0,
                                surfaces=surfaces)
+
     return aircraftAvl
 
 
@@ -65,7 +73,8 @@ def _translateSec(secName, secData, secPoint, surfaceName=None):
     if "control" in secData:
         if secData['control'] == "aileron":
             commandInversion = -1
-        else: commandInversion = 1
+        else:
+            commandInversion = 1
         controlSurfaces = avl.Control(name=secData['control'],
                                       gain=1.0,
                                       x_hinge=0.6,
@@ -80,7 +89,64 @@ def _translateSec(secName, secData, secPoint, surfaceName=None):
     return section, secPoint
 
 
-def _addControl2States(stateVariables, controlVariables):
+def _sectionsVerticalH(surfaceDict):
+    """
+    # Description:
+        Create avl surface Vertical estabilizer in H.
+
+    ## Parameters:
+        surfaceDict [Dict]: Vertical Dict, 1st level nested in StateVariables.
+
+    ## Returns:
+        Sections [List]: List of Section AVL Object.
+    """
+    sections = []
+
+    secPointRoot = [surfaceDict["root"]['x'], surfaceDict["root"]['y'], surfaceDict["root"]['z']]
+    secPointLow = [secPointRoot[0] + surfaceDict["tip"]['b'] * tan(surfaceDict["tip"]['sweepLE']),
+                   secPointRoot[1] - surfaceDict["tip"]['b'] * tan(surfaceDict["tip"]['dihedral']),
+                   secPointRoot[2] - surfaceDict["tip"]['b']]
+    secPointHigh = [secPointRoot[0] + surfaceDict["tip"]['b'] * tan(surfaceDict["tip"]['sweepLE']),
+                    secPointRoot[1] + surfaceDict["tip"]['b'] * tan(surfaceDict["tip"]['dihedral']),
+                    secPointRoot[2] + surfaceDict["tip"]['b']]
+
+    secLePointLow = avl.Point(*secPointLow)
+    secPointRoot = avl.Point(*secPointRoot)
+    secPointHigh = avl.Point(*secPointHigh)
+
+    controlSurfaces = None
+    if "control" in surfaceDict["root"]:
+        controlSurfaces = avl.Control(name=surfaceDict["root"]['control'],
+                                      gain=1.0,
+                                      x_hinge=0.6,  # TODO:
+                                      duplicate_sign=1)
+
+    sections = [
+        avl.Section(leading_edge_point=secLePointLow,
+                    chord=surfaceDict["tip"]['chord'],
+                    airfoil=avl.FileAirfoil(surfaceDict["tip"]['airfoil'].name + ".dat"),
+                    cl_alpha_scaling=surfaceDict["tip"]['airfoil'].claf,
+                    profile_drag=avl.ProfileDrag(cd=surfaceDict["tip"]['airfoil'].cd,
+                                                 cl=surfaceDict["tip"]['airfoil'].cl),
+                    controls=[controlSurfaces]),
+        avl.Section(leading_edge_point=secPointRoot,
+                    chord=surfaceDict["root"]['chord'],
+                    airfoil=avl.FileAirfoil(surfaceDict["root"]['airfoil'].name + ".dat"),
+                    cl_alpha_scaling=surfaceDict["root"]['airfoil'].claf,
+                    profile_drag=avl.ProfileDrag(cd=surfaceDict["root"]['airfoil'].cd,
+                                                 cl=surfaceDict["root"]['airfoil'].cl),
+                    controls=[controlSurfaces]),
+        avl.Section(leading_edge_point=secPointHigh,
+                    chord=surfaceDict["tip"]['chord'],
+                    airfoil=avl.FileAirfoil(surfaceDict["tip"]['airfoil'].name + ".dat"),
+                    cl_alpha_scaling=surfaceDict["tip"]['airfoil'].claf,
+                    profile_drag=avl.ProfileDrag(cd=surfaceDict["tip"]['airfoil'].cd,
+                                                 cl=surfaceDict["tip"]['airfoil'].cl),
+                    controls=[controlSurfaces])
+    ]
+    return sections
+
+def _addControl2States(stateVariables, controlVariables, verticalType="conventional"):
     """
     -Description
         Add control surfaces from "controlVariables" to the "stateVariables"
@@ -176,36 +242,46 @@ def _addControl2States(stateVariables, controlVariables):
             stateVariables["horizontal"].move_to_end("root", last=True)
             stateVariables["horizontal"].move_to_end("tip", last=True)
 
-    if "rudder" in controlVariables:
-        elevatorDict = controlVariables["rudder"]
+    if verticalType == "conventional":
+        if "rudder" in controlVariables:
+            elevatorDict = controlVariables["rudder"]
 
-        DivisionValue = elevatorDict["spanStartPercentage"] * stateVariables["vertical"]["tip"]["b"]
-        # Case aileron in between Middle and Tip section:
-        if DivisionValue > 0:
-            chord = _linearizationSecValues(stateVariables, "root", "tip", DivisionValue, "chord", surface="vertical")
-            aoa = _linearizationSecValues(stateVariables, "root", "tip", DivisionValue, "aoa", surface="vertical")
-            stateVariables["vertical"].update({
-                "rudder": {
-                    "chord": chord,
-                    "b": DivisionValue,
-                    "sweepLE": stateVariables["vertical"]["tip"]["sweepLE"],
-                    "aoa": aoa,
-                    "dihedral": 0,
-                    "airfoil": stateVariables["vertical"]["tip"]["airfoil"],
-                    "control": "rudder",
-                }
-            })
-            stateVariables["vertical"]["tip"].update({"control": "rudder"})
-            newB = stateVariables["vertical"]["tip"]["b"] - DivisionValue
-            stateVariables["vertical"]["tip"].update({"b": newB})
-            stateVariables["vertical"].move_to_end("tip", last=True)
+            DivisionValue = elevatorDict["spanStartPercentage"] * stateVariables["vertical"]["tip"]["b"]
+            # Case rudder in between Middle and Tip section:
+            if DivisionValue > 0:
+                chord = _linearizationSecValues(stateVariables, "root", "tip", DivisionValue, "chord",
+                                                surface="vertical")
+                aoa = _linearizationSecValues(stateVariables, "root", "tip", DivisionValue, "aoa", surface="vertical")
+                stateVariables["vertical"].update({
+                    "rudder": {
+                        "chord": chord,
+                        "b": DivisionValue,
+                        "sweepLE": stateVariables["vertical"]["tip"]["sweepLE"],
+                        "aoa": aoa,
+                        "dihedral": 0,
+                        "airfoil": stateVariables["vertical"]["tip"]["airfoil"],
+                        "control": "rudder",
+                    }
+                })
+                stateVariables["vertical"]["tip"].update({"control": "rudder"})
+                newB = stateVariables["vertical"]["tip"]["b"] - DivisionValue
+                stateVariables["vertical"]["tip"].update({"b": newB})
+                stateVariables["vertical"].move_to_end("tip", last=True)
 
-        # Case aileron exactly on Middle section:
-        if DivisionValue == 0:
+            # Case rudder exactly on Root section:
+            if DivisionValue == 0:
+                stateVariables["vertical"]["root"].update({"control": "rudder"})
+                stateVariables["vertical"]["tip"].update({"control": "rudder"})
+                stateVariables["vertical"].move_to_end("root", last=True)
+                stateVariables["vertical"].move_to_end("tip", last=True)
+    elif verticalType == "h":
+        # Only full span rudder for Vertical H.
+        if "rudder" in controlVariables:
             stateVariables["vertical"]["root"].update({"control": "rudder"})
             stateVariables["vertical"]["tip"].update({"control": "rudder"})
             stateVariables["vertical"].move_to_end("root", last=True)
             stateVariables["vertical"].move_to_end("tip", last=True)
+
     return stateVariables
 
 

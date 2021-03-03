@@ -1,15 +1,25 @@
 ------------------TODO List---------------------------------
-# TODO: Change vertical format to V
-# TODO: Check airfoil polar
-# TODO: Adjust fuel consumption. Check units
 
+## Geo
+# TODO: Add vertical format H
+# TODO: Change vertical format to V
+# TODO: ADD maxsweep constraint to AVLGeoBuild
+
+## Performace
+# TODO: Adjust fuel consumption. [Check units]
 # TODO: Weight estimation [Doing]
 # TODO: Fuel capacity estimation
 
+## Stall
+# TODO: Change stall CLmax to each airfoil on wing and horizontal
+
+## OTHERs
 # TODO: Return elevator deflection on middle CG cruise and change horizontal to zero the elevator deflection.
-# TODO: Look raymer for weight aircraft and fuel fraction. [Found on paper and ney]
+# TODO: Add CG variation to analyses
+
 
 ------------------DONE List---------------------------------
 
 # DONE: Ask for formula for LEMAC (Leading Edge MAC)
 # DONE: CLmax with linear extrapolation from 2 points trimmed. Can use the polar to calculate all.
+# DONE: Add airfoil polar

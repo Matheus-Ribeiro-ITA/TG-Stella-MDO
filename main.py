@@ -8,9 +8,17 @@ import MDO
 from MDO import aerodynamics as aero
 
 startTime = time.time()
+# ----------------------------------------------
+# Debug bool
 DEBUG = False
 
-# Declarations
+# ----------------------------------------------
+# Vertical Stabilizer tips
+# Options: "conventional", "h".
+verticalType = "h"
+
+# ----------------------------------------------
+# Optimizer state Variables
 stateVariables = {
     "wing": OrderedDict({
         "root": {
@@ -61,7 +69,7 @@ stateVariables = {
             "chord": 0.5,
             "aoa": 0,
             "x": 2,
-            "y": 0,
+            "y": 1,
             "z": 0.5,
             "airfoil": MDO.airfoils.AirfoilData("n0012")
         },
@@ -76,6 +84,8 @@ stateVariables = {
     })
 }
 
+# ----------------------------------------------
+# Control Surfaces definition
 controlVariables = {
     "aileron": {
         "spanStartPercentage": 0.8,
@@ -97,6 +107,8 @@ controlVariables = {
     },
 }
 
+# ----------------------------------------------
+# Avl Cases to analyse
 mission = {
     "cruise": {
         "altitude": 1000,
@@ -112,6 +124,8 @@ mission = {
     }
 }  # 6 trimagem
 
+# ----------------------------------------------
+# Engine Info
 engineFC = {
     "fuelFrac": {
         'engineValue': 0.998,
@@ -133,18 +147,18 @@ aircraftInfo = AircraftInfo(stateVariables, controlVariables)
 
 # ----------------------------------------------
 # Avl Geo
-aircraftAvl = avl.avlGeoBuild(stateVariables, controlVariables)
+aircraftAvl = avl.avlGeoBuild(stateVariables, controlVariables, verticalType=verticalType)
 
+if DEBUG:
+    for k, v in stateVariables["vertical"].items():
+        print(k)
 # ----------------------------------------------
 # Avl cases
 
 cases = avl.avlRunBuild(mission, aircraftInfo)
 
-for case in cases:
-    print(case.parameters)
 # ----------------------------------------------
 # Avl Run
-print("ok")
 results = avl.avlRun(aircraftAvl, cases, DEBUG=DEBUG)
 
 # ----------------------------------------------

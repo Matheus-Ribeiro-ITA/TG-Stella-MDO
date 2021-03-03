@@ -9,3 +9,6 @@ class AirfoilData:
             self.cl = self.airfoils[name]["cl"]
             self.cd = self.airfoils[name]["cd"]
             self.claf = self.airfoils[name]["claf"]
+
+    def __str__(self):
+        return f"{self.name}"

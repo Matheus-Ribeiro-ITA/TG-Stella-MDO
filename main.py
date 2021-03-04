@@ -10,7 +10,8 @@ from MDO import aerodynamics as aero
 startTime = time.time()
 # ----------------------------------------------
 # Debug bool
-DEBUG = False
+DEBUG = True
+PLOT = False
 
 # ----------------------------------------------
 # Vertical Stabilizer tips
@@ -27,7 +28,7 @@ stateVariables = {
             "x": 0,
             "y": 0,
             "z": 0,
-            "airfoil": MDO.airfoils.AirfoilData("n2414")
+            "airfoil": MDO.airfoils.AirfoilData("goe498")
         },
         "middle": {
             "chord": 0.7,
@@ -35,7 +36,7 @@ stateVariables = {
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": MDO.airfoils.AirfoilData("n2414")
+            "airfoil": MDO.airfoils.AirfoilData("goe498")
         },
         "tip": {
             "chord": 0.675,
@@ -43,7 +44,7 @@ stateVariables = {
             "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": MDO.airfoils.AirfoilData("n2414")
+            "airfoil": MDO.airfoils.AirfoilData("goe498")
         },
     }),
     "horizontal": OrderedDict({
@@ -94,8 +95,8 @@ controlVariables = {
         "duplicateSign": 1
     },
     "elevator": {
-        "spanStartPercentage": 0.4,
-        "cHinge": 0.8,
+        "spanStartPercentage": 0.2,
+        "cHinge": 0.5,
         "gain": 1,
         "duplicateSign": 1
     },
@@ -114,13 +115,13 @@ mission = {
         "altitude": 1000,
         "vCruise": 150 / 3.6,
     },  # Cruise trimmed (W/L = 1), change
-    "dive": {
-        "altitude": 1000,
-        "vDive": 30,
-        "loadFactor": 1.5
-    },  # Change to Clmax
+    # "dive": {
+    #     "altitude": 1000,
+    #     "vDive": 30,
+    #     "loadFactor": 1.5
+    # },  # Change to Clmax
     "polar": {
-        "cLPoints": [-0.4, 0, 1]
+        "cLPoints": [-0.4, 0, 0.4]
     }
 }  # 6 trimagem
 
@@ -149,9 +150,6 @@ aircraftInfo = AircraftInfo(stateVariables, controlVariables)
 # Avl Geo
 aircraftAvl = avl.avlGeoBuild(stateVariables, controlVariables, verticalType=verticalType)
 
-if DEBUG:
-    for k, v in stateVariables["vertical"].items():
-        print(k)
 # ----------------------------------------------
 # Avl cases
 
@@ -163,10 +161,10 @@ results = avl.avlRun(aircraftAvl, cases, DEBUG=DEBUG)
 
 # ----------------------------------------------
 # Save results
-
-# with open("aircraft/results.json", "w", encoding="utf-8") as file:
-#     json.dump(results, file, indent=4)
-#     file.close()
+if DEBUG:
+    with open("aircraft/results.json", "w", encoding="utf-8") as file:
+        json.dump(results, file, indent=4)
+        file.close()
 
 # with open("avl/results/resultExample.json", "wt") as file:
 #     file.write(json.dumps(results, indent=4))
@@ -186,14 +184,18 @@ print(deflections.max)
 aircraftInfo.cD0, aircraftInfo.k = aero.polar(results)
 print("Polar:", aircraftInfo.cD0, aircraftInfo.k)
 
+if PLOT:
+    aero.plotPolar(aircraftInfo)
+
 # ----------------------------------------------
 # Stall
 aero.stall(results, aircraftInfo)
 print("Wing Stall: ", aircraftInfo.alphaStallWing, " at ", aircraftInfo.stallPositionWing, "m")
 print("Horizontal Stall: ", aircraftInfo.alphaStallHorizontal, " at ", aircraftInfo.stallPositionHorizontal, "m")
 
-# aero.plotStall(aircraftInfo)
-aero.plotliftDistribution(aircraftInfo)
+if PLOT:
+    aero.plotStall(aircraftInfo)
+    aero.plotliftDistribution(aircraftInfo)
 
 # ----------------------------------------------
 # Range

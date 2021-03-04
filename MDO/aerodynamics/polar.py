@@ -1,4 +1,6 @@
 from scipy.optimize import curve_fit
+import numpy as np
+import matplotlib.pyplot as plt
 
 def polar(results):
     """
@@ -30,3 +32,25 @@ def polar(results):
 
 def _objective(x, cD0, k):
     return cD0 + k*x**2
+
+
+def plotPolar(aircraftInfo):
+    t = np.linspace(-1.5, 1.5, 20, endpoint=True)
+
+    # Plot the square wave signal
+    plt.plot(aircraftInfo.k*t**2 + aircraftInfo.cD0, t)
+    # x axis label for the square wave plot
+    plt.xlabel('CD')
+
+    # y axis label for the square wave plot
+    plt.ylabel('CL')
+    plt.grid(True, which='both')
+
+    # Provide x axis and line color
+    plt.axhline(y=0, color='k')
+
+    # Set the max and min values for y axis
+    plt.ylim(-1.2, 1.2)
+
+    # Display the square wave
+    plt.show()

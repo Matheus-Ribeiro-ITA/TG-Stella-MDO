@@ -17,28 +17,28 @@ def stall(results, aircraftInfo):
     clMaxWing = aircraftInfo.cLMaxWingAirfoil
     aoaWing, clStripsWing, yStripsWing = _getStrips(results, surface="wing")
     alphaStallsWing = _slopAproximation(aoaWing, clStripsWing, clMaxWing)
-    _updateAircraftInfo(aircraftInfo, yStripsWing, alphaStallsWing, surface="Wing")
+    _updateAircraftInfo(aircraftInfo, yStripsWing, alphaStallsWing, clStripsWing, surface="Wing")
 
     clMaxHorizontal = aircraftInfo.cLMaxHorizontalAirfoil
     aoaHorizontal, clStripsHorizontal, yStripsHorizontal = _getStrips(results, surface="horizontal")
     alphaStallsHorizontal = _slopAproximation(aoaHorizontal, clStripsHorizontal, clMaxHorizontal)
-    _updateAircraftInfo(aircraftInfo, yStripsHorizontal, alphaStallsHorizontal, surface="Horizontal")
+    _updateAircraftInfo(aircraftInfo, yStripsHorizontal, alphaStallsHorizontal, clStripsHorizontal, surface="Horizontal")
 
 
 def plotStall(aircraftInfo):
     zippedPairs = zip(aircraftInfo.yStripsWing, aircraftInfo.alphaStallsWing)
-    aircraftInfo.alphaStallsWing = [x for _, x in sorted(zippedPairs)]
-    aircraftInfo.yStripsWing = sorted(aircraftInfo.yStripsWing)
-    plt.plot(aircraftInfo.yStripsWing, aircraftInfo.alphaStallsWing)
+    alphaStallsWing = [x for _, x in sorted(zippedPairs)]
+    yStripsWing = sorted(aircraftInfo.yStripsWing)
+    plt.plot(yStripsWing, alphaStallsWing)
     plt.xlabel(' Wing Span (m)')
     plt.ylabel(' Angle of Stall (deg)')
     plt.ylim((10, 20))
     plt.show()
 
     zippedPairs = zip(aircraftInfo.yStripsHorizontal, aircraftInfo.alphaStallsHorizontal)
-    aircraftInfo.alphaStallsHorizontal = [x for _, x in sorted(zippedPairs)]
-    aircraftInfo.yStripsHorizontal = sorted(aircraftInfo.yStripsHorizontal)
-    plt.plot(aircraftInfo.yStripsHorizontal, aircraftInfo.alphaStallsHorizontal)
+    alphaStallsHorizontal = [x for _, x in sorted(zippedPairs)]
+    yStripsHorizontal = sorted(aircraftInfo.yStripsHorizontal)
+    plt.plot(yStripsHorizontal, alphaStallsHorizontal)
     plt.xlabel(' Horizontal Span (m)')
     plt.ylabel(' Angle of Stall (deg)')
     # plt.ylim((10, 20))
@@ -69,8 +69,9 @@ def _getStrips(results, surface="wing"):
     return aoa, clStrips, yStrips
 
 
-def _updateAircraftInfo(aircraftInfo, yStrips, alphaStalls, surface="Wing"):
+def _updateAircraftInfo(aircraftInfo, yStrips, alphaStalls, clStrips, surface="Wing"):
     exec(f"aircraftInfo.yStrips{surface} = yStrips")
     exec(f"aircraftInfo.alphaStalls{surface} = alphaStalls")
     exec(f"aircraftInfo.alphaStall{surface} = min(alphaStalls)")
+    exec(f"aircraftInfo.clStrips{surface} = clStrips")
     exec(f"aircraftInfo.stallPosition{surface} = yStrips[alphaStalls.index(aircraftInfo.alphaStall{surface})]")

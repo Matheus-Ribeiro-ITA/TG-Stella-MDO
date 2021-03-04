@@ -120,7 +120,7 @@ mission = {
         "loadFactor": 1.5
     },  # Change to Clmax
     "polar": {
-        "cLPoints": [-0.4, 0, 0.4]
+        "cLPoints": [-0.4, 0, 1]
     }
 }  # 6 trimagem
 
@@ -190,6 +190,7 @@ print("Wing Stall: ", aircraftInfo.alphaStallWing, " at ", aircraftInfo.stallPos
 print("Horizontal Stall: ", aircraftInfo.alphaStallHorizontal, " at ", aircraftInfo.stallPositionHorizontal, "m")
 
 # aero.plotStall(aircraftInfo)
+aero.plotliftDistribution(aircraftInfo)
 
 # ----------------------------------------------
 # Range

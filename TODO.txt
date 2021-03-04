@@ -1,7 +1,6 @@
 ------------------TODO List---------------------------------
 
 ## Geo
-# TODO: Add vertical format H
 # TODO: Change vertical format to V
 # TODO: ADD maxsweep constraint to AVLGeoBuild
 
@@ -23,3 +22,4 @@
 # DONE: Ask for formula for LEMAC (Leading Edge MAC)
 # DONE: CLmax with linear extrapolation from 2 points trimmed. Can use the polar to calculate all.
 # DONE: Add airfoil polar
+# DONE: Add vertical format H

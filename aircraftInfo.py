@@ -60,7 +60,8 @@ class AircraftInfo:
         self.xMainLG = -0.22
 
         # Airfoil Info
-        self.cLMaxWingAirfoil = 1.5
+        self.cLMaxWingAirfoil = stateVariables["wing"]["root"]["airfoil"].clmax
+        self.cLMaxHorizontalAirfoil = stateVariables["horizontal"]["root"]["airfoil"].clmax
         self.tcRootWing = 0.123  # TODO:
 
         # Polar Info

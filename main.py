@@ -186,9 +186,11 @@ print("Polar:", aircraftInfo.cD0, aircraftInfo.k)
 # ----------------------------------------------
 # Stall
 aero.stall(results, aircraftInfo)
-print("Stall: ", aircraftInfo.alphaStall, " at ", aircraftInfo.stallPosition, "m")
+print("Wing Stall: ", aircraftInfo.alphaStallWing, " at ", aircraftInfo.stallPositionWing, "m")
+print("Horizontal Stall: ", aircraftInfo.alphaStallHorizontal, " at ", aircraftInfo.stallPositionHorizontal, "m")
 
 # aero.plotStall(aircraftInfo)
+
 # ----------------------------------------------
 # Range
 rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)

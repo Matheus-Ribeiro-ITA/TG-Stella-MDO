@@ -111,7 +111,8 @@ def avlRunBuild(mission, aircraftInfo):
         trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
         cases.append(avl.Case(name='trimmed',
                               alpha=clParam,
-                              elevator=trimParam))
+                              elevator=trimParam,
+                              X_cg=aircraftInfo.cgCalc))
 
     if "roll" in mission:
         # AVL good in: -0.10 < pb/2V < 0.10

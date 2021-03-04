@@ -84,6 +84,8 @@ class AircraftInfo:
         self.MTOW = self.weightEmpty + self.weightFuel
 
         self.cgEmpty = cgEmpty
+        self.cgFull = 0.0  # TODO:
+        self.cgCalc = 0.0  # TODO: (cgFull + cgCalc)/2
 
         # Stall
         self.alphaStalls = None
@@ -137,4 +139,4 @@ def infoSurface(surfaceDict):
     # Mean MAC from Sections
     surfaceMAC = surfaceMAC / surfaceArea
 
-    return surfaceArea, surfaceMAC, surfaceSpan, surfaceSweep
+    return 2*surfaceArea, surfaceMAC, 2*surfaceSpan, surfaceSweep

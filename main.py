@@ -174,6 +174,9 @@ results = avl.avlRun(aircraftAvl, cases, DEBUG=DEBUG)
 # ----------------------------------------------
 # Deflections Check
 deflections = MDO.checks.Deflections(results)
+
+print(aircraftInfo.wingArea)
+print(aircraftInfo.wingSpan)
 print("------------------------------")
 print("Max deflections:")
 print(deflections.max)

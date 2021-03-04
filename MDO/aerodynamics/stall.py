@@ -48,7 +48,7 @@ def plotStall(aircraftInfo):
 
 def _slopAproximation(aoa, clStrips, clMax):
     
-    # Remenber: that we have 3 polar points.
+    # Remember: that we have 3 polar points.
     clStripsSlope = [(a - b)/(aoa[2]-aoa[1]) for a, b in zip(clStrips[2], clStrips[1])]
     
     diffAlphas = [(clMax - cl)/clSlope for cl, clSlope in zip(clStrips[1], clStripsSlope)]

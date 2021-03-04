@@ -818,7 +818,7 @@ class State(Input):
         return obj
 
     def __str__(self):
-        return f" {self.name:<10} = {self.value:<10} {self.unit}\n"
+        return f" {self.name} = {self.value} {self.unit}\n"
 
 
 class Case(Input):

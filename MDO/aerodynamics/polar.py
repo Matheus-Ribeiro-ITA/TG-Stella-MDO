@@ -26,19 +26,21 @@ def polar(results):
         raise Exception("polar.py can't find CLs")
 
     popt, _ = curve_fit(_objective, cLs, cDs)
-    cD0, k = popt
-    return cD0, k
+    dataPolar = [cLs, cDs]
+    cD0, cD1, k = popt
+    return [cD0, cD1, k, dataPolar]
 
 
-def _objective(x, cD0, k):
-    return cD0 + k*x**2
+def _objective(x, cD0, cD1, k):
+    return cD0 + cD1*x + k*x**2
 
 
 def plotPolar(aircraftInfo):
     t = np.linspace(-1.5, 1.5, 20, endpoint=True)
 
     # Plot the square wave signal
-    plt.plot(aircraftInfo.k*t**2 + aircraftInfo.cD0, t)
+    plt.plot(aircraftInfo.k*t**2 + aircraftInfo.cD0 + aircraftInfo.cD1*t, t)
+    plt.scatter(aircraftInfo.dataPolar[1], aircraftInfo.dataPolar[0],color="k")
     # x axis label for the square wave plot
     plt.xlabel('CD')
 

@@ -85,7 +85,7 @@ class AircraftInfo:
 
         self.cgEmpty = cgEmpty
         self.cgFull = 0.0  # TODO:
-        self.cgCalc = 0.0  # TODO: (cgFull + cgCalc)/2
+        self.cgCalc = 0.31625  # TODO: (cgFull + cgCalc)/2
 
         # Stall
         self.alphaStalls = None
@@ -93,6 +93,9 @@ class AircraftInfo:
         self.stallPosition = None
         self.yStrips = None
 
+        # Stability
+        self.xNeutralPoint = None
+        self.staticMargin = None
 
 
 def infoSurface(surfaceDict):

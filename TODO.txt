@@ -1,6 +1,6 @@
 ------------------TODO List---------------------------------
 
-## Geo
+## Geometry
 # TODO: Change vertical format to V
 # TODO: ADD maxsweep constraint to AVLGeoBuild
 
@@ -15,6 +15,9 @@
 ## OTHERs
 # TODO: Return elevator deflection on middle CG cruise and change horizontal to zero the elevator deflection.
 # TODO: Add CG variation to analyses
+# TODO: Change Airfoil File Path
+# TODO: Fix Polar fit warning
+
 
 
 ------------------DONE List---------------------------------

@@ -3,6 +3,7 @@
 ## Geometry
 # TODO: Change vertical format to V
 # TODO: ADD maxsweep constraint to AVLGeoBuild
+# TODO: Check if Component number is needed in AVL
 
 ## Performace
 # TODO: Adjust fuel consumption. [Check units]

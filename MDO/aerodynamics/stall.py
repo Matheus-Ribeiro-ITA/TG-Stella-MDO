@@ -35,14 +35,14 @@ def plotStall(aircraftInfo):
     plt.ylim((10, 20))
     plt.show()
 
-    zippedPairs = zip(aircraftInfo.yStripsHorizontal, aircraftInfo.alphaStallsHorizontal)
-    alphaStallsHorizontal = [x for _, x in sorted(zippedPairs)]
-    yStripsHorizontal = sorted(aircraftInfo.yStripsHorizontal)
-    plt.plot(yStripsHorizontal, alphaStallsHorizontal)
-    plt.xlabel(' Horizontal Span (m)')
-    plt.ylabel(' Angle of Stall (deg)')
-    # plt.ylim((10, 20))
-    plt.show()
+    # zippedPairs = zip(aircraftInfo.yStripsHorizontal, aircraftInfo.alphaStallsHorizontal)
+    # alphaStallsHorizontal = [x for _, x in sorted(zippedPairs)]
+    # yStripsHorizontal = sorted(aircraftInfo.yStripsHorizontal)
+    # plt.plot(yStripsHorizontal, alphaStallsHorizontal)
+    # plt.xlabel(' Horizontal Span (m)')
+    # plt.ylabel(' Angle of Stall (deg)')
+    # # plt.ylim((10, 20))
+    # plt.show()
     
     
 

@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import fsolve
+from scipy.optimize import fsolve, curve_fit
 
 
 def dynamicThrust(engineInfo, velocity, method="actuatorDisk"):
@@ -54,14 +54,27 @@ def dynamicThrust(engineInfo, velocity, method="actuatorDisk"):
         return 4.392399*10**-8*rpm * diameterInches**3.5/(np.sqrt(pitchInches))*(4.23333*10**-4*rpm*pitchInches - velocity/dynamicCorrection)
 
     METHOD = {
-        "actuatorDisk": _actuatorSolver(velocity, 0.85),
+        "actuatorDisk": _actuatorSolver(velocity, 0.55),
         "internetFormula": _thrustInternetFormula(velocity, 1.3)
     }
 
-    return METHOD[method]
+    return float(METHOD[method])
 
 
-def plotDynamicThrust(engineInfo, velocity, method="actuatorDisk"):
+def dynamicThrustCurve(engineInfo, method="actuatorDisk"):
+
+    velocityList = np.linspace(0.5, 50, 10)
+    thrustList = [dynamicThrust(engineInfo, velocity, method=method) for velocity in velocityList]
+
+    def _objective(x, cD0, cD1, k):
+        return cD0 + cD1 * x + k * x ** 2
+    print([float(thrust) for thrust in thrustList])
+    popt, _ = curve_fit(_objective, velocityList, thrustList)
+    cD0, cD1, k = popt
+
+    return [cD0, cD1, k]
+
+def plotDynamicThrust(engineInfo):
     """
     # Description:
         Calculates the dynamic thrust.

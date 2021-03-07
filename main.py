@@ -12,7 +12,7 @@ startTime = time.time()
 # ----------------------------------------------
 # Debug bool
 DEBUG = False
-PLOT = True
+PLOT = False
 
 # ----------------------------------------------
 # Vertical Stabilizer tips
@@ -230,11 +230,22 @@ if PLOT:
     aero.plotStall(aircraftInfo)
     aero.plotliftDistribution(aircraftInfo)
 
-# ----------------------------------------------
-# Range
+# Range ----------------------------------------------
 rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)
 print(f"Range: {rangeCruise}")
 
+# ------------------ Take Off ---------------------------------
+[aircraftInfo.thrustV0, aircraftInfo.thrustV1, aircraftInfo.thrustV2] = MDO.performance.dynamicThrustCurve(engineInfo, method="actuatorDisk")
+
+aircraftInfo.cLRun = 0.44
+aircraftInfo.cD0Run = aircraftInfo.cD0
+aircraftInfo.cD1Run = aircraftInfo.cD1
+aircraftInfo.kRun = aircraftInfo.k
+
+[runway, speedTakeOff] = MDO.performance.takeOffRoll(aircraftInfo)
+print("------------------------------")
+print(f"Runway Length: {runway} m")
+print(f"Take Off Speed: {speedTakeOff} m/s")
 # ----------------------------------------------
 # Process time
 print("------------------------------")

@@ -73,7 +73,12 @@ class AircraftInfo:
 
         # Polar Info
         self.cD0 = None
+        self.cD1 = None
         self.k = None
+
+        self.cD0Run = None
+        self.cD1Run = None
+        self.kRun = None
 
         # Flight Info
         self.cLCruise = None
@@ -103,6 +108,12 @@ class AircraftInfo:
         # Stability
         self.xNeutralPoint = None
         self.staticMargin = None
+
+        # Thrust Curve
+
+        self.thrustV0 = None
+        self.thrustV1 = None
+        self.thrustV2 = None
 
 
 def infoSurface(surfaceDict):

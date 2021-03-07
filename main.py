@@ -6,24 +6,46 @@ import avl
 from aircraftInfo import AircraftInfo
 import MDO
 from MDO import aerodynamics as aero
+import numpy as np
 
 startTime = time.time()
 # ----------------------------------------------
 # Debug bool
-DEBUG = True
-PLOT = False
+DEBUG = False
+PLOT = True
 
 # ----------------------------------------------
 # Vertical Stabilizer tips
 # Options: "conventional", "h".
 verticalType = "h"
 
+# Variables Optimizer
+wingSpan = 3.75
+wingSecPercentage = 0.5
+wingRootChord = 0.8
+wingSecChord = 0.7
+wingTipChord = 0.6
+
+horizontalSpan = 1.5
+horizontalRootChord = 0.5
+horizontalTipChord = 0.5
+horizontalXPosition = 2
+
+verticalSpan = 0.8  # Remember that is H vertical
+verticalRootChord = 0.375
+verticalTipChord = 0.375
+verticalXPosition = 2
+
+wingSecPosition = wingSpan/2*wingSecPercentage
+wingPosSec = wingSpan/2*(1-wingSecPercentage)
+
+
 # ----------------------------------------------
 # Optimizer state Variables
 stateVariables = {
     "wing": OrderedDict({
         "root": {
-            "chord": 0.9,
+            "chord": wingRootChord,
             "aoa": 0,
             "x": 0,
             "y": 0,
@@ -31,17 +53,17 @@ stateVariables = {
             "airfoil": MDO.airfoils.AirfoilData("goe498")
         },
         "middle": {
-            "chord": 0.7,
-            "b": 3.6,
-            "sweepLE": 0,
+            "chord": wingSecChord,
+            "b": wingSecPosition,
+            "sweepLE": np.arctan((wingRootChord-wingSecChord)/4/wingSecPosition),
             "aoa": 0,
             "dihedral": 0,
             "airfoil": MDO.airfoils.AirfoilData("goe498")
         },
         "tip": {
-            "chord": 0.675,
-            "b": 1.6,
-            "sweepLE": 0,
+            "chord": wingTipChord,
+            "b": wingPosSec,
+            "sweepLE": np.arctan((wingSecChord-wingTipChord)/4/wingPosSec),
             "aoa": 0,
             "dihedral": 0,
             "airfoil": MDO.airfoils.AirfoilData("goe498")
@@ -49,17 +71,17 @@ stateVariables = {
     }),
     "horizontal": OrderedDict({
         "root": {
-            "chord": 0.675,
+            "chord": horizontalRootChord,
             "aoa": 0,
-            "x": 2,
+            "x": horizontalXPosition,
             "y": 0,
-            "z": 0,
+            "z": 0.5,
             "airfoil": MDO.airfoils.AirfoilData("n0012")
         },
         "tip": {
-            "chord": 0.675,
-            "b": 1.85,
-            "sweepLE": 0,
+            "chord": horizontalTipChord,
+            "b": horizontalSpan/2,
+            "sweepLE": np.arctan((horizontalRootChord-horizontalTipChord)/4/horizontalSpan/2),
             "aoa": 0,
             "dihedral": 0,
             "airfoil": MDO.airfoils.AirfoilData("n0012")
@@ -67,17 +89,17 @@ stateVariables = {
     }),
     "vertical": OrderedDict({
         "root": {
-            "chord": 0.5,
+            "chord": verticalRootChord,
             "aoa": 0,
             "x": 2,
-            "y": 1,
+            "y": 0.75,
             "z": 0.5,
             "airfoil": MDO.airfoils.AirfoilData("n0012")
         },
         "tip": {
-            "chord": 0.5,
-            "b": 0.8,
-            "sweepLE": 0,
+            "chord": verticalTipChord,
+            "b": verticalSpan/2,
+            "sweepLE": np.arctan((verticalRootChord-verticalTipChord)/4/verticalSpan/2),
             "aoa": 0,
             "dihedral": 0,
             "airfoil": MDO.airfoils.AirfoilData("n0012")
@@ -121,7 +143,7 @@ mission = {
     #     "loadFactor": 1.5
     # },  # Change to Clmax
     "polar": {
-        "cLPoints": [-0.4, 0, 0.4]
+        "cLPoints": [0.2, 0.44, 0.8]
     }
 }  # 6 trimagem
 
@@ -142,6 +164,13 @@ engineFC = {
     "fuelDensityGperL": 0.8,  # gram/liter
 }  # Check figure 2.1 for correct value. Slide 248
 
+engineInfo = {
+    "name": "DLE 170",
+    "maxPowerHp": 17.5,
+    "maxThrust": 343,
+    "propellerInches": [30, 12],
+    "RPM": 7500
+}
 # ----------------------------------------------
 # Aircraft Info Class
 aircraftInfo = AircraftInfo(stateVariables, controlVariables)
@@ -168,21 +197,25 @@ if DEBUG:
 
 # with open("avl/results/resultExample.json", "wt") as file:
 #     file.write(json.dumps(results, indent=4))
+# ----------------------------------------------
+# Neutral Point
+MDO.stability.getNeutralPoint(results, aircraftInfo)
+print("------------------------------")
+print("Neutral Point: ", aircraftInfo.xNeutralPoint)
+print(f"EM: {round(aircraftInfo.staticMargin, 2)} %")
+
 
 # ----------------------------------------------
 # Deflections Check
 deflections = MDO.checks.Deflections(results)
 
-print(aircraftInfo.wingArea)
-print(aircraftInfo.wingSpan)
-print("------------------------------")
-print("Max deflections:")
-print(deflections.max)
+
+print("Deflections:", deflections.cruise)
 
 # ----------------------------------------------
 # Polar
-aircraftInfo.cD0, aircraftInfo.k = aero.polar(results)
-print("Polar:", aircraftInfo.cD0, aircraftInfo.k)
+[aircraftInfo.cD0, aircraftInfo.cD1, aircraftInfo.k, aircraftInfo.dataPolar] = aero.polar(results, aircraftInfo)
+print("Polar:", aircraftInfo.cD0, aircraftInfo.cD1, aircraftInfo.k)
 
 if PLOT:
     aero.plotPolar(aircraftInfo)
@@ -190,8 +223,8 @@ if PLOT:
 # ----------------------------------------------
 # Stall
 aero.stall(results, aircraftInfo)
-print("Wing Stall: ", aircraftInfo.alphaStallWing, " at ", aircraftInfo.stallPositionWing, "m")
-print("Horizontal Stall: ", aircraftInfo.alphaStallHorizontal, " at ", aircraftInfo.stallPositionHorizontal, "m")
+print("Wing Stall: ", aircraftInfo.alphaStallWing, " at ", round(2*aircraftInfo.stallPositionWing/aircraftInfo.wingSpan,2), "%")
+# print("Horizontal Stall: ", aircraftInfo.alphaStallHorizontal, " at ", aircraftInfo.stallPositionHorizontal, "m")
 
 if PLOT:
     aero.plotStall(aircraftInfo)

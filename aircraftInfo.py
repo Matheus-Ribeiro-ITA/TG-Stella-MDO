@@ -17,6 +17,8 @@ class AircraftInfo:
         - wingSpan [float]: Wing span.
         """
         self.stateVariables = stateVariables.copy()
+        self.machCalc = 0.1  # TODO:
+        self.reynoldsCalc = 1*10**6  # TODO:
 
         # Wing Info
         self.wingArea, self.meanChord, self.wingSpan, self.wingSweep = infoSurface(stateVariables['wing'])
@@ -37,11 +39,16 @@ class AircraftInfo:
         self.xVerticalMeanChord = self.verticalSpan * 0.05  # TODO
 
         # Fuselage Info
-        lengthFuselage = 2
-        diameterFuselage = 0.4
-        lambda_fus = lengthFuselage / diameterFuselage
-        self.fuselageWetArea = np.pi * diameterFuselage * lengthFuselage * (1 - 2 / lambda_fus) ** (2.0 / 3.0) * (1 + 1 / lambda_fus ** 2)
+        lengthFuselage = 1
+        diameterFuselage = 0.3
+        self.finenessRatio = lengthFuselage / diameterFuselage
+        self.fuselageWetArea = np.pi * diameterFuselage * lengthFuselage * (1 - 2 / self.finenessRatio) ** (2.0 / 3.0) * (1 + 1 / self.finenessRatio ** 2)
         self.fuselageLength = lengthFuselage
+        self.interferenceFactor = 1.05
+        self.coefficientFriction = 0.455/(np.log10(self.reynoldsCalc) ** 2.58 * (1 + 0.144 * self.machCalc ** 2) ** 0.58)
+
+        # Gimbal
+        self.gimbalFrontalArea = 3.1415*0.20**2
 
         # All Else Weight
         self.allElse = {  # Atobá Data (kg, m)

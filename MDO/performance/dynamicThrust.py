@@ -54,7 +54,7 @@ def dynamicThrust(engineInfo, velocity, method="actuatorDisk"):
         return 4.392399*10**-8*rpm * diameterInches**3.5/(np.sqrt(pitchInches))*(4.23333*10**-4*rpm*pitchInches - velocity/dynamicCorrection)
 
     METHOD = {
-        "actuatorDisk": _actuatorSolver(velocity, 0.55),
+        "actuatorDisk": _actuatorSolver(velocity, 0.5),
         "internetFormula": _thrustInternetFormula(velocity, 1.3)
     }
 
@@ -68,7 +68,7 @@ def dynamicThrustCurve(engineInfo, method="actuatorDisk"):
 
     def _objective(x, cD0, cD1, k):
         return cD0 + cD1 * x + k * x ** 2
-    print([float(thrust) for thrust in thrustList])
+
     popt, _ = curve_fit(_objective, velocityList, thrustList)
     cD0, cD1, k = popt
 

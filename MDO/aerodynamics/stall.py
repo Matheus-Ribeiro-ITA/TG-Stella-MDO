@@ -24,6 +24,9 @@ def stall(results, aircraftInfo):
     alphaStallsHorizontal = _slopAproximation(aoaHorizontal, clStripsHorizontal, clMaxHorizontal)
     _updateAircraftInfo(aircraftInfo, yStripsHorizontal, alphaStallsHorizontal, clStripsHorizontal, surface="Horizontal")
 
+    # Get cLmax Aircraft
+    aircraftInfo.cLMax = _getcLmaxAircraft(results, aircraftInfo.alphaStallWing)
+
 
 def plotStall(aircraftInfo):
     zippedPairs = zip(aircraftInfo.yStripsWing, aircraftInfo.alphaStallsWing)
@@ -67,6 +70,20 @@ def _getStrips(results, surface="wing"):
             clStrips.append(v["StripForces"][surface]["cl"])
             yStrips = v["StripForces"][surface]["Yle"]
     return aoa, clStrips, yStrips
+
+
+def _getcLmaxAircraft(results, aoaStall):
+    aoa = []
+    cLTotal = []
+
+    for k, v in results.items():
+        if k.startswith("Polar"):
+            aoa.append(v["Totals"]["Alpha"])
+            cLTotal.append(v["Totals"]["CLtot"])
+
+    clSlope = (cLTotal[2] - cLTotal[1]) / (aoa[2] - aoa[1])
+    cLmaxAircraft = cLTotal[1] + clSlope*(aoaStall - aoa[1])
+    return cLmaxAircraft
 
 
 def _updateAircraftInfo(aircraftInfo, yStrips, alphaStalls, clStrips, surface="Wing"):

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def forward_euler(q0, qd, dt=0.01, nsteps=1000):
+def forward_euler(q0, qd, dt=0.01, nsteps=6000):
     stts = [q0]
     ts = [0.0]
 
@@ -20,10 +20,10 @@ def takeOffRoll(
         mu=0.03,
         ksafety=1.1,
         dt=0.01,
-        nsteps=1000
+        nsteps=8000
 ):
-    rho = 1.1  # TODO:
-    CLmax = aircraftInfo.cLMax
+    rho = 1.225  # TODO:
+    CLmax = aircraftInfo.cLMax + 0.2  # TODO: Add flap to takeOff
     cLRun = aircraftInfo.cLRun  # TODO:
     Sref = aircraftInfo.wingArea
     TOW = aircraftInfo.MTOW
@@ -34,8 +34,10 @@ def takeOffRoll(
     W = TOW
 
     Vstall = np.sqrt(2.0 * W / (Sref * rho * CLmax))
-    Vto = Vstall * ksafety
+    print(CLmax)
 
+    Vto = Vstall * ksafety
+    print("Stall speed: ", Vstall, Vto)
     q0 = np.array([0.0, 0.0])  # state vector, [x, Uinf]t
 
     def qdot(q):
@@ -58,14 +60,18 @@ def takeOffRoll(
 
         return np.array(
             [
-                q[1], FX / TOW
+                q[1], FX / (TOW/9.81)
             ]
         )
 
     ts, qs = forward_euler(q0, qdot, dt=dt, nsteps=nsteps)
 
+    finished_q = False
     for q in qs:
         if q[1] >= Vto:
+            finished_q = True
             return q[0], q[1]
+
+    if not finished_q: qs[-1, 0] = 9000
 
     return qs[-1, 0], qs[-1, 1]

@@ -224,6 +224,7 @@ if PLOT:
 # Stall
 aero.stall(results, aircraftInfo)
 print("Wing Stall: ", aircraftInfo.alphaStallWing, " at ", round(2*aircraftInfo.stallPositionWing/aircraftInfo.wingSpan,2), "%")
+print(f"CL Max aircraft: {aircraftInfo.cLMax}")
 # print("Horizontal Stall: ", aircraftInfo.alphaStallHorizontal, " at ", aircraftInfo.stallPositionHorizontal, "m")
 
 if PLOT:
@@ -237,13 +238,16 @@ print(f"Range: {rangeCruise}")
 # ------------------ Take Off ---------------------------------
 [aircraftInfo.thrustV0, aircraftInfo.thrustV1, aircraftInfo.thrustV2] = MDO.performance.dynamicThrustCurve(engineInfo, method="actuatorDisk")
 
-aircraftInfo.cLRun = 0.44
+print(f"Thrust: {aircraftInfo.thrustV0}, {aircraftInfo.thrustV1}, {aircraftInfo.thrustV2}")
+
+aircraftInfo.cLRun = 0.41
 aircraftInfo.cD0Run = aircraftInfo.cD0
 aircraftInfo.cD1Run = aircraftInfo.cD1
 aircraftInfo.kRun = aircraftInfo.k
 
-[runway, speedTakeOff] = MDO.performance.takeOffRoll(aircraftInfo)
+[runway, speedTakeOff] = MDO.performance.takeOffRoll(aircraftInfo, dt=0.01, nsteps=15000)
 print("------------------------------")
+print(f"Aircraft TOW: {aircraftInfo.MTOW/9.81} kg")
 print(f"Runway Length: {runway} m")
 print(f"Take Off Speed: {speedTakeOff} m/s")
 # ----------------------------------------------

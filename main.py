@@ -20,11 +20,11 @@ PLOT = False
 verticalType = "h"
 
 # Variables Optimizer
-wingSpan = 3.75
+wingSpan = 6
 wingSecPercentage = 0.5
-wingRootChord = 0.8
-wingSecChord = 0.7
-wingTipChord = 0.6
+wingRootChord = 0.6
+wingSecChord = 0.5
+wingTipChord = 0.4
 
 horizontalSpan = 1.5
 horizontalRootChord = 0.5
@@ -34,7 +34,6 @@ horizontalXPosition = 2
 verticalSpan = 0.8  # Remember that is H vertical
 verticalRootChord = 0.375
 verticalTipChord = 0.375
-verticalXPosition = 2
 
 wingSecPosition = wingSpan/2*wingSecPercentage
 wingPosSec = wingSpan/2*(1-wingSecPercentage)
@@ -91,7 +90,7 @@ stateVariables = {
         "root": {
             "chord": verticalRootChord,
             "aoa": 0,
-            "x": 2,
+            "x": horizontalXPosition,
             "y": 0.75,
             "z": 0.5,
             "airfoil": MDO.airfoils.AirfoilData("n0012")
@@ -133,16 +132,19 @@ controlVariables = {
 # ----------------------------------------------
 # Avl Cases to analyse
 mission = {
-    "cruise": {
-        "altitude": 1000,
-        "vCruise": 150 / 3.6,
-    },  # Cruise trimmed (W/L = 1), change
+    # "cruise": {
+    #     "altitude": 1000,
+    #     "vCruise": 150 / 3.6,
+    # },  # Cruise trimmed (W/L = 1), change
     # "dive": {
     #     "altitude": 1000,
     #     "vDive": 30,
     #     "loadFactor": 1.5
     # },  # Change to Clmax
-    "polar": {
+    # "polar": {
+    #     "cLPoints": [0.2, 0.44, 0.8]
+    # },
+    "untrimmed_polar": {
         "cLPoints": [0.2, 0.44, 0.8]
     }
 }  # 6 trimagem
@@ -199,10 +201,10 @@ if DEBUG:
 #     file.write(json.dumps(results, indent=4))
 # ----------------------------------------------
 # Neutral Point
-MDO.stability.getNeutralPoint(results, aircraftInfo)
-print("------------------------------")
-print("Neutral Point: ", aircraftInfo.xNeutralPoint)
-print(f"EM: {round(aircraftInfo.staticMargin, 2)} %")
+# MDO.stability.getNeutralPoint(results, aircraftInfo)
+# print("------------------------------")
+# print("Neutral Point: ", aircraftInfo.xNeutralPoint)
+# print(f"EM: {round(aircraftInfo.staticMargin, 2)} %")
 
 
 # ----------------------------------------------
@@ -232,8 +234,8 @@ if PLOT:
     aero.plotliftDistribution(aircraftInfo)
 
 # Range ----------------------------------------------
-rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)
-print(f"Range: {rangeCruise}")
+# rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)
+# print(f"Range: {rangeCruise}")
 
 # ------------------ Take Off ---------------------------------
 [aircraftInfo.thrustV0, aircraftInfo.thrustV1, aircraftInfo.thrustV2] = MDO.performance.dynamicThrustCurve(engineInfo, method="actuatorDisk")

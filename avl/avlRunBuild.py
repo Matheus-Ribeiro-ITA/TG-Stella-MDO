@@ -152,4 +152,11 @@ def avlRunBuild(mission, aircraftInfo):
                                   alpha=clParam,
                                   elevator=trimParam))
 
+    if "untrimmed_polar" in mission:
+        for i, cL in enumerate(mission["untrimmed_polar"]["cLPoints"]):
+            clParam = avl.Parameter(name='alpha', setting='CL', value=cL)
+            # trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
+            cases.append(avl.Case(name="PolarUntrimmed_" + str(i),
+                                  alpha=clParam))
+
     return cases

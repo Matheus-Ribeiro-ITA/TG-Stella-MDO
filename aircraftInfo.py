@@ -24,7 +24,7 @@ class AircraftInfo:
         self.wingArea, self.meanChord, self.wingSpan, self.wingSweep = infoSurface(stateVariables['wing'])
         self.xWingMeanChord = self.wingSpan * 0.05  # TODO
         self.taperRatioWing = stateVariables['wing']['tip']['chord']/stateVariables['wing']['root']['chord']
-
+        self.aspectRatio = self.wingSpan**2/self.wingArea
         self.aileronArea = self.wingArea*controlVariables["aileron"]["spanStartPercentage"]*\
                            (1-controlVariables["aileron"]["cHinge"])
 
@@ -110,6 +110,8 @@ class AircraftInfo:
 
         self.alphaStallWing = None
         self.stallPositionWing = None
+        self.cLSlope = None
+        self.cLAlpha0 = None
 
         # Stability
         self.xNeutralPoint = None

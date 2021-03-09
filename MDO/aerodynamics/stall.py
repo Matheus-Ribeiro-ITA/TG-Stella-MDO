@@ -25,7 +25,7 @@ def stall(results, aircraftInfo):
     _updateAircraftInfo(aircraftInfo, yStripsHorizontal, alphaStallsHorizontal, clStripsHorizontal, surface="Horizontal")
 
     # Get cLmax Aircraft
-    aircraftInfo.cLMax = _getcLmaxAircraft(results, aircraftInfo.alphaStallWing)
+    aircraftInfo.cLMax, aircraftInfo.cLAlpha0, aircraftInfo.cLSlope = _getcLmaxAircraft(results, aircraftInfo.alphaStallWing)
 
 
 def plotStall(aircraftInfo):
@@ -83,7 +83,10 @@ def _getcLmaxAircraft(results, aoaStall):
 
     clSlope = (cLTotal[2] - cLTotal[1]) / (aoa[2] - aoa[1])
     cLmaxAircraft = cLTotal[1] + clSlope*(aoaStall - aoa[1])
-    return cLmaxAircraft
+
+    cLAlpha0 = cLTotal[1] + clSlope*(0 - aoa[1])
+
+    return cLmaxAircraft, cLAlpha0, clSlope
 
 
 def _updateAircraftInfo(aircraftInfo, yStrips, alphaStalls, clStrips, surface="Wing"):

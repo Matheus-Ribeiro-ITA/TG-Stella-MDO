@@ -24,7 +24,7 @@ def takeOffRoll(
 ):
     rho = 1.225  # TODO:
     CLmax = aircraftInfo.cLMax + 0.2  # TODO: Add flap to takeOff
-    cLRun = aircraftInfo.cLRun  # TODO:
+    cLRun = aircraftInfo.cLAlpha0  # TODO:
     Sref = aircraftInfo.wingArea
     TOW = aircraftInfo.MTOW
 
@@ -34,10 +34,8 @@ def takeOffRoll(
     W = TOW
 
     Vstall = np.sqrt(2.0 * W / (Sref * rho * CLmax))
-    print(CLmax)
 
     Vto = Vstall * ksafety
-    print("Stall speed: ", Vstall, Vto)
     q0 = np.array([0.0, 0.0])  # state vector, [x, Uinf]t
 
     def qdot(q):

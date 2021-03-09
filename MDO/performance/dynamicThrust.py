@@ -125,9 +125,9 @@ def plotDynamicThrust(engineInfo):
         return 4.392399*10**-8*rpm * diameterInches**3.5/(np.sqrt(pitchInches))*(4.23333*10**-4*rpm*pitchInches - velocity/dynamicCorrection)
 
     velocityList = np.linspace(0.5, 50, 40)
-    thrustActuator = [_actuatorSolver(velocity) for velocity in velocityList]
-    thrustInternet = [_thrustInternetFormula(velocity) for velocity in velocityList]
-    thrustInternet35p = [_thrustInternetFormula(velocity/1.30) for velocity in velocityList]
+    thrustActuator = [_actuatorSolver(velocity, 0.5) for velocity in velocityList]
+    thrustInternet = [_thrustInternetFormula(velocity, 1)*0.68 for velocity in velocityList]
+    thrustInternet35p = [_thrustInternetFormula(velocity, 1.30)*0.68 for velocity in velocityList]
 
     plt.scatter(velocityList, thrustActuator, color='b', label="Actuator Disk Theory (90% correction)")
     plt.scatter(velocityList, thrustInternet, color='r', label="Internet Guy Formula")
@@ -135,6 +135,7 @@ def plotDynamicThrust(engineInfo):
     plt.xlabel("Velocity (m/s)")
     plt.ylabel("Thrust (N)")
     plt.legend()
+    plt.grid()
     plt.show()
 
 

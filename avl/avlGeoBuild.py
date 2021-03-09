@@ -194,7 +194,7 @@ def _addControl2States(stateVariables, controlVariables, verticalType="conventio
                     "sweepLE": stateVariables["wing"]["middle"]["sweepLE"],
                     "aoa": aoa,
                     "dihedral": 0,
-                    "airfoil": stateVariables["horizontal"]["middle"]["airfoil"],
+                    "airfoil": stateVariables["wing"]["middle"]["airfoil"],
                     "control": "aileron",
                 }
             })

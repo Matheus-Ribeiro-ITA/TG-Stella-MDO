@@ -37,9 +37,6 @@ for i, _ in enumerate(pickleList):
     with open(f'{pathSave}/{pickleList[i]}', 'rb') as file2:
         aircraftInfoList.append(pickle.load(file2))
         file2.close()
-    with open(f"{pathSave}/results{i}.json", "rb") as file2:
-        resultsList.append(json.load(file2))
-        file2.close()
 
 wingAreaList = []
 runwayList = []
@@ -63,10 +60,8 @@ for aircraftInfo in aircraftInfoList:
     wingTaperRatio.append(aircraftInfo.taperRatioWing)
     wingDivList.append(100*aircraftInfo.stateVariables["wing"]["middle"]["b"]/(aircraftInfo.stateVariables["wing"]["middle"]["b"] + aircraftInfo.stateVariables["wing"]["tip"]["b"]))
     aircraftMassList.append(aircraftInfo.MTOW/9.81)
-    stallPositionList.append(aircraftInfo.stallPositionWing)
-    if aircraftInfo.alphaStall and aircraftInfo.alphaStall > 20:
-        print("aa")
-    alphaStallList.append(aircraftInfo.alphaStall)
+    stallPositionList.append(2*aircraftInfo.stallPositionWing/aircraftInfo.wingSpan)
+    alphaStallList.append(aircraftInfo.alphaStallWing)
 
     if aircraftInfo.runway < minRunWay and aircraftInfo.wingArea < 5:
         minRunWay = aircraftInfo.runway

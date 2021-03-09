@@ -19,10 +19,10 @@ def stall(results, aircraftInfo):
     alphaStallsWing = _slopAproximation(aoaWing, clStripsWing, clMaxWing)
     _updateAircraftInfo(aircraftInfo, yStripsWing, alphaStallsWing, clStripsWing, surface="Wing")
 
-    clMaxHorizontal = aircraftInfo.cLMaxHorizontalAirfoil
-    aoaHorizontal, clStripsHorizontal, yStripsHorizontal = _getStrips(results, surface="horizontal")
-    alphaStallsHorizontal = _slopAproximation(aoaHorizontal, clStripsHorizontal, clMaxHorizontal)
-    _updateAircraftInfo(aircraftInfo, yStripsHorizontal, alphaStallsHorizontal, clStripsHorizontal, surface="Horizontal")
+    # clMaxHorizontal = aircraftInfo.cLMaxHorizontalAirfoil
+    # aoaHorizontal, clStripsHorizontal, yStripsHorizontal = _getStrips(results, surface="horizontal")
+    # alphaStallsHorizontal = _slopAproximation(aoaHorizontal, clStripsHorizontal, clMaxHorizontal)
+    # _updateAircraftInfo(aircraftInfo, yStripsHorizontal, alphaStallsHorizontal, clStripsHorizontal, surface="Horizontal")
 
     # Get cLmax Aircraft
     aircraftInfo.cLMax, aircraftInfo.cLAlpha0, aircraftInfo.cLSlope = _getcLmaxAircraft(results, aircraftInfo.alphaStallWing)
@@ -49,12 +49,12 @@ def plotStall(aircraftInfo):
     
     
 
-def _slopAproximation(aoa, clStrips, clMax):
+def _slopAproximation(aoa, clStrips, clMaxAirfoil):
     
     # Remember: that we have 3 polar points.
     clStripsSlope = [(a - b)/(aoa[2]-aoa[1]) for a, b in zip(clStrips[2], clStrips[1])]
     
-    diffAlphas = [(clMax - cl)/clSlope for cl, clSlope in zip(clStrips[1], clStripsSlope)]
+    diffAlphas = [(clMaxAirfoil - cl) / clSlope for cl, clSlope in zip(clStrips[1], clStripsSlope)]
     alphaStalls = [aoa[1] + diffAlpha for diffAlpha in diffAlphas]
     
     return alphaStalls

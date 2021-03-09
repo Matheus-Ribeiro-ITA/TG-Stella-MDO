@@ -104,7 +104,6 @@ class AircraftInfo:
 
         # Stall
         self.alphaStalls = None
-        self.alphaStall = None
         self.stallPosition = None
         self.yStrips = None
 

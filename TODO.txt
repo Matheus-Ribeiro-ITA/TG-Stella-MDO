@@ -2,7 +2,7 @@
 
 ## Geometry
 # TODO: Change vertical format to V
-# TODO: ADD maxsweep constraint to AVLGeoBuild
+# TODO: ADD maxsweep constraint to AVLGeoBuild, so wing dont invert
 # TODO: Check if Component number is needed in AVL
 
 ## Performace
@@ -28,3 +28,4 @@
 # DONE: Add airfoil polar
 # DONE: Add vertical format H
 # DONE: Change stall CLmax to each airfoil on wing and horizontal
+# DONE: Add flap

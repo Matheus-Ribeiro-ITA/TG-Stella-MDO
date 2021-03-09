@@ -1,6 +1,7 @@
 import numpy as np
 
-def forward_euler(q0, qd, dt = 0.01, nsteps = 1000):
+
+def forward_euler(q0, qd, dt=0.01, nsteps=6000):
     stts = [q0]
     ts = [0.0]
 
@@ -13,30 +14,33 @@ def forward_euler(q0, qd, dt = 0.01, nsteps = 1000):
 
     return ts, np.vstack(stts)
 
+
 def takeOffRoll(
-    polar = lambda CL : 0.0628 - 0.042 * CL + 0.071 * CL ** 2,
-    Tcurve = lambda U: 49.1972 - 0.3894 * U - 0.0184 * U ** 2,
-    TOW = 21.2,
-    g = 9.81,
-    rho = 1.1,
-    CLmax = 2.103,
-    CL0 = 0.62,
-    Sref = 1.31466,
-    mu = 0.03,
-    ksafety = 1.1,
-    dt = 0.01,
-    nsteps = 1000
+        aircraftInfo,
+        mu=0.03,
+        ksafety=1.1,
+        dt=0.01,
+        nsteps=8000
 ):
-    W = TOW * g
+    rho = 1.225  # TODO:
+    CLmax = aircraftInfo.cLMax + 0.2  # TODO: Add flap to takeOff
+    cLRun = aircraftInfo.cLAlpha0  # TODO:
+    Sref = aircraftInfo.wingArea
+    TOW = aircraftInfo.MTOW
+
+    _polar = lambda CL: aircraftInfo.cD0Run + aircraftInfo.cD1Run * CL + aircraftInfo.kRun * CL ** 2
+    _tCurve = lambda velocity: aircraftInfo.thrustV0 + aircraftInfo.thrustV1 * velocity \
+                               + aircraftInfo.thrustV2 * velocity ** 2
+    W = TOW
 
     Vstall = np.sqrt(2.0 * W / (Sref * rho * CLmax))
-    Vto = Vstall * ksafety
 
-    q0 = np.array([0.0, 0.0]) # state vector, [x, Uinf]t
+    Vto = Vstall * ksafety
+    q0 = np.array([0.0, 0.0])  # state vector, [x, Uinf]t
 
     def qdot(q):
-        CL = CL0
-        CD = polar(CL)
+        CL = cLRun
+        CD = _polar(CL)
 
         Uinf = q[1]
 
@@ -50,18 +54,22 @@ def takeOffRoll(
         )
         Fat = N * mu
 
-        FX = Tcurve(Uinf) - Fat - D
+        FX = _tCurve(Uinf) - Fat - D
 
         return np.array(
             [
-            q[1], FX / TOW
+                q[1], FX / (TOW/9.81)
             ]
         )
 
-    ts, qs = forward_euler(q0, qdot, dt = dt, nsteps = nsteps)
+    ts, qs = forward_euler(q0, qdot, dt=dt, nsteps=nsteps)
 
+    finished_q = False
     for q in qs:
         if q[1] >= Vto:
+            finished_q = True
             return q[0], q[1]
-    
+
+    if not finished_q: qs[-1, 0] = 9000
+
     return qs[-1, 0], qs[-1, 1]

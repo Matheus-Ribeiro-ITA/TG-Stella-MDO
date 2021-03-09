@@ -19,10 +19,13 @@ def stall(results, aircraftInfo):
     alphaStallsWing = _slopAproximation(aoaWing, clStripsWing, clMaxWing)
     _updateAircraftInfo(aircraftInfo, yStripsWing, alphaStallsWing, clStripsWing, surface="Wing")
 
-    clMaxHorizontal = aircraftInfo.cLMaxHorizontalAirfoil
-    aoaHorizontal, clStripsHorizontal, yStripsHorizontal = _getStrips(results, surface="horizontal")
-    alphaStallsHorizontal = _slopAproximation(aoaHorizontal, clStripsHorizontal, clMaxHorizontal)
-    _updateAircraftInfo(aircraftInfo, yStripsHorizontal, alphaStallsHorizontal, clStripsHorizontal, surface="Horizontal")
+    # clMaxHorizontal = aircraftInfo.cLMaxHorizontalAirfoil
+    # aoaHorizontal, clStripsHorizontal, yStripsHorizontal = _getStrips(results, surface="horizontal")
+    # alphaStallsHorizontal = _slopAproximation(aoaHorizontal, clStripsHorizontal, clMaxHorizontal)
+    # _updateAircraftInfo(aircraftInfo, yStripsHorizontal, alphaStallsHorizontal, clStripsHorizontal, surface="Horizontal")
+
+    # Get cLmax Aircraft
+    aircraftInfo.cLMax, aircraftInfo.cLAlpha0, aircraftInfo.cLSlope = _getcLmaxAircraft(results, aircraftInfo.alphaStallWing)
 
 
 def plotStall(aircraftInfo):
@@ -46,12 +49,12 @@ def plotStall(aircraftInfo):
     
     
 
-def _slopAproximation(aoa, clStrips, clMax):
+def _slopAproximation(aoa, clStrips, clMaxAirfoil):
     
     # Remember: that we have 3 polar points.
     clStripsSlope = [(a - b)/(aoa[2]-aoa[1]) for a, b in zip(clStrips[2], clStrips[1])]
     
-    diffAlphas = [(clMax - cl)/clSlope for cl, clSlope in zip(clStrips[1], clStripsSlope)]
+    diffAlphas = [(clMaxAirfoil - cl) / clSlope for cl, clSlope in zip(clStrips[1], clStripsSlope)]
     alphaStalls = [aoa[1] + diffAlpha for diffAlpha in diffAlphas]
     
     return alphaStalls
@@ -67,6 +70,23 @@ def _getStrips(results, surface="wing"):
             clStrips.append(v["StripForces"][surface]["cl"])
             yStrips = v["StripForces"][surface]["Yle"]
     return aoa, clStrips, yStrips
+
+
+def _getcLmaxAircraft(results, aoaStall):
+    aoa = []
+    cLTotal = []
+
+    for k, v in results.items():
+        if k.startswith("Polar"):
+            aoa.append(v["Totals"]["Alpha"])
+            cLTotal.append(v["Totals"]["CLtot"])
+
+    clSlope = (cLTotal[2] - cLTotal[1]) / (aoa[2] - aoa[1])
+    cLmaxAircraft = cLTotal[1] + clSlope*(aoaStall - aoa[1])
+
+    cLAlpha0 = cLTotal[1] + clSlope*(0 - aoa[1])
+
+    return cLmaxAircraft, cLAlpha0, clSlope
 
 
 def _updateAircraftInfo(aircraftInfo, yStrips, alphaStalls, clStrips, surface="Wing"):

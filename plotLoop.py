@@ -3,7 +3,7 @@ import pickle
 import json
 import matplotlib.pyplot as plt
 
-LEGEND ={
+LEGEND = {
     "wingAreaList": "Wing Area (m^2)",
     "wingSpanList": "Wing Span (m)",
     "runwayList": "Runway length (m)",
@@ -17,6 +17,7 @@ LEGEND ={
 }
 
 pathSave = "resultsUntrimmed"
+
 
 def _plotByLists(xListStr, yListStr, bestIndex):
     exec(f"plt.scatter({xListStr}, {yListStr})")
@@ -82,7 +83,3 @@ _plotByLists("aircraftMassList", "runwayList", bestIndex)
 _plotByLists("wingAreaList", "aircraftMassList", bestIndex)
 _plotByLists("wingTaperRatio", "stallPositionList", bestIndex)
 _plotByLists("wingTaperRatio", "alphaStallList", bestIndex)
-# plt.scatter(wingSpanList, runwayList)
-# plt.xlabel("Wing Span (m)")
-# plt.ylabel("Runway length (m)")
-# plt.show()

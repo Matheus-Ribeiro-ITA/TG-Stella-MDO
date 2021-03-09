@@ -11,7 +11,7 @@ import numpy as np
 startTime = time.time()
 # ----------------------------------------------
 # Debug bool
-DEBUG = False
+DEBUG = True
 PLOT = False
 
 # ----------------------------------------------
@@ -37,7 +37,6 @@ verticalTipChord = 0.375
 
 wingSecPosition = wingSpan/2*wingSecPercentage
 wingPosSec = wingSpan/2*(1-wingSecPercentage)
-
 
 # ----------------------------------------------
 # Optimizer state Variables
@@ -109,21 +108,27 @@ stateVariables = {
 # ----------------------------------------------
 # Control Surfaces definition
 controlVariables = {
-    "aileron": {
-        "spanStartPercentage": 0.8,
-        "cHinge": 0.8,
-        "gain": 1,
-        "duplicateSign": 1
-    },
-    "elevator": {
-        "spanStartPercentage": 0.2,
-        "cHinge": 0.5,
-        "gain": 1,
-        "duplicateSign": 1
-    },
-    "rudder": {
-        "spanStartPercentage": 0.4,
-        "cHinge": 0.8,
+    # "aileron": {
+    #     "spanStartPercentage": 0.8,
+    #     "cHinge": 0.8,  # From Leading Edge
+    #     "gain": 1,
+    #     "duplicateSign": 1
+    # },
+    # "elevator": {
+    #     "spanStartPercentage": 0.2,
+    #     "cHinge": 0.5,
+    #     "gain": 1,
+    #     "duplicateSign": 1
+    # },
+    # "rudder": {
+    #     "spanStartPercentage": 0.4,
+    #     "cHinge": 0.8,
+    #     "gain": 1,
+    #     "duplicateSign": 1
+    # },
+    "flap": {
+        "spanStartPercentage": 0.0,
+        "cHinge": 0.7,  # From Leading Edge
         "gain": 1,
         "duplicateSign": 1
     },
@@ -209,7 +214,7 @@ if DEBUG:
 
 # ----------------------------------------------
 # Deflections Check
-deflections = MDO.checks.Deflections(results)
+deflections = MDO.checks.Deflections(results, controlVariables)
 
 
 print("Deflections:", deflections.cruise)

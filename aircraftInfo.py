@@ -25,8 +25,11 @@ class AircraftInfo:
         self.xWingMeanChord = self.wingSpan * 0.05  # TODO
         self.taperRatioWing = stateVariables['wing']['tip']['chord']/stateVariables['wing']['root']['chord']
         self.aspectRatio = self.wingSpan**2/self.wingArea
-        self.aileronArea = self.wingArea*controlVariables["aileron"]["spanStartPercentage"]*\
-                           (1-controlVariables["aileron"]["cHinge"])
+        if "aileron" in controlVariables:
+            self.aileronArea = self.wingArea*controlVariables["aileron"]["spanStartPercentage"]*\
+                               (1-controlVariables["aileron"]["cHinge"])
+        else:
+            self.aileronArea = self.wingArea*0.4*0.2
 
         # Horizontal Info
         self.horizontalArea, self.horizontalMeanChord, self.horizontalSpan, self.horizontalSweep = \

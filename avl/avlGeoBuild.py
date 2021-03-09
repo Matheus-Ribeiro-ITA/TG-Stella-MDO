@@ -157,12 +157,13 @@ def _addControl2States(stateVariables, controlVariables, verticalType="conventio
     - Output
     :return:
     """
+
+    middleSecPosition = stateVariables["wing"]["middle"]["b"]
+    wingSpan = middleSecPosition + stateVariables["wing"]["tip"]["b"]
+
     if "aileron" in controlVariables:
         aileronDict = controlVariables["aileron"]
-        rootSecSpan = stateVariables["wing"]["middle"]["b"]
-        wingSpan = rootSecSpan + stateVariables["wing"]["tip"]["b"]
-
-        aileronDivisionValue = aileronDict["spanStartPercentage"] * wingSpan - rootSecSpan
+        aileronDivisionValue = aileronDict["spanStartPercentage"] * wingSpan - middleSecPosition
         # Case aileron in between Middle and Tip section:
         if aileronDivisionValue > 0:
             chord = _linearizationSecValues(stateVariables, "middle", "tip", aileronDivisionValue, "chord")
@@ -182,34 +183,33 @@ def _addControl2States(stateVariables, controlVariables, verticalType="conventio
             newB = stateVariables["wing"]["tip"]["b"] - aileronDivisionValue
             stateVariables["wing"]["tip"].update({"b": newB})
             stateVariables["wing"].move_to_end("tip", last=True)
-        # Case aileron in between Root and Middle section:
-        if aileronDivisionValue < 0:
-            aileronDivisionValue = rootSecSpan + aileronDivisionValue
-            chord = _linearizationSecValues(stateVariables, "root", "middle", aileronDivisionValue, "chord")
-            aoa = _linearizationSecValues(stateVariables, "root", "middle", aileronDivisionValue, "aoa")
-            stateVariables["wing"].update({
-                "aileron": {
-                    "chord": chord,
-                    "b": aileronDivisionValue,
-                    "sweepLE": stateVariables["wing"]["middle"]["sweepLE"],
-                    "aoa": aoa,
-                    "dihedral": 0,
-                    "airfoil": stateVariables["wing"]["middle"]["airfoil"],
-                    "control": "aileron",
-                }
-            })
-            stateVariables["wing"]["middle"].update({"control": "aileron"})
-            newB = stateVariables["wing"]["middle"]["b"] - aileronDivisionValue
-            stateVariables["wing"]["middle"].update({"b": newB})
-            stateVariables["wing"]["tip"].update({"control": "aileron"})
-            stateVariables["wing"].move_to_end("middle", last=True)
-            stateVariables["wing"].move_to_end("tip", last=True)
+        # Case aileron in between Root and Middle section: (Goes to middle)
+        # elif aileronDivisionValue < 0:
+            # aileronDivisionValue = 0
+            # aileronDivisionValue = rootSecSpan + aileronDivisionValue
+            # chord = _linearizationSecValues(stateVariables, "root", "middle", aileronDivisionValue, "chord")
+            # aoa = _linearizationSecValues(stateVariables, "root", "middle", aileronDivisionValue, "aoa")
+            # stateVariables["wing"].update({
+            #     "aileron": {
+            #         "chord": chord,
+            #         "b": aileronDivisionValue,
+            #         "sweepLE": stateVariables["wing"]["middle"]["sweepLE"],
+            #         "aoa": aoa,
+            #         "dihedral": 0,
+            #         "airfoil": stateVariables["wing"]["middle"]["airfoil"],
+            #         "control": "aileron",
+            #     }
+            # })
+            # stateVariables["wing"]["middle"].update({"control": "aileron"})
+            # newB = stateVariables["wing"]["middle"]["b"] - aileronDivisionValue
+            # stateVariables["wing"]["middle"].update({"b": newB})
+            # stateVariables["wing"]["tip"].update({"control": "aileron"})
+            # stateVariables["wing"].move_to_end("middle", last=True)
+            # stateVariables["wing"].move_to_end("tip", last=True)
         # Case aileron exactly on Middle section:
-        if aileronDivisionValue == 0:
+        elif aileronDivisionValue <= 0:
             stateVariables["wing"]["middle"].update({"control": "aileron"})
             stateVariables["wing"]["tip"].update({"control": "aileron"})
-            stateVariables["wing"].move_to_end("middle", last=True)
-            stateVariables["wing"].move_to_end("tip", last=True)
 
     if "elevator" in controlVariables:
         elevatorDict = controlVariables["elevator"]
@@ -282,6 +282,42 @@ def _addControl2States(stateVariables, controlVariables, verticalType="conventio
             stateVariables["vertical"].move_to_end("root", last=True)
             stateVariables["vertical"].move_to_end("tip", last=True)
 
+    if "flap" in controlVariables:
+        flapDict = controlVariables["flap"]
+        # divList = [0]
+        # for sec in stateVariables["wing"].values():
+        #     try:
+        #         divList.append(sec["b"])
+        #         divList[-1] += divList[-2]
+        #     except KeyError:
+        #         pass
+        #
+        # print(divList)
+        flapDivisionValue = flapDict["spanStartPercentage"] * wingSpan
+        # Case flap in between Root and Middle section:
+        if 0 < flapDivisionValue < middleSecPosition:
+            chord = _linearizationSecValues(stateVariables, "root", "middle", flapDivisionValue, "chord")
+            aoa = _linearizationSecValues(stateVariables, "root", "middle", flapDivisionValue, "aoa")
+            stateVariables["wing"].update({
+                "flap": {
+                    "chord": chord,
+                    "b": flapDivisionValue,
+                    "sweepLE": stateVariables["wing"]["middle"]["sweepLE"],
+                    "aoa": aoa,
+                    "dihedral": 0,
+                    "airfoil": stateVariables["wing"]["middle"]["airfoil"],
+                    "control": "flap",
+                }
+            })
+            stateVariables["wing"].move_to_end("flap", last=False)
+            stateVariables["wing"].move_to_end("root", last=False)
+            stateVariables["wing"]["middle"].update({"control": "flap"})
+            newB = stateVariables["wing"]["middle"]["b"] - flapDivisionValue
+            stateVariables["wing"]["middle"].update({"b": newB})
+        # Case flap in between Root and Middle section:
+        elif flapDivisionValue == 0:
+            stateVariables["wing"]["root"].update({"control": "flap"})
+            stateVariables["wing"]["middle"].update({"control": "flap"})
     return stateVariables
 
 

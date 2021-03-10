@@ -3,3 +3,4 @@ import MDO.checks
 import MDO.airfoils
 import MDO.stability
 import MDO.performance
+import MDO.airfoils

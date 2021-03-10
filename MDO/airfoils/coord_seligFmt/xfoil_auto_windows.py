@@ -1,12 +1,8 @@
-'''
-Script para automatizacao do Xfoil
-'''
-
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-
 # configs
+
 airfoil='n0012'
 
 # comandos

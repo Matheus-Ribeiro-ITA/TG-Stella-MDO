@@ -97,7 +97,7 @@ def _polarData(dataList, mission="cruise"):
 
     for data in dataList:
         try:
-            index12Alpha = data["alphas"].index(12)
+            index12Alpha = data["alphas"].index(8)
             popt, _ = curve_fit(_objectivePolar, data["CLs"][0:index12Alpha], data["CDs"][0:index12Alpha])
             cD0, cD1, k = popt
             poptSlope, _ = curve_fit(_objectiveSlope, data["alphas"][0:index12Alpha], data["CLs"][0:index12Alpha])
@@ -105,7 +105,7 @@ def _polarData(dataList, mission="cruise"):
 
             CLs = []
             CDs = []
-            for CL in [-0.2, 0.4, 1]:
+            for CL in [-0.1, 0.5, 1.1]:
                 CD = _objectivePolar(CL, cD0, cD1, k)
                 CLs.append(CL)
                 CDs.append(CD)

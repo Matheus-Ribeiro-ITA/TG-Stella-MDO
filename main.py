@@ -19,6 +19,9 @@ PLOT = False
 # Options: "conventional", "h".
 verticalType = "h"
 
+wingAirfoil = "ls421mod_cruise"
+stabAirfoil = "naca0012_cruise"
+
 # Variables Optimizer
 wingSpan = 6
 wingSecPercentage = 0.5
@@ -48,7 +51,7 @@ stateVariables = {
             "x": 0,
             "y": 0,
             "z": 0,
-            "airfoil": MDO.airfoils.AirfoilData("goe498")
+            "airfoil": MDO.airfoils.AirfoilData(wingAirfoil)
         },
         "middle": {
             "chord": wingSecChord,
@@ -56,7 +59,7 @@ stateVariables = {
             "sweepLE": np.arctan((wingRootChord-wingSecChord)/4/wingSecPosition),
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": MDO.airfoils.AirfoilData("goe498")
+            "airfoil": MDO.airfoils.AirfoilData(wingAirfoil)
         },
         "tip": {
             "chord": wingTipChord,
@@ -64,7 +67,7 @@ stateVariables = {
             "sweepLE": np.arctan((wingSecChord-wingTipChord)/4/wingPosSec),
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": MDO.airfoils.AirfoilData("goe498")
+            "airfoil": MDO.airfoils.AirfoilData(wingAirfoil)
         },
     }),
     "horizontal": OrderedDict({
@@ -74,7 +77,7 @@ stateVariables = {
             "x": horizontalXPosition,
             "y": 0,
             "z": 0.5,
-            "airfoil": MDO.airfoils.AirfoilData("n0012")
+            "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
         },
         "tip": {
             "chord": horizontalTipChord,
@@ -82,7 +85,7 @@ stateVariables = {
             "sweepLE": np.arctan((horizontalRootChord-horizontalTipChord)/4/horizontalSpan/2),
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": MDO.airfoils.AirfoilData("n0012")
+            "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
         }
     }),
     "vertical": OrderedDict({
@@ -92,7 +95,7 @@ stateVariables = {
             "x": horizontalXPosition,
             "y": 0.75,
             "z": 0.5,
-            "airfoil": MDO.airfoils.AirfoilData("n0012")
+            "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
         },
         "tip": {
             "chord": verticalTipChord,
@@ -100,7 +103,7 @@ stateVariables = {
             "sweepLE": np.arctan((verticalRootChord-verticalTipChord)/4/verticalSpan/2),
             "aoa": 0,
             "dihedral": 0,
-            "airfoil": MDO.airfoils.AirfoilData("n0012")
+            "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
         }
     })
 }

@@ -1,5 +1,5 @@
 load
-n0012.dat
+a18.dat
 gdes
 flap
 0.8
@@ -26,7 +26,7 @@ xtr
 iter
 3000
 pacc
-n0012_170000.000000.dat
+a18_170000.dat
  
 aseq
 -5.0

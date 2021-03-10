@@ -34,11 +34,14 @@ import numpy as np
 # 's1210' [Problematic]
 
 # configs
-airfoilList = ['n0012', 'ah95156', 'ah94w145', 'ah94145', 'naca4415',
+airfoilList = ['ah95156', 'ah94w145', 'ah94145', 'naca4415',
                'e1230', 'ls417mod',  'goe398', 'rhodesg34',
                'rhodesg32', 'n22', 'goe693', 'clarky', 'n24', 'goe449',
                'goe527', 'e657', 'rhodesg36', 'fx76mp160',
-               'goe498', 'la203a', 'la5055']
+               'goe498', 'la203a', 'la5055',
+               'ls417', 'naca23018', 'e548', 'e420', 'ls421mod']
+flapOn = False
+
 npans = 200
 Mach = 0.03
 
@@ -53,17 +56,27 @@ a_min = -5.0
 a_max = 18.0
 a_step = 0.5
 
-flap_angle = 0.0  # angulo do flap (positivo eh p baixo)
-x_fl = 0.8  # posicao como perc. da corda
+if flapOn:
+    flap_angle = 20.0  # angulo do flap (positivo eh p baixo)
+else:
+    flap_angle = 0.0  # angulo do flap (positivo eh p baixo)
+
+x_fl = 0.7  # posicao como perc. da corda
 t_fl = 0.5  # posicao como perc. da espessura
 
 dirPath = os.getcwd()
-folderPath = f"{dirPath}\\xfoilData"
+if flapOn:
+    folderPath = f"{dirPath}\\xfoilDataFlap"
+    ReList.pop()
+    numTimes = 1
+else:
+    folderPath = f"{dirPath}\\xfoilData"
+    numTimes = 2
+
 savedAirfoils = [filename.split('_')[0] for filename in os.listdir(folderPath)]
 
-print(savedAirfoils)
-airfoilToSave = [airfoil for airfoil in airfoilList if not savedAirfoils.count(airfoil) == 2]
-
+airfoilToSave = [airfoil for airfoil in airfoilList if not savedAirfoils.count(airfoil) == numTimes]
+print(airfoilToSave)
 if not airfoilToSave: print("All airfoils from list are saved")
 
 for Re in ReList:
@@ -172,7 +185,7 @@ for Re in ReList:
                 "Re": round(Re, 0)
             }
             dirPath = os.getcwd()
-            filePath = f"{dirPath}\\xfoilData\\{filename}"
+            filePath = f"{folderPath}\\{filename}"
             json.dump(dataJson, codecs.open(filePath, 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True,
                       indent=4)
 

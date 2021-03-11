@@ -74,6 +74,7 @@ class AircraftInfo:
 
         # Airfoil Info
         self.cLMaxWingAirfoil = stateVariables["wing"]["root"]["airfoil"].clmax
+
         self.cLMaxHorizontalAirfoil = stateVariables["horizontal"]["root"]["airfoil"].clmax
         self.tcRootWing = 0.123  # TODO:
 
@@ -85,6 +86,9 @@ class AircraftInfo:
         self.cD0Run = None
         self.cD1Run = None
         self.kRun = None
+
+        self.cLRun = None
+        self.cDRun = None
 
         # Flight Info
         self.cLCruise = None
@@ -99,7 +103,7 @@ class AircraftInfo:
         weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
         self.weightEmpty = weightEmpty
         self.weightFuel = 0 * 9.81
-        self.MTOW = self.weightEmpty + self.weightFuel
+        self.MTOW = 150*9.81 #self.weightEmpty + self.weightFuel
 
         self.cgEmpty = cgEmpty
         self.cgFull = 0.0  # TODO:

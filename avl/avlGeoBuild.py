@@ -20,7 +20,7 @@ def avlGeoBuild(stateVariables, controlVariables, verticalType="conventional"):
 
         else:
             for secName, secData in surfaceDict.items():
-                section, secPoint = _translateSec(secName, secData, secPoint, surfaceName=surfaceName)
+                section, secPoint = _translateSec(secName, secData, secPoint, surfaceName=surfaceName, controlVariables=controlVariables)
                 sections.append(section)
 
         # Not duplicate the conventional vertical (H is duplicated)
@@ -50,7 +50,7 @@ def avlGeoBuild(stateVariables, controlVariables, verticalType="conventional"):
     return aircraftAvl
 
 
-def _translateSec(secName, secData, secPoint, surfaceName=None):
+def _translateSec(secName, secData, secPoint, surfaceName=None, controlVariables=None):
     if secName == "root":
         secPoint = [secData['x'], secData['y'], secData['z']]
         sec_le_pnt = avl.Point(*secPoint)
@@ -77,7 +77,7 @@ def _translateSec(secName, secData, secPoint, surfaceName=None):
             commandInversion = 1
         controlSurfaces = avl.Control(name=secData['control'],
                                       gain=1.0,
-                                      x_hinge=0.6,
+                                      x_hinge=controlVariables[secData['control']]['cHinge'],
                                       duplicate_sign=commandInversion)
 
     section = avl.Section(leading_edge_point=sec_le_pnt,

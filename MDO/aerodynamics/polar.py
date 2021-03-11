@@ -23,6 +23,10 @@ def polar(results, aircraftInfo):
             cLs.append(v["Totals"]["CLtot"])
             cDs.append(v["Totals"]["CDtot"])
 
+        if k.startswith("TakeOffRun"):
+            aircraftInfo.cLRun = v["Totals"]["CLtot"]
+            aircraftInfo.cDRun = v["Totals"]["CDtot"]
+
     if not cLs:
         raise Exception("polar.py can't find CLs")
 

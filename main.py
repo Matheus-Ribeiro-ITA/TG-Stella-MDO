@@ -19,10 +19,10 @@ PLOT = False
 # Options: "conventional", "h".
 verticalType = "h"
 
-wingAirfoil = "ls421mod_cruise"
+wingAirfoil = "ls417mod_cruise"
 stabAirfoil = "naca0012_cruise"
 
-# Variables Optimizer
+# --Variables Optimizer---------------------------------------
 wingSpan = 6
 wingSecPercentage = 0.5
 wingRootChord = 0.6
@@ -41,8 +41,10 @@ verticalTipChord = 0.375
 wingSecPosition = wingSpan/2*wingSecPercentage
 wingPosSec = wingSpan/2*(1-wingSecPercentage)
 
-# ----------------------------------------------
-# Optimizer state Variables
+# --Config---------------------------------------
+cgCalc = 0.29
+
+# ----Optimizer state Variables-------------------------------------------
 stateVariables = {
     "wing": OrderedDict({
         "root": {
@@ -108,8 +110,7 @@ stateVariables = {
     })
 }
 
-# ----------------------------------------------
-# Control Surfaces definition
+# ----Control Surfaces definition--------------------------------------------
 controlVariables = {
     # "aileron": {
     #     "spanStartPercentage": 0.8,
@@ -117,12 +118,12 @@ controlVariables = {
     #     "gain": 1,
     #     "duplicateSign": 1
     # },
-    # "elevator": {
-    #     "spanStartPercentage": 0.2,
-    #     "cHinge": 0.5,
-    #     "gain": 1,
-    #     "duplicateSign": 1
-    # },
+    "elevator": {
+        "spanStartPercentage": 0.2,
+        "cHinge": 0.5,
+        "gain": 1,
+        "duplicateSign": 1
+    },
     # "rudder": {
     #     "spanStartPercentage": 0.4,
     #     "cHinge": 0.8,
@@ -131,34 +132,36 @@ controlVariables = {
     # },
     "flap": {
         "spanStartPercentage": 0.0,
-        "cHinge": 0.7,  # From Leading Edge
+        "cHinge": 0.8,  # From Leading Edge
         "gain": 1,
         "duplicateSign": 1
     },
 }
 
-# ----------------------------------------------
-# Avl Cases to analyse
+# ----Avl Cases to analyse--------------------------------------------
 mission = {
-    # "cruise": {
-    #     "altitude": 1000,
-    #     "vCruise": 150 / 3.6,
-    # },  # Cruise trimmed (W/L = 1), change
+    "cruise": {
+        "altitude": 1500,
+        "vCruise": 120 / 3.6,
+    },  # Cruise trimmed (W/L = 1), change
     # "dive": {
     #     "altitude": 1000,
     #     "vDive": 30,
     #     "loadFactor": 1.5
     # },  # Change to Clmax
-    # "polar": {
-    #     "cLPoints": [0.2, 0.44, 0.8]
-    # },
-    "untrimmed_polar": {
-        "cLPoints": [0.2, 0.44, 0.8]
+    "polar": {
+        "cLPoints": [0.2, 0.44, 0.8, 1.2]
+    },
+    "takeOffRun": {
+        'alpha': 2,
+        'flap': 10,
     }
+    # "untrimmed_polar": {
+    #     "cLPoints": [0.2, 0.44, 0.8]
+    # }
 }  # 6 trimagem
 
-# ----------------------------------------------
-# Engine Info
+# ----Engine Info------------------------------------------
 engineFC = {
     "fuelFrac": {
         'engineValue': 0.998,
@@ -181,25 +184,21 @@ engineInfo = {
     "propellerInches": [30, 12],
     "RPM": 7500
 }
-# ----------------------------------------------
-# Aircraft Info Class
-aircraftInfo = AircraftInfo(stateVariables, controlVariables)
 
-# ----------------------------------------------
-# Avl Geo
+# ------Aircraft Info Class----------------------------------------
+aircraftInfo = AircraftInfo(stateVariables, controlVariables)
+aircraftInfo.cgCalc = cgCalc
+
+# -----Avl Geo-----------------------------------------
 aircraftAvl = avl.avlGeoBuild(stateVariables, controlVariables, verticalType=verticalType)
 
-# ----------------------------------------------
-# Avl cases
-
+# -----Avl cases-----------------------------------------
 cases = avl.avlRunBuild(mission, aircraftInfo)
 
-# ----------------------------------------------
-# Avl Run
+# -----Avl Run-----------------------------------------
 results = avl.avlRun(aircraftAvl, cases, DEBUG=DEBUG)
 
-# ----------------------------------------------
-# Save results
+# -----Save results-----------------------------------------
 if DEBUG:
     with open("aircraft/results.json", "w", encoding="utf-8") as file:
         json.dump(results, file, indent=4)
@@ -207,33 +206,30 @@ if DEBUG:
 
 # with open("avl/results/resultExample.json", "wt") as file:
 #     file.write(json.dumps(results, indent=4))
-# ----------------------------------------------
-# Neutral Point
-# MDO.stability.getNeutralPoint(results, aircraftInfo)
-# print("------------------------------")
-# print("Neutral Point: ", aircraftInfo.xNeutralPoint)
-# print(f"EM: {round(aircraftInfo.staticMargin, 2)} %")
+
+# -----Neutral Point-----------------------------------------
+MDO.stability.getNeutralPoint(results, aircraftInfo)
+print("------------------------------")
+print("Neutral Point: ", aircraftInfo.xNeutralPoint)
+print(f"EM: {round(aircraftInfo.staticMargin, 2)} %")
 
 
-# ----------------------------------------------
-# Deflections Check
+# ---------------Deflections Check-------------------------------
 deflections = MDO.checks.Deflections(results, controlVariables)
 
 
 print("Deflections:", deflections.cruise)
 
-# ----------------------------------------------
-# Polar
+# ----------Polar------------------------------------
 [aircraftInfo.cD0, aircraftInfo.cD1, aircraftInfo.k, aircraftInfo.dataPolar] = aero.polar(results, aircraftInfo)
 print("Polar:", aircraftInfo.cD0, aircraftInfo.cD1, aircraftInfo.k)
 
 if PLOT:
     aero.plotPolar(aircraftInfo)
 
-# ----------------------------------------------
-# Stall
+# -------------Stall---------------------------------
 aero.stall(results, aircraftInfo)
-print("Wing Stall: ", aircraftInfo.alphaStallWing, " at ", round(2*aircraftInfo.stallPositionWing/aircraftInfo.wingSpan,2), "%")
+print("Wing Stall: ", round(aircraftInfo.alphaStallWing, 1), "deg at ", round(2*aircraftInfo.stallPositionWing/aircraftInfo.wingSpan*100,2), "% of wing")
 print(f"CL Max aircraft: {aircraftInfo.cLMax}")
 # print("Horizontal Stall: ", aircraftInfo.alphaStallHorizontal, " at ", aircraftInfo.stallPositionHorizontal, "m")
 
@@ -250,7 +246,6 @@ if PLOT:
 
 print(f"Thrust: {aircraftInfo.thrustV0}, {aircraftInfo.thrustV1}, {aircraftInfo.thrustV2}")
 
-aircraftInfo.cLRun = 0.41
 aircraftInfo.cD0Run = aircraftInfo.cD0
 aircraftInfo.cD1Run = aircraftInfo.cD1
 aircraftInfo.kRun = aircraftInfo.k
@@ -260,6 +255,7 @@ print("------------------------------")
 print(f"Aircraft TOW: {aircraftInfo.MTOW/9.81} kg")
 print(f"Runway Length: {runway} m")
 print(f"Take Off Speed: {speedTakeOff} m/s")
+print(f"CD Run: {aircraftInfo.cDRun}")
 # ----------------------------------------------
 # Process time
 print("------------------------------")

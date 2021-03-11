@@ -105,18 +105,23 @@ def _polarData(dataList, mission="cruise"):
 
             CLs = []
             CDs = []
-            for CL in [-0.1, 0.5, 1.1]:
+            cLmax = max(data["CLs"])
+            cDmin = min(data["CDs"])
+            alphaCDmin = data["alphas"][data["CDs"].index(cDmin)]
+            cLCDmin = data["CLs"][data["CDs"].index(cDmin)]
+
+            for CL in [-0.1, cLCDmin, 1.1]:
                 CD = _objectivePolar(CL, cD0, cD1, k)
                 CLs.append(CL)
                 CDs.append(CD)
-
-            cLmax = max(data["CLs"])
 
             exec(f"""{data['airfoil']}_{mission} = airfoilPolar.copy() """)
             exec(f"""{data['airfoil']}_{mission}['cl'] = CLs.copy() """)
             exec(f"""{data['airfoil']}_{mission}['cd'] = CDs.copy() """)
             exec(f"""{data['airfoil']}_{mission}['claf'] = a*180/3.1415/(2*3.1415) """)
             exec(f"""{data['airfoil']}_{mission}['clmax'] = cLmax """)
+            exec(f"""{data['airfoil']}_{mission}['cd_min'] = cDmin """)
+            exec(f"""{data['airfoil']}_{mission}['alpha_cd_min'] = alphaCDmin """)
 
             name = data['airfoil'] + '_' + mission
 

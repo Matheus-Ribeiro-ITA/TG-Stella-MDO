@@ -159,4 +159,11 @@ def avlRunBuild(mission, aircraftInfo):
             cases.append(avl.Case(name="PolarUntrimmed_" + str(i),
                                   alpha=clParam))
 
+    if "takeOffRun" in mission:
+        alphaParam = avl.Parameter(name='alpha', setting='alpha', value=mission['takeOffRun']['alpha'])
+        flapParam = avl.Parameter(name='flap', setting='flap', value=mission['takeOffRun']['flap'])
+        cases.append(avl.Case(name="TakeOffRun",
+                              alpha=alphaParam,
+                              flap=flapParam))
+
     return cases

@@ -843,6 +843,7 @@ class Case(Input):
         "Cl",
         "Cm",
         "Cn",
+        "flap",
     }
 
     CASE_STATES = {

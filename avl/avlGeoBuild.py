@@ -29,10 +29,17 @@ def avlGeoBuild(stateVariables, controlVariables, verticalType="conventional"):
         else:
             yDuplicate = 0
 
+        if surfaceName == "horizontal" or surfaceName == "vertical":
+            nChordWise = 9
+            nSpanWise = 15
+        else:
+            nChordWise = 12
+            nSpanWise = 20
+
         surfaces.append(avl.Surface(name=surfaceName,
-                                    n_chordwise=12,
+                                    n_chordwise=nChordWise,
                                     chord_spacing=avl.Spacing.cosine,
-                                    n_spanwise=20,
+                                    n_spanwise=nSpanWise,
                                     span_spacing=avl.Spacing.cosine,
                                     y_duplicate=yDuplicate,
                                     sections=sections))

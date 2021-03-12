@@ -132,7 +132,7 @@ controlVariables = {
     # },
     "flap": {
         "spanStartPercentage": 0.0,
-        "cHinge": 0.8,  # From Leading Edge
+        "cHinge": 0.7,  # From Leading Edge
         "gain": 1,
         "duplicateSign": 1
     },

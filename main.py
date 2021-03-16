@@ -12,12 +12,12 @@ startTime = time.time()
 # ----------------------------------------------
 # Debug bool
 DEBUG = True
-PLOT = False
+PLOT = True
 
 # ----------------------------------------------
 # Vertical Stabilizer tips
-# Options: "conventional", "h".
-verticalType = "h"
+# Options: "conventional", "h", "v".
+verticalType = "v"
 
 wingAirfoil = "ls417mod_cruise"
 stabAirfoil = "naca0012_cruise"
@@ -25,9 +25,9 @@ stabAirfoil = "naca0012_cruise"
 # --Variables Optimizer---------------------------------------
 wingSpan = 6
 wingSecPercentage = 0.5
-wingRootChord = 0.6
-wingSecChord = 0.5
-wingTipChord = 0.4
+wingRootChord = 0.68  # 0.683
+wingTipChord = 0.35  # 0.344
+wingSecChord = (wingRootChord + wingTipChord)/2
 
 horizontalSpan = 1.5
 horizontalRootChord = 0.5
@@ -42,7 +42,7 @@ wingSecPosition = wingSpan/2*wingSecPercentage
 wingPosSec = wingSpan/2*(1-wingSecPercentage)
 
 # --Config---------------------------------------
-cgCalc = 0.29
+cgCalc = 0.25
 
 # ----Optimizer state Variables-------------------------------------------
 stateVariables = {
@@ -95,14 +95,27 @@ stateVariables = {
             "chord": verticalRootChord,
             "aoa": 0,
             "x": horizontalXPosition,
-            "y": 0.75,
+            "y": 0,
             "z": 0.5,
             "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
         },
         "tip": {
             "chord": verticalTipChord,
-            "b": verticalSpan/2,
+            "b": verticalSpan,
             "sweepLE": np.arctan((verticalRootChord-verticalTipChord)/4/verticalSpan/2),
+            "aoa": 0,
+            "dihedral": 0,
+            "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
+        }
+    }),
+    "endPlate": OrderedDict({
+        "root": {
+            "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
+        },
+        "tip": {
+            "chord": 0,
+            "b": 0.4,
+            "sweepLE": 0,
             "aoa": 0,
             "dihedral": 0,
             "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
@@ -112,12 +125,12 @@ stateVariables = {
 
 # ----Control Surfaces definition--------------------------------------------
 controlVariables = {
-    # "aileron": {
-    #     "spanStartPercentage": 0.8,
-    #     "cHinge": 0.8,  # From Leading Edge
-    #     "gain": 1,
-    #     "duplicateSign": 1
-    # },
+    "aileron": {
+        "spanStartPercentage": 0.67,
+        "cHinge": 0.7,  # From Leading Edge
+        "gain": 1,
+        "duplicateSign": 1
+    },
     "elevator": {
         "spanStartPercentage": 0.2,
         "cHinge": 0.5,
@@ -153,13 +166,13 @@ mission = {
         "cLPoints": [0.2, 0.44, 0.8, 1.2]
     },
     "takeOffRun": {
-        'alpha': 2,
-        'flap': 10,
+        'alpha': 5,
+        'flap': 0,
     }
     # "untrimmed_polar": {
     #     "cLPoints": [0.2, 0.44, 0.8]
     # }
-}  # 6 trimagem
+}
 
 # ----Engine Info------------------------------------------
 engineFC = {
@@ -229,13 +242,13 @@ if PLOT:
 
 # -------------Stall---------------------------------
 aero.stall(results, aircraftInfo)
-print("Wing Stall: ", round(aircraftInfo.alphaStallWing, 1), "deg at ", round(2*aircraftInfo.stallPositionWing/aircraftInfo.wingSpan*100,2), "% of wing")
+print("Wing Stall: ", round(aircraftInfo.alphaStallWing, 1), "deg at ", round(2*aircraftInfo.stallPositionWing/aircraftInfo.wingSpan*100, 2), "% of wing")
 print(f"CL Max aircraft: {aircraftInfo.cLMax}")
 # print("Horizontal Stall: ", aircraftInfo.alphaStallHorizontal, " at ", aircraftInfo.stallPositionHorizontal, "m")
 
 if PLOT:
     aero.plotStall(aircraftInfo)
-    aero.plotliftDistribution(aircraftInfo)
+    aero.plotliftDistribution(results, aircraftInfo)
 
 # Range ----------------------------------------------
 # rangeCruise = aero.rangeCruise(engineFC, mission, aircraftInfo)
@@ -250,12 +263,22 @@ aircraftInfo.cD0Run = aircraftInfo.cD0
 aircraftInfo.cD1Run = aircraftInfo.cD1
 aircraftInfo.kRun = aircraftInfo.k
 
+aircraftInfo.cDCruise = results["trimmed"]["Totals"]["CDtot"]
+aircraftInfo.dragCruise = 1 / 2 * 1.2 * aircraftInfo.cDCruise * mission['cruise'][
+    'vCruise'] ** 2 * aircraftInfo.wingArea
+aircraftInfo.alphaRun = results["trimmed"]["Totals"]["Alpha"]
+mission['takeOffRun']["alpha"] = aircraftInfo.alphaRun
+
 [runway, speedTakeOff] = MDO.performance.takeOffRoll(aircraftInfo, dt=0.01, nsteps=15000)
 print("------------------------------")
 print(f"Aircraft TOW: {aircraftInfo.MTOW/9.81} kg")
 print(f"Runway Length: {runway} m")
 print(f"Take Off Speed: {speedTakeOff} m/s")
 print(f"CD Run: {aircraftInfo.cDRun}")
+print(f"Drag Cruise Avl: {aircraftInfo.dragCruise} N")
+
+
+aero.liftDistNewton(results, mission)
 # ----------------------------------------------
 # Process time
 print("------------------------------")

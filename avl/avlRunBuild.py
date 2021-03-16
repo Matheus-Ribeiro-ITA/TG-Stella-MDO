@@ -162,8 +162,13 @@ def avlRunBuild(mission, aircraftInfo):
     if "takeOffRun" in mission:
         alphaParam = avl.Parameter(name='alpha', setting='alpha', value=mission['takeOffRun']['alpha'])
         flapParam = avl.Parameter(name='flap', setting='flap', value=mission['takeOffRun']['flap'])
+        if "aileron" in mission['takeOffRun']:
+            aileronParam = avl.Parameter(name='aileron', setting='aileron', value=mission['takeOffRun']['aileron'])
+        else:
+            aileronParam = avl.Parameter(name='aileron', setting='aileron', value=0)
         cases.append(avl.Case(name="TakeOffRun",
                               alpha=alphaParam,
-                              flap=flapParam))
+                              flap=flapParam,
+                              aileorn=aileronParam))
 
     return cases

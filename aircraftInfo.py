@@ -103,7 +103,7 @@ class AircraftInfo:
         weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
         self.weightEmpty = weightEmpty
         self.weightFuel = 0 * 9.81
-        self.MTOW = 150*9.81 #self.weightEmpty + self.weightFuel
+        self.MTOW = 120*9.81 #self.weightEmpty + self.weightFuel
 
         self.cgEmpty = cgEmpty
         self.cgFull = 0.0  # TODO:

@@ -17,7 +17,6 @@ def avlRun(geometry, cases, DEBUG=False):
     # ---------------------------------------------------------------------------------------------------------
     # # Exporting geometry files
     session.export_run_files()
-    print("Running all cases")
     results = session.run_all_cases()
 
     #Export avl for manual testing

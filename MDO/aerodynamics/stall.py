@@ -36,6 +36,7 @@ def plotStall(aircraftInfo):
     plt.xlabel(' Wing Span (m)')
     plt.ylabel(' Angle of Stall (deg)')
     plt.ylim((10, 20))
+    plt.grid()
     plt.show()
 
     # zippedPairs = zip(aircraftInfo.yStripsHorizontal, aircraftInfo.alphaStallsHorizontal)

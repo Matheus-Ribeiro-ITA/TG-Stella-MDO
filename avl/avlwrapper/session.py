@@ -279,7 +279,7 @@ class Session(object):
         if not os.path.exists(path):
             os.mkdir(path)
         self._write_analysis_files(path)
-        print("Input files written to: {}".format(path))
+        # print("Input files written to: {}".format(path))
 
 
 class _CloseWindow(tk.Frame):

@@ -11,8 +11,8 @@ import numpy as np
 startTime = time.time()
 # ----------------------------------------------
 # Debug bool
-DEBUG = False
-PLOT = False
+DEBUG = True
+PLOT = True
 
 # ----------------------------------------------
 # Vertical Stabilizer tips
@@ -25,9 +25,9 @@ stabAirfoil = "naca0012_cruise"
 # --Variables Optimizer---------------------------------------
 wingSpan = 6
 wingSecPercentage = 0.5
-wingRootChord = 0.683
-wingSecChord = 0.5
-wingTipChord = 0.344
+wingRootChord = 0.6473684210526316  # 0.683
+wingTipChord = 0.34127423822714686  # 0.344
+wingSecChord = (wingRootChord + wingTipChord)/2
 
 horizontalSpan = 1.5
 horizontalRootChord = 0.5

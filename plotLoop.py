@@ -8,15 +8,18 @@ LEGEND = {
     "wingSpanList": "Wing Span (m)",
     "runwayList": "Runway length (m)",
     "wingRootChordList": "Wing Root Chord (m)",
+    "wingMiddleChordList": "Wing Middle Chord (m)",
+    "wingTipChordList": "Wing Tip Chord (m)",
     "wingTaperRatio": "Wing taper ratio tip/root",
     "wingDivList": "Wing division (%)",
     "aircraftMassList": 'Aircraft Weight (kg)',
     "AspectRatioList": "Aspect Ratio",
     "alphaStallList": "Stall angle (deg)",
-    "stallPositionList": "Stall position (%)"
+    "stallPositionList": "Stall position (%)",
+    "dragCruiseList": "Drag on Cruise (N)",
 }
 
-pathSave = "resultsUntrimmed"
+pathSave = "resultsWing120"
 
 
 def _plotByLists(xListStr, yListStr, bestIndex):
@@ -44,42 +47,77 @@ runwayList = []
 wingSpanList = []
 AspectRatioList = []
 wingRootChordList = []
+wingMiddleChordList = []
+wingTipChordList = []
 wingTaperRatio = []
 wingDivList = []
 aircraftMassList = []
 stallPositionList = []
 alphaStallList = []
+dragCruiseList = []
+weightEmptyList = []
 
-minRunWay = 999
+minDrag = 999
 i = 0
 for aircraftInfo in aircraftInfoList:
-    wingAreaList.append(aircraftInfo.wingArea)
-    runwayList.append(aircraftInfo.runway)
-    wingSpanList.append(aircraftInfo.wingSpan)
-    wingRootChordList.append(aircraftInfo.stateVariables["wing"]["root"]["chord"])
-    AspectRatioList.append(aircraftInfo.wingSpan**2/aircraftInfo.wingArea)
-    wingTaperRatio.append(aircraftInfo.taperRatioWing)
-    wingDivList.append(100*aircraftInfo.stateVariables["wing"]["middle"]["b"]/(aircraftInfo.stateVariables["wing"]["middle"]["b"] + aircraftInfo.stateVariables["wing"]["tip"]["b"]))
-    aircraftMassList.append(aircraftInfo.MTOW/9.81)
-    stallPositionList.append(2*aircraftInfo.stallPositionWing/aircraftInfo.wingSpan)
-    alphaStallList.append(aircraftInfo.alphaStallWing)
+    if aircraftInfo.runway < 100 \
+            and aircraftInfo.dragCruise < 72 \
+            and 2 * aircraftInfo.stallPositionWing / aircraftInfo.wingSpan < 0.5 \
+            and 100 * aircraftInfo.stateVariables["wing"]["middle"]["b"] / (
+            aircraftInfo.stateVariables["wing"]["middle"]["b"] + aircraftInfo.stateVariables["wing"]["tip"]["b"]) < 61:
 
-    if aircraftInfo.runway < minRunWay and aircraftInfo.wingArea < 5:
-        minRunWay = aircraftInfo.runway
-        bestAircraft = aircraftInfo
-        bestIndex = i
+        wingAreaList.append(aircraftInfo.wingArea)
+        runwayList.append(aircraftInfo.runway)
+        wingSpanList.append(aircraftInfo.wingSpan)
+        wingRootChordList.append(aircraftInfo.stateVariables["wing"]["root"]["chord"])
+        wingMiddleChordList.append(aircraftInfo.stateVariables["wing"]["middle"]["chord"])
+        wingTipChordList.append(aircraftInfo.stateVariables["wing"]["tip"]["chord"])
+        AspectRatioList.append(aircraftInfo.wingSpan ** 2 / aircraftInfo.wingArea)
+        wingTaperRatio.append(aircraftInfo.taperRatioWing)
+        wingDivList.append(100 * aircraftInfo.stateVariables["wing"]["middle"]["b"] / (
+                    aircraftInfo.stateVariables["wing"]["middle"]["b"] + aircraftInfo.stateVariables["wing"]["tip"][
+                "b"]))
+        aircraftMassList.append(aircraftInfo.MTOW / 9.81)
+        stallPositionList.append(2 * aircraftInfo.stallPositionWing / aircraftInfo.wingSpan)
+        alphaStallList.append(aircraftInfo.alphaStallWing)
+        dragCruiseList.append(aircraftInfo.dragCruise)
+        weightEmptyList.append(aircraftInfo.weightEmpty)
 
-    xStateBest = [aircraftInfo.wingSpan, wingDivList[bestIndex]/100, wingRootChordList[bestIndex]]
-    i += 1
+        if aircraftInfo.dragCruise < minDrag:
+            minDrag = aircraftInfo.dragCruise
+            bestAircraft = aircraftInfo
+            bestIndex = i
+            xStateBest = [aircraftInfo.wingSpan, wingDivList[bestIndex] / 100, wingRootChordList[bestIndex]]
 
-_plotByLists("wingSpanList", "runwayList", bestIndex)
+        i += 1
+
+# _plotByLists("wingSpanList", "runwayList", bestIndex)
+_plotByLists("wingAreaList", "dragCruiseList", bestIndex)
 _plotByLists("wingAreaList", "runwayList", bestIndex)
-_plotByLists("AspectRatioList", "runwayList", bestIndex)
-_plotByLists("wingRootChordList", "runwayList", bestIndex)
-_plotByLists("wingTaperRatio", "runwayList", bestIndex)
-_plotByLists("wingDivList", "runwayList", bestIndex)
-_plotByLists("aircraftMassList", "runwayList", bestIndex)
+# _plotByLists("AspectRatioList", "runwayList", bestIndex)
+_plotByLists("wingRootChordList", "dragCruiseList", bestIndex)
+_plotByLists("wingMiddleChordList", "dragCruiseList", bestIndex)
+_plotByLists("wingTipChordList", "dragCruiseList", bestIndex)
+# _plotByLists("wingTaperRatio", "runwayList", bestIndex)
+_plotByLists("wingDivList", "dragCruiseList", bestIndex)
+# _plotByLists("aircraftMassList", "runwayList", bestIndex)
 
-_plotByLists("wingAreaList", "aircraftMassList", bestIndex)
-_plotByLists("wingTaperRatio", "stallPositionList", bestIndex)
-_plotByLists("wingTaperRatio", "alphaStallList", bestIndex)
+# _plotByLists("wingAreaList", "aircraftMassList", bestIndex)
+# _plotByLists("wingTaperRatio", "stallPositionList", bestIndex)
+# _plotByLists("wingTaperRatio", "alphaStallList", bestIndex)
+
+
+devWing = 100 * bestAircraft.stateVariables["wing"]["middle"]["b"] / (
+            bestAircraft.stateVariables["wing"]["middle"]["b"] + bestAircraft.stateVariables["wing"]["tip"]["b"])
+print('--------------------')
+print("Drag AVL: ", bestAircraft.dragCruise)
+print("Alpha Cruise: ", bestAircraft.alphaRun)
+print("Wing Area: ", bestAircraft.wingArea)
+print("Wing Span: ", bestAircraft.wingSpan)
+print("EM: ", bestAircraft.staticMargin)
+print("Stall Wing: ", bestAircraft.alphaStallWing)
+print("Stall position: ", 2 * bestAircraft.stallPositionWing / bestAircraft.wingSpan)
+print("devWing", devWing)
+print("c root", bestAircraft.stateVariables["wing"]["root"]["chord"])
+print("c middle", bestAircraft.stateVariables["wing"]["middle"]["chord"])
+print("c tip", bestAircraft.stateVariables["wing"]["tip"]["chord"])

@@ -1,1 +1,1 @@
-from MDO.weight import weightCalc
+from MDO.weight.weightCalc import weightCalc

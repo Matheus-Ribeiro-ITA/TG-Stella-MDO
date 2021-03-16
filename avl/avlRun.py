@@ -1,7 +1,7 @@
 import avl.avlwrapper as avl
+import os
 
-
-def avlRun(geometry, cases, DEBUG=False):
+def avlRun(geometry=None, cases=None):
     """
     # Description:
         Call the Avl Wrapper and run it with the aircraft object and cases list.
@@ -19,7 +19,7 @@ def avlRun(geometry, cases, DEBUG=False):
     session.export_run_files()
     results = session.run_all_cases()
 
-    #Export avl for manual testing
-    if DEBUG:
+    # Export avl for manual testing
+    if 'y' in os.getenv('DEBUG'):
         session.export_run_files()
     return results

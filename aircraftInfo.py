@@ -2,7 +2,7 @@ import MDO
 import numpy as np
 
 class AircraftInfo:
-    def __init__(self, stateVariables, controlVariables):
+    def __init__(self, stateVariables, controlVariables, engineInfo=None):
         """
         # Description:
         - Aircraft Info that can be useful on AVL and other calculations.
@@ -17,6 +17,10 @@ class AircraftInfo:
         - wingSpan [float]: Wing span.
         """
         self.stateVariables = stateVariables.copy()
+        self.controlVariables = controlVariables
+        self.engineInfo = engineInfo
+
+
         self.machCalc = 0.1  # TODO:
         self.reynoldsCalc = 1*10**6  # TODO:
 
@@ -83,11 +87,12 @@ class AircraftInfo:
         self.cD1 = None
         self.k = None
 
-        self.cD0Run = None
-        self.cD1Run = None
-        self.kRun = None
+        # self.cD0Run = None
+        # self.cD1Run = None
+        # self.kRun = None
 
         self.cLRun = None
+        self.cDRunAvl = None
         self.cDRun = None
 
         # Flight Info
@@ -99,7 +104,7 @@ class AircraftInfo:
         self.engineWeight = 63*9.81  # Atobá Data
         self.xEngine = -2.5  # TODO
 
-        self.initalMTOW = 200 * 9.81
+        self.initialMTOW = 200 * 9.81
         weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
         self.weightEmpty = weightEmpty
         self.weightFuel = 0 * 9.81

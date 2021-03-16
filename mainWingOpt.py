@@ -217,7 +217,7 @@ def objectiveFunction(Xstates):
 
     # ----------------------------------------------
     # Avl Run
-    results = avl.avlRun(aircraftAvl, cases, DEBUG=DEBUG)
+    results = avl.avlRun(aircraftAvl, cases)
 
     # ----------------------------------------------
     # Polar

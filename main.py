@@ -25,8 +25,8 @@ stabAirfoil = "naca0012_cruise"
 # --Variables Optimizer---------------------------------------
 wingSpan = 6
 wingSecPercentage = 0.5
-wingRootChord = 0.6473684210526316  # 0.683
-wingTipChord = 0.34127423822714686  # 0.344
+wingRootChord = 0.68  # 0.683
+wingTipChord = 0.35  # 0.344
 wingSecChord = (wingRootChord + wingTipChord)/2
 
 horizontalSpan = 1.5
@@ -125,12 +125,12 @@ stateVariables = {
 
 # ----Control Surfaces definition--------------------------------------------
 controlVariables = {
-    # "aileron": {
-    #     "spanStartPercentage": 0.8,
-    #     "cHinge": 0.8,  # From Leading Edge
-    #     "gain": 1,
-    #     "duplicateSign": 1
-    # },
+    "aileron": {
+        "spanStartPercentage": 0.67,
+        "cHinge": 0.7,  # From Leading Edge
+        "gain": 1,
+        "duplicateSign": 1
+    },
     "elevator": {
         "spanStartPercentage": 0.2,
         "cHinge": 0.5,
@@ -166,8 +166,8 @@ mission = {
         "cLPoints": [0.2, 0.44, 0.8, 1.2]
     },
     "takeOffRun": {
-        'alpha': 2,
-        'flap': 10,
+        'alpha': 5,
+        'flap': 0,
     }
     # "untrimmed_polar": {
     #     "cLPoints": [0.2, 0.44, 0.8]

@@ -5,6 +5,7 @@
 # TODO: What is a better flap calculation method, if avl is really wrong?
 # TODO: NN idea to substitute AVL
 # TODO: Hinge moment of AVL is acurate?
+# TODO: Check eliptical lift curve comparation. Its Cl or Cl.c
 
 ## Geometry
 # TODO: Change vertical format to V

@@ -1,7 +1,6 @@
 ------------------TODO List---------------------------------
 
 ## Geometry
-# TODO: Change vertical format to V
 # TODO: ADD maxsweep constraint to AVLGeoBuild, so wing dont invert
 # TODO: Check if Component number is needed in AVL
 
@@ -30,3 +29,4 @@
 # DONE: Add flap
 # DONE: Change Airfoil File Path
 # DONE: Add xfoil analyses
+# DONE: Change vertical format to V

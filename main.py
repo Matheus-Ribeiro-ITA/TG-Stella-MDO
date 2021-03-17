@@ -18,6 +18,7 @@ config.read(os.path.join("outputsConfig.cfg"))
 os.environ['DEBUG'] = config['env']['DEBUG']
 os.environ['PLOT'] = config['env']['PLOT']
 os.environ['PRINT'] = config['env']['PRINT']
+os.environ['WEIGHT'] = config['methods']['WEIGHT']
 
 
 # ----Vertical Stabilizer-------------------------------------

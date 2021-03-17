@@ -1,5 +1,7 @@
 import MDO
 import numpy as np
+from math import tan
+import os
 
 class AircraftInfo:
     def __init__(self, stateVariables, controlVariables, engineInfo=None):
@@ -25,8 +27,8 @@ class AircraftInfo:
         self.reynoldsCalc = 1*10**6  # TODO:
 
         # Wing Info
+        self.xWingMeanChord, self.yWingMeanChord = xyMeanChord(stateVariables['wing'])
         self.wingArea, self.meanChord, self.wingSpan, self.wingSweep = MDO.infoSurface(stateVariables['wing'])
-        self.xWingMeanChord = self.wingSpan * 0.05  # TODO
         self.taperRatioWing = stateVariables['wing']['tip']['chord']/stateVariables['wing']['root']['chord']
         self.aspectRatio = self.wingSpan**2/self.wingArea
         if "aileron" in controlVariables:
@@ -36,14 +38,15 @@ class AircraftInfo:
             self.aileronArea = self.wingArea*0.4*0.2
 
         # Horizontal Info
-        self.horizontalArea, self.horizontalMeanChord, self.horizontalSpan, self.horizontalSweep = \
-            MDO.infoSurface(stateVariables['horizontal'])
-        self.xHorizontalMeanChord = self.horizontalSpan * 0.05  # TODO
+        if 'horizontal' in stateVariables:
+            self.horizontalArea, self.horizontalMeanChord, self.horizontalSpan, self.horizontalSweep = \
+                MDO.infoSurface(stateVariables['horizontal'])
+            self.xHorizontalMeanChord, yHorizontalMeanChord = xyMeanChord(stateVariables['horizontal'])
 
         # Vertical Info
         self.verticalArea, self.verticalMeanChord, self.verticalSpan, self.verticalSweep = \
             MDO.infoSurface(stateVariables['vertical'])
-        self.xVerticalMeanChord = self.verticalSpan * 0.05  # TODO
+        self.xVerticalMeanChord, yVerticalMeanChord = xyMeanChord(stateVariables['vertical'])
 
         # Fuselage Info
         lengthFuselage = 1.2
@@ -108,7 +111,12 @@ class AircraftInfo:
         weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
         self.weightEmpty = weightEmpty
         self.weightFuel = 0 * 9.81
-        self.MTOW = 120*9.81 #self.weightEmpty + self.weightFuel
+
+        weightVar = os.getenv("WEIGHT")
+        if weightVar == 'Raymer':
+            self.MTOW = self.weightEmpty + self.weightFuel
+        else:
+            self.MTOW = float(weightVar)*9.81
 
         self.cgEmpty = cgEmpty
         self.cgFull = 0.0  # TODO:
@@ -135,4 +143,43 @@ class AircraftInfo:
         self.thrustV2 = None
 
 
+def xyMeanChord(surfDict):
+    """
+    # Description:
+        Calculates x distance from root LE of the mean aerodynamic chord.
+    See Gundlach, Jay-Designing Unmanned Aircraft Systems -
+    A Comprehensive Approach-American Institute of Aeronautics and Astronautics (2012) for equations.
 
+    ## Params:
+        -
+    """
+    keysSurfaceDict = list(surfDict.keys())
+    spanSum = 0
+    dArea = 0
+    areaTotal = 0
+    for i in range(len(keysSurfaceDict) - 1):
+        cRoot = surfDict[keysSurfaceDict[i]]['chord']
+        cTip = surfDict[keysSurfaceDict[i+1]]['chord']
+        span = surfDict[keysSurfaceDict[i+1]]['b']
+
+        d = span/3*(cRoot + 2*cTip)/(cRoot + cTip) + spanSum
+        area = (cTip+cRoot)/2*span
+
+        dArea += d*area
+        spanSum += span
+        areaTotal += area
+
+    yMeanChord = dArea/areaTotal
+    spanSum = 0
+    xSec = 0
+    for i in range(len(keysSurfaceDict) - 1):
+        span = surfDict[keysSurfaceDict[i+1]]['b']
+        sweepLE = surfDict[keysSurfaceDict[i+1]]['sweepLE']
+
+        if spanSum < yMeanChord < spanSum + span:
+            ySec = yMeanChord-spanSum
+            xMeanChord = xSec + ySec*tan(sweepLE)
+            break
+        xSec += span*tan(sweepLE)
+
+    return [xMeanChord, yMeanChord]

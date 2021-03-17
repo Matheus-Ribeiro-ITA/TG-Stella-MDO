@@ -37,3 +37,4 @@
 # DONE: Change Airfoil File Path
 # DONE: Add xfoil analyses
 # DONE: Change vertical format to V
+# DONE: Refactor

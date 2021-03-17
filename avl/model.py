@@ -6,7 +6,7 @@ import re
 from typing import Iterable, List, Optional, Union
 import warnings
 
-from avl.avlwrapper import VERSION
+from avl import VERSION
 
 
 class InputError(ValueError):

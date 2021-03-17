@@ -1,8 +1,6 @@
-import time
 from _collections import OrderedDict
 from scipy.optimize import Bounds, minimize
 
-import json
 import avl
 from aircraftInfo import AircraftInfo
 import MDO

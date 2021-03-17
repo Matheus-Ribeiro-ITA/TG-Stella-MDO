@@ -25,7 +25,7 @@ class AircraftInfo:
         self.reynoldsCalc = 1*10**6  # TODO:
 
         # Wing Info
-        self.wingArea, self.meanChord, self.wingSpan, self.wingSweep = infoSurface(stateVariables['wing'])
+        self.wingArea, self.meanChord, self.wingSpan, self.wingSweep = MDO.infoSurface(stateVariables['wing'])
         self.xWingMeanChord = self.wingSpan * 0.05  # TODO
         self.taperRatioWing = stateVariables['wing']['tip']['chord']/stateVariables['wing']['root']['chord']
         self.aspectRatio = self.wingSpan**2/self.wingArea
@@ -37,12 +37,12 @@ class AircraftInfo:
 
         # Horizontal Info
         self.horizontalArea, self.horizontalMeanChord, self.horizontalSpan, self.horizontalSweep = \
-            infoSurface(stateVariables['horizontal'])
+            MDO.infoSurface(stateVariables['horizontal'])
         self.xHorizontalMeanChord = self.horizontalSpan * 0.05  # TODO
 
         # Vertical Info
         self.verticalArea, self.verticalMeanChord, self.verticalSpan, self.verticalSweep = \
-            infoSurface(stateVariables['vertical'])
+            MDO.infoSurface(stateVariables['vertical'])
         self.xVerticalMeanChord = self.verticalSpan * 0.05  # TODO
 
         # Fuselage Info
@@ -135,48 +135,4 @@ class AircraftInfo:
         self.thrustV2 = None
 
 
-def infoSurface(surfaceDict):
-    """
-    # Description:
-        Get surface (wing, horizontal or vertical) area, mean aero chord and span.
 
-    ## Inputs:
-    - surfaceDict [dict]: valeus from surfaces in stateVariables inner dict. Ex: stateVariables['wing'].
-
-    ## Outputs:
-    - surfaceArea [float]:
-    - surfaceMAC [float]:
-    - surfaceSpan [float]:
-    """
-    keysSurfaceDict = list(surfaceDict.keys())
-    surfaceArea = 0
-    surfaceMAC = 0
-    surfaceSpan = 0
-    surfaceTipX = 0
-
-    for i in range(len(keysSurfaceDict) - 1):
-        chordRootSec = surfaceDict[keysSurfaceDict[i]]['chord']
-        chordTipSec = surfaceDict[keysSurfaceDict[i + 1]]['chord']
-        spanSec = surfaceDict[keysSurfaceDict[i + 1]]['b']
-
-        # Surface Sweep
-        surfaceTipX += surfaceDict[keysSurfaceDict[i + 1]]['sweepLE']*surfaceDict[keysSurfaceDict[i + 1]]['b']
-
-        # Surface Area
-        secArea = spanSec * (chordRootSec + chordTipSec) / 2
-        surfaceArea += secArea
-
-        # Surface MAC
-        taperRatio = chordTipSec / chordRootSec
-        secMAC = 2 / 3 * chordRootSec * (1 + taperRatio + taperRatio ** 2) / (1 + taperRatio)
-        surfaceMAC += secArea * secMAC
-
-        surfaceSpan += spanSec
-
-    # Sweep at 1/4 wing
-    surfaceSweep = (surfaceTipX + (surfaceDict['tip']['chord']-surfaceDict['root']['chord'])*1/4)/surfaceSpan
-
-    # Mean MAC from Sections
-    surfaceMAC = surfaceMAC / surfaceArea
-
-    return 2*surfaceArea, surfaceMAC, 2*surfaceSpan, surfaceSweep

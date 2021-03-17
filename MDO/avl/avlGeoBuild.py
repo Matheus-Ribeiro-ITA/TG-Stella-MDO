@@ -1,13 +1,9 @@
-import json
-from math import radians, sqrt, tan
-import avl.avlwrapper as avl
-from _collections import OrderedDict
-from aircraftInfo import infoSurface
+from math import tan
+import avl
 from numpy import pi
-import copy
 
 
-def avlGeoBuild(stateVariables, controlVariables, verticalType="conventional", horizontalType="conventional"):
+def avlGeoBuild(stateVariables, controlVariables, verticalType="conventional"):
     stateVariables = _addControl2States(stateVariables, controlVariables, verticalType)
 
     surfaces = []
@@ -61,7 +57,7 @@ def avlGeoBuild(stateVariables, controlVariables, verticalType="conventional", h
 
     # Special case for V tail
     if verticalType.lower() == "v":
-        surface = _surfaceVerticalV(stateVariables["horizontal"], stateVariables["vertical"])
+        surface = _surfaceVerticalV(stateVariables["vertical"])
         surfaces.append(surface)
 
     if "endPlate" in stateVariables:
@@ -178,7 +174,7 @@ def _sectionsVerticalH(surfaceDict):
     return sections
 
 
-def _surfaceVerticalV(surfaceHorizontal, surfaceVertical):
+def _surfaceVerticalV(surfaceVertical):
     """
     # Description:
         Create avl surface Vertical estabilizer in H.
@@ -237,6 +233,7 @@ def _surfaceVerticalV(surfaceHorizontal, surfaceVertical):
                        y_duplicate=yDuplicate,
                        sections=sections)
 
+
 def _surfaceEndPlate(surfaceWing, surfaceEndPlate):
     """
     # Description:
@@ -288,6 +285,7 @@ def _surfaceEndPlate(surfaceWing, surfaceEndPlate):
                        span_spacing=avl.Spacing.cosine,
                        y_duplicate=yDuplicate,
                        sections=sections)
+
 
 def _addControl2States(stateVariables, controlVariables, verticalType="conventional"):
     """
@@ -476,3 +474,50 @@ def _linearizationSecValues(stateVariables, secName01, secName02, xValue, yName,
               stateVariables[surface][secName02]["b"]
     yValue = ratioYX * xValue + stateVariables[surface][secName01][yName]
     return yValue
+
+
+def infoSurface(surfaceDict):
+    """
+    # Description:
+        Get surface (wing, horizontal or vertical) area, mean aero chord and span.
+
+    ## Inputs:
+    - surfaceDict [dict]: valeus from surfaces in stateVariables inner dict. Ex: stateVariables['wing'].
+
+    ## Outputs:
+    - surfaceArea [float]:
+    - surfaceMAC [float]:
+    - surfaceSpan [float]:
+    """
+    keysSurfaceDict = list(surfaceDict.keys())
+    surfaceArea = 0
+    surfaceMAC = 0
+    surfaceSpan = 0
+    surfaceTipX = 0
+
+    for i in range(len(keysSurfaceDict) - 1):
+        chordRootSec = surfaceDict[keysSurfaceDict[i]]['chord']
+        chordTipSec = surfaceDict[keysSurfaceDict[i + 1]]['chord']
+        spanSec = surfaceDict[keysSurfaceDict[i + 1]]['b']
+
+        # Surface Sweep
+        surfaceTipX += surfaceDict[keysSurfaceDict[i + 1]]['sweepLE']*surfaceDict[keysSurfaceDict[i + 1]]['b']
+
+        # Surface Area
+        secArea = spanSec * (chordRootSec + chordTipSec) / 2
+        surfaceArea += secArea
+
+        # Surface MAC
+        taperRatio = chordTipSec / chordRootSec
+        secMAC = 2 / 3 * chordRootSec * (1 + taperRatio + taperRatio ** 2) / (1 + taperRatio)
+        surfaceMAC += secArea * secMAC
+
+        surfaceSpan += spanSec
+
+    # Sweep at 1/4 wing
+    surfaceSweep = (surfaceTipX + (surfaceDict['tip']['chord']-surfaceDict['root']['chord'])*1/4)/surfaceSpan
+
+    # Mean MAC from Sections
+    surfaceMAC = surfaceMAC / surfaceArea
+
+    return 2*surfaceArea, surfaceMAC, 2*surfaceSpan, surfaceSweep

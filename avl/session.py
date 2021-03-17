@@ -8,7 +8,7 @@ from tempfile import TemporaryDirectory
 
 import tkinter as tk
 
-from avl.avlwrapper import Case, OutputReader, default_config
+from avl import OutputReader, default_config
 
 
 class Session(object):

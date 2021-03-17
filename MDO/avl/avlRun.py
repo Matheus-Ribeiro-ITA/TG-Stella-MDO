@@ -1,5 +1,6 @@
-import avl.avlwrapper as avl
+import avl as avl
 import os
+
 
 def avlRun(geometry=None, cases=None):
     """

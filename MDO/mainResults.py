@@ -68,11 +68,11 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
         [runway, speedTakeOff] = MDO.performance.takeOffRoll(aircraftInfo, dt=0.01, nsteps=15000)
         if PRINT:
             print(f"Aircraft TOW: {aircraftInfo.MTOW / 9.81} kg")
-            print(f"Runway Length: {runway} m")
+            print(f"Runway Length: {round(runway,3)} m")
             print(f"Take Off Speed: {speedTakeOff} m/s")
             print(f"CD Run AVL: {aircraftInfo.cDRunAvl}")
             print(f"CD Run Total: {aircraftInfo.cDRun}")
-            print(f"Alpha Run: {aircraftInfo.cDRun}")
+            print(f"Alpha Run: {round(aircraftInfo.alphaRun,4)} º")
 
     # ---- Cruise ---------------------------------
     if 'y' in config['output']['CRUISE'].lower():
@@ -80,8 +80,8 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
         aircraftInfo.dragCruiseAvl = 1 / 2 * 1.2 * aircraftInfo.cDCruiseAvl * mission['cruise'][
             'vCruise'] ** 2 * aircraftInfo.wingArea
         if PRINT:
-            print(f"Cd Cruise AVL: {aircraftInfo.cDCruiseAvl}")
-            print(f"Drag Cruise AVL: {aircraftInfo.dragCruiseAvl} N")
+            print(f"Cd Cruise AVL: {round(aircraftInfo.cDCruiseAvl,5)}")
+            print(f"Drag Cruise AVL: {round(aircraftInfo.dragCruiseAvl,3)} N")
 
     # ---- Lift Distribution ---------------------------------
     if 'y' in config['output']['LIFT_DIST'].lower():

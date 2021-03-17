@@ -2,7 +2,6 @@ from _collections import OrderedDict
 
 import os
 import pickle
-import json
 import avl
 from aircraftInfo import AircraftInfo
 import MDO

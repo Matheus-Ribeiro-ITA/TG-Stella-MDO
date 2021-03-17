@@ -4,7 +4,6 @@ from configparser import ConfigParser
 import numpy as np
 import os
 
-import avl
 from aircraftInfo import AircraftInfo
 import MDO
 
@@ -211,7 +210,7 @@ aircraftInfo = AircraftInfo(stateVariables, controlVariables, engineInfo=engineI
 aircraftInfo.cgCalc = cgCalc
 
 # ---- Avl -----------------------------------------
-results = avl.avlMain(aircraftInfo, mission, verticalType=verticalType)
+results = MDO.avlMain(aircraftInfo, mission, verticalType=verticalType)
 
 # ---- Results -----------------------------------------
 MDO.mainResults(results=results, aircraftInfo=aircraftInfo, mission=mission)

@@ -3,23 +3,11 @@ import pickle
 import json
 import matplotlib.pyplot as plt
 
-LEGEND = {
-    "wingAreaList": "Wing Area (m^2)",
-    "wingSpanList": "Wing Span (m)",
-    "runwayList": "Runway length (m)",
-    "wingRootChordList": "Wing Root Chord (m)",
-    "wingMiddleChordList": "Wing Middle Chord (m)",
-    "wingTipChordList": "Wing Tip Chord (m)",
-    "wingTaperRatio": "Wing taper ratio tip/root",
-    "wingDivList": "Wing division (%)",
-    "aircraftMassList": 'Aircraft Weight (kg)',
-    "AspectRatioList": "Aspect Ratio",
-    "alphaStallList": "Stall angle (deg)",
-    "stallPositionList": "Stall position (%)",
-    "dragCruiseList": "Drag on Cruise (N)",
-}
+# ---- Load Legend -----------------------------
+with open("results\\legend.json") as file:
+    LEGEND = json.load(file)
 
-pathSave = "resultsWing120"
+pathSave = "results\\resultsWing120"
 
 
 def _plotByLists(xListStr, yListStr, bestIndex):

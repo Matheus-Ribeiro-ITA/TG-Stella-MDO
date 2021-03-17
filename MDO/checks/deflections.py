@@ -23,9 +23,7 @@ class Deflections:
             for key in controlVariables.keys():
                 self._compare(k, v, key)
 
-
     def _compare(self, k, v, controlSurface):
-        # self.ailerons.append({k: v["Totals"][surface]})
         if abs(v["Totals"][controlSurface]) > abs(self.max[controlSurface]):
             self.max[controlSurface] = v["Totals"][controlSurface]
             self.maxCase[controlSurface] = k

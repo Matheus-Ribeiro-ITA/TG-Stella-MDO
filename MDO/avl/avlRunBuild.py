@@ -1,7 +1,4 @@
-import json
-from math import radians, sqrt, tan
-import avl.avlwrapper as avl
-import time
+import avl as avlW
 import numpy as np
 
 
@@ -107,25 +104,25 @@ def avlRunBuild(mission, aircraftInfo):
         T, p, rho, mi = _atmosphere(mission["cruise"]["altitude"])
         vCruise = mission["cruise"]["vCruise"]
         aircraftInfo.cLCruise = 2 * weight / (rho * vCruise ** 2 * wingArea)
-        clParam = avl.Parameter(name='alpha', setting='CL', value=aircraftInfo.cLCruise)
-        trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
-        cases.append(avl.Case(name='trimmed',
-                              alpha=clParam,
-                              elevator=trimParam,
-                              X_cg=aircraftInfo.cgCalc))
+        clParam = avlW.Parameter(name='alpha', setting='CL', value=aircraftInfo.cLCruise)
+        trimParam = avlW.Parameter(name='elevator', setting='Cm', value=0.0)
+        cases.append(avlW.Case(name='trimmed',
+                               alpha=clParam,
+                               elevator=trimParam,
+                               X_cg=aircraftInfo.cgCalc))
 
     if "roll" in mission:
         # AVL good in: -0.10 < pb/2V < 0.10
         T, p, rho, mi = _atmosphere(mission["roll"]["altitude"])
         vCruise = mission["roll"]["vCruise"]
         cl = 2 * weight / (rho * vCruise ** 2 * wingArea)
-        clParam = avl.Parameter(name='alpha', setting='CL', value=cl)
-        rParam = avl.Parameter(name='roll_rate', setting='pb/2V', value=mission["roll"]["rollRate"])
-        trimParam = avl.Parameter(name='aileron', setting='Cl', value=0.0)
-        cases.append(avl.Case(name='rollRate',
-                              alpha=clParam,
-                              roll_rate=rParam,
-                              elevator=trimParam))
+        clParam = avlW.Parameter(name='alpha', setting='CL', value=cl)
+        rParam = avlW.Parameter(name='roll_rate', setting='pb/2V', value=mission["roll"]["rollRate"])
+        trimParam = avlW.Parameter(name='aileron', setting='Cl', value=0.0)
+        cases.append(avlW.Case(name='rollRate',
+                               alpha=clParam,
+                               roll_rate=rParam,
+                               elevator=trimParam))
 
     if "dive" in mission:
         #AVL good in: -0.03 < qc/2V < 0.03
@@ -136,39 +133,39 @@ def avlRunBuild(mission, aircraftInfo):
         q = g*loadFactor/vDive
         qc2v = q*meanChord/(2*vDive)
 
-        clParam = avl.Parameter(name='alpha', setting='CL', value=cLDive)
-        qParam = avl.Parameter(name='pitch_rate', setting='qc/2V', value=qc2v)
-        trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
-        cases.append(avl.Case(name='dive',
-                              alpha=clParam,
-                              roll_rate=qParam,
-                              elevator=trimParam))
+        clParam = avlW.Parameter(name='alpha', setting='CL', value=cLDive)
+        qParam = avlW.Parameter(name='pitch_rate', setting='qc/2V', value=qc2v)
+        trimParam = avlW.Parameter(name='elevator', setting='Cm', value=0.0)
+        cases.append(avlW.Case(name='dive',
+                               alpha=clParam,
+                               roll_rate=qParam,
+                               elevator=trimParam))
 
     if "polar" in mission:
         for i, cL in enumerate(mission["polar"]["cLPoints"]):
-            clParam = avl.Parameter(name='alpha', setting='CL', value=cL)
-            trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
-            cases.append(avl.Case(name="PolarTrimmed_" + str(i),
-                                  alpha=clParam,
-                                  elevator=trimParam))
+            clParam = avlW.Parameter(name='alpha', setting='CL', value=cL)
+            trimParam = avlW.Parameter(name='elevator', setting='Cm', value=0.0)
+            cases.append(avlW.Case(name="PolarTrimmed_" + str(i),
+                                   alpha=clParam,
+                                   elevator=trimParam))
 
     if "untrimmed_polar" in mission:
         for i, cL in enumerate(mission["untrimmed_polar"]["cLPoints"]):
-            clParam = avl.Parameter(name='alpha', setting='CL', value=cL)
+            clParam = avlW.Parameter(name='alpha', setting='CL', value=cL)
             # trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
-            cases.append(avl.Case(name="PolarUntrimmed_" + str(i),
-                                  alpha=clParam))
+            cases.append(avlW.Case(name="PolarUntrimmed_" + str(i),
+                                   alpha=clParam))
 
     if "takeOffRun" in mission:
-        alphaParam = avl.Parameter(name='alpha', setting='alpha', value=mission['takeOffRun']['alpha'])
-        flapParam = avl.Parameter(name='flap', setting='flap', value=mission['takeOffRun']['flap'])
+        alphaParam = avlW.Parameter(name='alpha', setting='alpha', value=mission['takeOffRun']['alpha'])
+        flapParam = avlW.Parameter(name='flap', setting='flap', value=mission['takeOffRun']['flap'])
         if "aileron" in mission['takeOffRun']:
-            aileronParam = avl.Parameter(name='aileron', setting='aileron', value=mission['takeOffRun']['aileron'])
+            aileronParam = avlW.Parameter(name='aileron', setting='aileron', value=mission['takeOffRun']['aileron'])
         else:
-            aileronParam = avl.Parameter(name='aileron', setting='aileron', value=0)
-        cases.append(avl.Case(name="TakeOffRun",
-                              alpha=alphaParam,
-                              flap=flapParam,
-                              aileorn=aileronParam))
+            aileronParam = avlW.Parameter(name='aileron', setting='aileron', value=0)
+        cases.append(avlW.Case(name="TakeOffRun",
+                               alpha=alphaParam,
+                               flap=flapParam,
+                               aileorn=aileronParam))
 
     return cases

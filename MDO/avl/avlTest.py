@@ -1,6 +1,6 @@
 import json
-from math import radians, sqrt, tan
-import avl.avlwrapper as avl
+from math import radians, tan
+import avl as avl
 import time
 
 wing_span = 12

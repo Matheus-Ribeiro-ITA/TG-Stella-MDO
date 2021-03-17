@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+import os
 
 def plotliftDistribution(results, aircraftInfo):
 
@@ -119,10 +120,10 @@ def liftDistNewton(results, mission):
         "clStrips": clStrips,
         "forceStrips": forceStrips
     }
-    print(sum(forceStrips)/9.81)
-    with open("aircraft/liftDistribution.json", "w", encoding="utf-8") as file:
-        json.dump(aJson, file, indent=4)
-        file.close()
+    if 'y' in os.getenv("DEBUG"):
+        with open("aircraft/liftDistribution.json", "w", encoding="utf-8") as file:
+            json.dump(aJson, file, indent=4)
+            file.close()
     # zippedPairs = zip(aircraftInfo.yStripsHorizontal, aircraftInfo.clStripsHorizontal[-1])
     # clStripHorizontal = [x for _, x in sorted(zippedPairs)]
     # yStripsHorizontal = sorted(aircraftInfo.yStripsHorizontal)

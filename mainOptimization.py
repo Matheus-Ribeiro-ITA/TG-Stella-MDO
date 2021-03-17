@@ -1,8 +1,6 @@
-import time
 from _collections import OrderedDict
 from scipy.optimize import Bounds, minimize
 
-import json
 import avl
 from aircraftInfo import AircraftInfo
 import MDO
@@ -197,7 +195,7 @@ def objectiveFunction(Xstates):
 
     # ----------------------------------------------
     # Avl Run
-    results = avl.avlRun(aircraftAvl, cases, DEBUG=DEBUG)
+    results = avl.avlRun(aircraftAvl, cases)
 
     # ----------------------------------------------
     # Polar

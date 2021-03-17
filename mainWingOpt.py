@@ -2,7 +2,6 @@ from _collections import OrderedDict
 
 import os
 import pickle
-import json
 import avl
 from aircraftInfo import AircraftInfo
 import MDO
@@ -217,7 +216,7 @@ def objectiveFunction(Xstates):
 
     # ----------------------------------------------
     # Avl Run
-    results = avl.avlRun(aircraftAvl, cases, DEBUG=DEBUG)
+    results = avl.avlRun(aircraftAvl, cases)
 
     # ----------------------------------------------
     # Polar

@@ -14,7 +14,7 @@ def weightCalc(aircraftInfo, method="Raymer"):
     tcRootWing = aircraftInfo.tcRootWing
     taperRatioWing = aircraftInfo.taperRatioWing
     wingSweep = aircraftInfo.wingSweep
-    mtow = aircraftInfo.initalMTOW
+    mtow = aircraftInfo.initialMTOW
     wingMeanChord = aircraftInfo.meanChord
     xWingMeanChord = aircraftInfo.xWingMeanChord
 

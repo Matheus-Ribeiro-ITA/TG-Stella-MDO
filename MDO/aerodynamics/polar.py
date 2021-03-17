@@ -23,10 +23,6 @@ def polar(results, aircraftInfo):
             cLs.append(v["Totals"]["CLtot"])
             cDs.append(v["Totals"]["CDtot"])
 
-        if k.startswith("TakeOffRun"):
-            aircraftInfo.cLRun = v["Totals"]["CLtot"]
-            aircraftInfo.cDRun = v["Totals"]["CDtot"]
-
     if not cLs:
         raise Exception("polar.py can't find CLs")
 
@@ -37,10 +33,6 @@ def polar(results, aircraftInfo):
     dataPolar = [cLs, cDs]
     cD0, cD1, k = popt
     return [cD0, cD1, k, dataPolar]
-
-
-def _objective(x, cD0, cD1, k):
-    return cD0 + cD1 * x + k * x ** 2
 
 
 def _parasiteDrag(aircraftInfo):
@@ -84,3 +76,28 @@ def plotPolar(aircraftInfo):
 
     # Display the square wave
     plt.show()
+
+
+def _objective(x, cD0, cD1, k):
+    return cD0 + cD1 * x + k * x ** 2
+
+
+def getRun(results, aircraftInfo):
+    """
+    # Description:
+        Get values for takeoff Run.
+
+    ## Parameters:
+    - results [dict]:
+
+    ## Returns:
+    - cD0 [float]:
+    - k [float]:
+    """
+    cLRun = results['TakeOffRun']["Totals"]["CLtot"]
+    cDRunAvl = results['TakeOffRun']["Totals"]["CDtot"]
+
+    cDParasite = _parasiteDrag(aircraftInfo)
+
+    cDAvlTotal = cDRunAvl + cDParasite
+    return [cDRunAvl, cDParasite, cDAvlTotal, cLRun]

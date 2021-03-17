@@ -1,0 +1,15 @@
+{
+    "wingAreaList": "Wing Area (m^2)",
+    "wingSpanList": "Wing Span (m)",
+    "runwayList": "Runway length (m)",
+    "wingRootChordList": "Wing Root Chord (m)",
+    "wingMiddleChordList": "Wing Middle Chord (m)",
+    "wingTipChordList": "Wing Tip Chord (m)",
+    "wingTaperRatio": "Wing taper ratio tip/root",
+    "wingDivList": "Wing division (%)",
+    "aircraftMassList": "Aircraft Weight (kg)",
+    "AspectRatioList": "Aspect Ratio",
+    "alphaStallList": "Stall angle (deg)",
+    "stallPositionList": "Stall position (%)",
+    "dragCruiseList": "Drag on Cruise (N)"
+}

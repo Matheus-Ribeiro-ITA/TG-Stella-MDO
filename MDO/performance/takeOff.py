@@ -74,6 +74,7 @@ def takeOffRoll(
             finished_q = True
             return q[0], q[1]
 
-    if not finished_q: qs[-1, 0] = 9000
+    if not finished_q:
+        qs[-1, 0] = 9000
 
     return qs[-1, 0], qs[-1, 1]

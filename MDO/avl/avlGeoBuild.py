@@ -5,7 +5,6 @@ from numpy import pi
 
 def avlGeoBuild(stateVariables, controlVariables, verticalType="conventional"):
     stateVariables = _addControl2States(stateVariables, controlVariables, verticalType)
-
     surfaces = []
 
     for surfaceName, surfaceDict in stateVariables.items():
@@ -60,11 +59,12 @@ def avlGeoBuild(stateVariables, controlVariables, verticalType="conventional"):
         surface = _surfaceVerticalV(stateVariables["vertical"])
         surfaces.append(surface)
 
+    surfaceArea, surfaceMAC, surfaceSpan, surfaceSweep, surfaceTipX = infoSurface(stateVariables['wing'])
+
     if "endPlate" in stateVariables:
-        surfaceEndPlate = _surfaceEndPlate(stateVariables["wing"], stateVariables["endPlate"])
+        surfaceEndPlate = _surfaceEndPlate(surfaceTipX, surfaceSpan/2, stateVariables["wing"], stateVariables["endPlate"])
         surfaces.append(surfaceEndPlate)
 
-    surfaceArea, surfaceMAC, surfaceSpan, surfaceSweep = infoSurface(stateVariables['wing'])
     ref_pnt = avl.Point(x=0, y=0, z=0)
     aircraftAvl = avl.Aircraft(name='aircraft',
                                reference_area=surfaceArea,
@@ -99,7 +99,7 @@ def _translateSec(secName, secData, secPoint, surfaceName=None, controlVariables
     controlSurfaces = None
     if "control" in secData:
         if secData['control'] == "aileron":
-            commandInversion = -1
+            commandInversion = 1  # TODO: Hinge moment (-1 to invert)
         else:
             commandInversion = 1
         controlSurfaces = avl.Control(name=secData['control'],
@@ -234,7 +234,7 @@ def _surfaceVerticalV(surfaceVertical):
                        sections=sections)
 
 
-def _surfaceEndPlate(surfaceWing, surfaceEndPlate):
+def _surfaceEndPlate(surfaceTipX, surfaceSpan, surfaceWing, surfaceEndPlate):
     """
     # Description:
         Create avl surface Vertical estabilizer in H.
@@ -245,11 +245,9 @@ def _surfaceEndPlate(surfaceWing, surfaceEndPlate):
     ## Returns:
         Sections [List]: List of Section AVL Object.
     """
-    # assert surfaceHorizontal["root"]['x'] == surfaceVertical["root"]['x'], "Vertical root differ Horizontal root"
-    secPointRoot = [surfaceWing["root"]['x'] + surfaceWing["middle"]['b']*surfaceWing["middle"]['sweepLE'] + surfaceWing["tip"]['b']*surfaceWing["tip"]['sweepLE'],
-                    surfaceWing["root"]['y'] + surfaceWing["middle"]['b'] + surfaceWing["tip"]['b'],
-                    surfaceWing["root"]['z'] + surfaceWing["middle"]['b']*surfaceWing["middle"]['dihedral'] + surfaceWing["tip"]['b']*surfaceWing["tip"]['dihedral']]
 
+    # assert surfaceHorizontal["root"]['x'] == surfaceVertical["root"]['x'], "Vertical root differ Horizontal root"
+    secPointRoot = [surfaceTipX, surfaceSpan, 0]  # TODO: Dihedral
     secPointHigh = [secPointRoot[0] + surfaceEndPlate["tip"]['b'] * tan(surfaceEndPlate["tip"]['sweepLE']),
                     secPointRoot[1],
                     secPointRoot[2] + surfaceEndPlate["tip"]['b']]
@@ -520,4 +518,4 @@ def infoSurface(surfaceDict):
     # Mean MAC from Sections
     surfaceMAC = surfaceMAC / surfaceArea
 
-    return 2*surfaceArea, surfaceMAC, 2*surfaceSpan, surfaceSweep
+    return 2*surfaceArea, surfaceMAC, 2*surfaceSpan, surfaceSweep, surfaceTipX

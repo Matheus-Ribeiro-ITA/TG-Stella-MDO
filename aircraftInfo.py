@@ -28,7 +28,7 @@ class AircraftInfo:
 
         # Wing Info
         self.xWingMeanChord, self.yWingMeanChord = xyMeanChord(stateVariables['wing'])
-        self.wingArea, self.meanChord, self.wingSpan, self.wingSweep = MDO.infoSurface(stateVariables['wing'])
+        self.wingArea, self.meanChord, self.wingSpan, self.wingSweep, self.wingTipX = MDO.infoSurface(stateVariables['wing'])
         self.taperRatioWing = stateVariables['wing']['tip']['chord']/stateVariables['wing']['root']['chord']
         self.aspectRatio = self.wingSpan**2/self.wingArea
         if "aileron" in controlVariables:
@@ -39,12 +39,12 @@ class AircraftInfo:
 
         # Horizontal Info
         if 'horizontal' in stateVariables:
-            self.horizontalArea, self.horizontalMeanChord, self.horizontalSpan, self.horizontalSweep = \
+            self.horizontalArea, self.horizontalMeanChord, self.horizontalSpan, self.horizontalSweep, self.horizontalTipX = \
                 MDO.infoSurface(stateVariables['horizontal'])
             self.xHorizontalMeanChord, yHorizontalMeanChord = xyMeanChord(stateVariables['horizontal'])
 
         # Vertical Info
-        self.verticalArea, self.verticalMeanChord, self.verticalSpan, self.verticalSweep = \
+        self.verticalArea, self.verticalMeanChord, self.verticalSpan, self.verticalSweep, self.verticalTipX = \
             MDO.infoSurface(stateVariables['vertical'])
         self.xVerticalMeanChord, yVerticalMeanChord = xyMeanChord(stateVariables['vertical'])
 

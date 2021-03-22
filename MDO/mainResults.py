@@ -83,9 +83,19 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
             print(f"Cd Cruise AVL: {round(aircraftInfo.cDCruiseAvl,5)}")
             print(f"Drag Cruise AVL: {round(aircraftInfo.dragCruiseAvl,3)} N")
 
-    # ---- Lift Distribution ---------------------------------
+    # ---- Lift Distribution ----------------------
     if 'y' in config['output']['LIFT_DIST'].lower():
         MDO.liftDistNewton(results, mission)
+
+    # ---- Hinge Moment ---------------------------
+    if 'y' in config['output']['HINGE_MOMENT'].lower():
+        momentPerPressure = MDO.getHingeMoment(results, aircraftInfo)
+        velocity = 20
+        rho = 1.2
+        moments = [1/2*velocity**2*rho*a for a in momentPerPressure]
+        if PRINT:
+            momentKgCm = [round(moment, 2)*10 for moment in moments]
+            print(f"[Aileron, Flap, Elevator moments] {momentKgCm} Kg.cm")
 
     if PRINT:
         print("------------------------------")

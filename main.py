@@ -177,10 +177,16 @@ mission = {
     "takeOffRun": {
         'alpha': 5,
         'flap': 0,
-    }
+    },
     # "untrimmed_polar": {
     #     "cLPoints": [0.2, 0.44, 0.8]
     # }
+    "hingeMoment": {
+        'alpha': 8,
+        'flap': 20,
+        'aileron': 20,
+        'elevator': 20
+    }
 }
 
 # ---- Engine Info ------------------------------------------

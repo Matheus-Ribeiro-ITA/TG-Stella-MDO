@@ -167,5 +167,15 @@ def avlRunBuild(mission, aircraftInfo):
                                alpha=alphaParam,
                                flap=flapParam,
                                aileorn=aileronParam))
+    if "hingeMoment" in mission:
+        alphaParam = avlW.Parameter(name='alpha', setting='alpha', value=mission['hingeMoment']['alpha'])
+        flapParam = avlW.Parameter(name='flap', setting='flap', value=mission['hingeMoment']['flap'])
+        aileronParam = avlW.Parameter(name='aileron', setting='aileron', value=mission['hingeMoment']['aileron'])
+        elevatorParam = avlW.Parameter(name='elevator', setting='elevator', value=mission['hingeMoment']['elevator'])
+        cases.append(avlW.Case(name="hingeMoment",
+                               alpha=alphaParam,
+                               flap=flapParam,
+                               aileorn=aileronParam,
+                               elevator=elevatorParam))
 
     return cases

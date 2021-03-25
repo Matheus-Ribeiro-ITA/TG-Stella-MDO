@@ -208,7 +208,8 @@ engineInfo = {
         "cCruise": 0.03794037940379404,  # 0.068 standard value
         "consumptionMaxLperH": 12,  # liters/hour
         "consumptionCruiseLperH": 7,  # liters/hour
-        "fuelDensityGperL": 0.8,  # gram/liter
+        "fuelDensityKgperL": 0.84,  # kg/liter
+        "BSFC": 1*0.001644  # Table 8.1 Gundlach: (0.7 - 1) lb/(hp.h), conversion 0.001644 to g/(kW.h)
     }  # Check figure 2.1 for correct value. Slide 248
 }
 

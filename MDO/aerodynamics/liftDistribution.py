@@ -13,7 +13,7 @@ def plotliftDistribution(results, aircraftInfo):
     clStripWing = [x for _, x in sorted(zippedPairs)]
     yStripsWing = sorted(aircraftInfo.yStripsWing)
 
-    L0 = 0.5417
+    L0 = 0.6 # TODO
     elipticWing = [L0*np.sqrt(1 - (x/3)**2) for x in yStripsWing]
 
 

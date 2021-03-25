@@ -183,3 +183,4 @@ def xyMeanChord(surfDict):
         xSec += span*tan(sweepLE)
 
     return [xMeanChord, yMeanChord]
+

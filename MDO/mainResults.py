@@ -40,7 +40,7 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
             or 'y' in config['output']['TAKEOFF'].lower():  # TODO: Improve Clmax for takeOff
         MDO.stall(results, aircraftInfo)
         if PRINT:
-            print("Wing Stall: ", round(aircraftInfo.alphaStallWing, 1), "deg at ", round(2*aircraftInfo.stallPositionWing/aircraftInfo.wingSpan*100, 2), "% of wing")
+            print("Wing Stall: ", round(aircraftInfo.alphaStallWing, 1), "deg at ", round(2*aircraftInfo.stallPositionWing/aircraftInfo.wing.span*100, 2), "% of wing")
             print(f"CL Max aircraft: {aircraftInfo.cLMax}")
         if PLOT:
             MDO.plotStall(aircraftInfo)
@@ -55,9 +55,9 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
     # ---- Thrust ---------------------------------
     if 'y' in config['output']['THRUST'].lower() \
             or 'y' in config['output']['TAKEOFF'].lower():
-        [aircraftInfo.thrustV0, aircraftInfo.thrustV1, aircraftInfo.thrustV2] = MDO.performance.dynamicThrustCurve(aircraftInfo.engineInfo, method="actuatorDisk")
+        [aircraftInfo.thrust.v0, aircraftInfo.thrust.v1, aircraftInfo.thrust.v2] = MDO.performance.dynamicThrustCurve(aircraftInfo.engineInfo, method="actuatorDisk")
         if PRINT:
-            print(f"Thrust: {aircraftInfo.thrustV0}, {aircraftInfo.thrustV1}, {aircraftInfo.thrustV2}")
+            print(f"Thrust: {aircraftInfo.thrust.v0}, {aircraftInfo.thrust.v1}, {aircraftInfo.thrust.v2}")
 
     # ---- Take Off ---------------------------------
     if 'y' in config['output']['TAKEOFF'].lower():
@@ -67,7 +67,7 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
         # mission['takeOffRun']["alpha"] = aircraftInfo.alphaRun
         [runway, speedTakeOff] = MDO.performance.takeOffRoll(aircraftInfo, dt=0.01, nsteps=15000)
         if PRINT:
-            print(f"Aircraft TOW: {aircraftInfo.MTOW / 9.81} kg")
+            print(f"Aircraft TOW: {aircraftInfo.weight.MTOW / 9.81} kg")
             print(f"Runway Length: {round(runway,3)} m")
             print(f"Take Off Speed: {speedTakeOff} m/s")
             print(f"CD Run AVL: {aircraftInfo.cDRunAvl}")
@@ -78,7 +78,7 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
     if 'y' in config['output']['CRUISE'].lower():
         aircraftInfo.cDCruiseAvl = results["trimmed"]["Totals"]["CDtot"]
         aircraftInfo.dragCruiseAvl = 1 / 2 * 1.2 * aircraftInfo.cDCruiseAvl * mission['cruise'][
-            'vCruise'] ** 2 * aircraftInfo.wingArea
+            'vCruise'] ** 2 * aircraftInfo.wing.area
         if PRINT:
             print(f"Cd Cruise AVL: {round(aircraftInfo.cDCruiseAvl,5)}")
             print(f"Drag Cruise AVL: {round(aircraftInfo.dragCruiseAvl,3)} N")

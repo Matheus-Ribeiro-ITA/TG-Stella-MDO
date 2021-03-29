@@ -3,7 +3,7 @@ import numpy as np
 
 def rangeCruise(engineFC, mission, aircraftInfo):
     mf = 1.0
-    mfFinal = aircraftInfo.weightEmpty/aircraftInfo.MTOW
+    mfFinal = aircraftInfo.weight.empty/aircraftInfo.weight.MTOW
     cLCruise = aircraftInfo.cLCruise
     cD0Cruise = aircraftInfo.cD0
     kCruise = aircraftInfo.k

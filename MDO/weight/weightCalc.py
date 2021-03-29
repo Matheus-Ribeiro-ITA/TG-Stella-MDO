@@ -8,29 +8,29 @@ def weightCalc(aircraftInfo, method="Raymer"):
     """
 
     """
-    wingArea = aircraftInfo.wingArea
-    aileronArea = aircraftInfo.aileronArea
-    arWing = aircraftInfo.wingSpan ** 2 / aircraftInfo.wingArea
+    wingArea = aircraftInfo.wing.area
+    aileronArea = aircraftInfo.wing.aileronArea
+    arWing = aircraftInfo.wing.span ** 2 / wingArea
     tcRootWing = aircraftInfo.tcRootWing
-    taperRatioWing = aircraftInfo.taperRatioWing
-    wingSweep = aircraftInfo.wingSweep
-    mtow = aircraftInfo.initialMTOW
-    wingMeanChord = aircraftInfo.meanChord
-    xWingMeanChord = aircraftInfo.xWingMeanChord
+    taperRatioWing = aircraftInfo.wing.taperRatio
+    wingSweep = aircraftInfo.wing.sweep
+    mtow = aircraftInfo.weight.initialMTOW
+    wingMeanChord = aircraftInfo.wing.meanChord
+    xWingMeanChord = aircraftInfo.wing.xMeanChord
 
     # Horizontal
-    horizontalArea = aircraftInfo.horizontalArea
-    xHorizontalMeanChord = aircraftInfo.xHorizontalMeanChord
-    horizontalMeanChord = aircraftInfo.horizontalMeanChord
+    horizontalArea = aircraftInfo.horizontal.area
+    xHorizontalMeanChord = aircraftInfo.horizontal.xMeanChord
+    horizontalMeanChord = aircraftInfo.horizontal.meanChord
 
     # Vertical
-    verticalArea = aircraftInfo.verticalArea
-    xVerticalMeanChord = aircraftInfo.xVerticalMeanChord
-    verticalMeanChord = aircraftInfo.verticalMeanChord
+    verticalArea = aircraftInfo.vertical.area
+    xVerticalMeanChord = aircraftInfo.vertical.xMeanChord
+    verticalMeanChord = aircraftInfo.vertical.meanChord
 
     # Fuselage
-    fuselageWetArea = aircraftInfo.fuselageWetArea
-    fuselageLength = aircraftInfo.fuselageLength
+    fuselageWetArea = aircraftInfo.fuselage.wetArea
+    fuselageLength = aircraftInfo.fuselage.length
 
     def _raymerWing():
         Nz = 1.5 * 2.5
@@ -61,19 +61,18 @@ def weightCalc(aircraftInfo, method="Raymer"):
         return weightLandingGear, xCG
 
     def _engineWeight():
-        return aircraftInfo.engineWeight, aircraftInfo.xEngine
+        return aircraftInfo.weight.engine, aircraftInfo.cg.engine[0]
 
     def _allElseWeight():
-        return sum([v[0] for v in aircraftInfo.allElse.values()]), sum([v[1] for v in aircraftInfo.allElse.values()])
-
+        return sum([v[0] for v in aircraftInfo.weight.allElse.values()]), sum([v[1] for v in aircraftInfo.weight.allElse.values()])
 
     methods = {
         "Raymer": [_raymerWing(),
-                  _raymerStabSurfaces(horizontalArea, horizontalMeanChord, xHorizontalMeanChord),
-                  _raymerStabSurfaces(verticalArea, verticalMeanChord, xVerticalMeanChord),
-                  _raymerFuselage(),
-                  _raymerLandingGear(mtow, aircraftInfo.xNoseLG, 0.15),
-                  _raymerLandingGear(mtow, aircraftInfo.xMainLG, 0.85),
+                   _raymerStabSurfaces(horizontalArea, horizontalMeanChord, xHorizontalMeanChord),
+                   _raymerStabSurfaces(verticalArea, verticalMeanChord, xVerticalMeanChord),
+                   _raymerFuselage(),
+                   _raymerLandingGear(mtow, aircraftInfo.xNoseLG, 0.15),
+                   _raymerLandingGear(mtow, aircraftInfo.xMainLG, 0.85),
                    _engineWeight(),
                    _allElseWeight()]
     }

@@ -36,20 +36,20 @@ def polar(results, aircraftInfo):
 
 
 def _parasiteDrag(aircraftInfo):
-    wingArea = aircraftInfo.wingArea
+    wingArea = aircraftInfo.wing.area
 
     def _fuselageDrag():
-        interferenceFactor = aircraftInfo.interferenceFactor
-        coefficientFriction = aircraftInfo.coefficientFriction
-        finenessRatio = aircraftInfo.finenessRatio
-        surfaceWet = aircraftInfo.fuselageWetArea
+        interferenceFactor = aircraftInfo.fuselage.interferenceFactor
+        coefficientFriction = aircraftInfo.fuselage.coefficientFriction
+        finenessRatio = aircraftInfo.fuselage.finenessRatio
+        surfaceWet = aircraftInfo.fuselage.wetArea
 
         return interferenceFactor * coefficientFriction * \
                (1 + 60 / (finenessRatio ** 3) + 0.0025 * finenessRatio) * surfaceWet / wingArea
 
     def _sphereDrag():
         sphereDragCoefficient = 0.15  # Cf= 0.15 for Re> 4.10^5 and 0.41 for bellow
-        frontalArea = aircraftInfo.gimbalFrontalArea
+        frontalArea = aircraftInfo.fuselage.gimbalFrontalArea
         return sphereDragCoefficient*frontalArea/wingArea
 
     return _fuselageDrag() + _sphereDrag() + 0.03

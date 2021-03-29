@@ -95,10 +95,10 @@ def avlRunBuild(mission, aircraftInfo):
     - cases [list(dict)]: Cases to run on AVL.
     """
     g = 9.81
-    weight = aircraftInfo.MTOW
-    wingArea = aircraftInfo.wingArea
-    meanChord = aircraftInfo.meanChord
-    cLMax = aircraftInfo.cLMax
+    weight = aircraftInfo.weight.MTOW
+    wingArea = aircraftInfo.wing.area
+    meanChord = aircraftInfo.wing.meanChord
+    # cLMax = aircraftInfo.cLMax
     cases = []
     if "cruise" in mission:
         T, p, rho, mi = _atmosphere(mission["cruise"]["altitude"])

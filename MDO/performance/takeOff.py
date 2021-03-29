@@ -15,22 +15,16 @@ def forward_euler(q0, qd, dt=0.01, nsteps=6000):
     return ts, np.vstack(stts)
 
 
-def takeOffRoll(
-        aircraftInfo,
-        mu=0.03,
-        ksafety=1.1,
-        dt=0.01,
-        nsteps=8000
-):
+def takeOffRoll(aircraftInfo, mu=0.03, ksafety=1.1, dt=0.01, nsteps=8000):
     rho = 1.225  # TODO:
     CLmax = aircraftInfo.cLMax + 0.4  # TODO: Add flap to takeOff
 
-    Sref = aircraftInfo.wingArea
-    TOW = aircraftInfo.MTOW
+    Sref = aircraftInfo.wing.area
+    TOW = aircraftInfo.weight.MTOW
 
     _polar = lambda CL: aircraftInfo.cD0Run + aircraftInfo.cD1Run * CL + aircraftInfo.kRun * CL ** 2
-    _tCurve = lambda velocity: aircraftInfo.thrustV0 + aircraftInfo.thrustV1 * velocity \
-                               + aircraftInfo.thrustV2 * velocity ** 2
+    _tCurve = lambda velocity: aircraftInfo.thrust.v0 + aircraftInfo.thrust.v1 * velocity \
+                               + aircraftInfo.thrust.v2 * velocity ** 2
     W = TOW
 
     if aircraftInfo.cDRun:

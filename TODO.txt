@@ -1,11 +1,7 @@
 ------------------TODO List---------------------------------
 
 ## Ask Ney
-# TODO: Check stall figure
-# TODO: What is a better flap calculation method, if avl is really wrong?
-# TODO: NN idea to substitute AVL
-# TODO: Hinge moment of AVL is acurate?
-# TODO: Check eliptical lift curve comparation. Its Cl or Cl.c
+# TODO: What is a better flap calculation method, if avl is really wrong? Usar empirico  e tirar CLAF comparar
 
 ## Geometry
 # TODO: ADD maxsweep constraint to AVLGeoBuild, so wing dont invert
@@ -15,6 +11,7 @@
 # TODO: Adjust fuel consumption. [Check units]
 # TODO: Weight estimation [Doing]
 # TODO: Fuel capacity estimation
+# TODO: Eliptical lift curve
 
 ## Stall
 # TODO: Check Stall Angles.
@@ -24,8 +21,8 @@
 # TODO: Add CG variation to analyses
 # TODO: Fix Polar fit warning
 
-
-
+# TODO: Look Howe for fuel comsumption
+https://aerocastle.files.wordpress.com/2012/05/aircraft-conceptual-design-synthesis.pdf
 ------------------DONE List---------------------------------
 
 # DONE: Ask for formula for LEMAC (Leading Edge MAC)
@@ -38,3 +35,5 @@
 # DONE: Add xfoil analyses
 # DONE: Change vertical format to V
 # DONE: Refactor
+
+

@@ -14,8 +14,8 @@ def getHingeMoment(results, aircraftInfo):
     cAileron = results['hingeMoment']["HingeMoments"]["aileron"]
     cElevator = results['hingeMoment']["HingeMoments"]["elevator"]
 
-    areaWing = aircraftInfo.wingArea
-    meanChord = aircraftInfo.meanChord
+    areaWing = aircraftInfo.wing.area
+    meanChord = aircraftInfo.wing.meanChord
 
     momentPerPressure = [c*areaWing*meanChord for c in [cAileron, cFlap, cElevator]]
     return momentPerPressure

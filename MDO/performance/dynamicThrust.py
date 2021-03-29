@@ -74,6 +74,7 @@ def dynamicThrustCurve(engineInfo, method="actuatorDisk"):
 
     return [cD0, cD1, k]
 
+
 def plotDynamicThrust(engineInfo):
     """
     # Description:

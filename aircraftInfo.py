@@ -3,6 +3,7 @@ import numpy as np
 from math import tan
 import os
 
+
 class AircraftInfo:
     def __init__(self, stateVariables, controlVariables, engineInfo=None):
         """
@@ -22,58 +23,29 @@ class AircraftInfo:
         self.controlVariables = controlVariables
         self.engineInfo = engineInfo
 
-
         self.machCalc = 0.1  # TODO:
         self.reynoldsCalc = 1*10**6  # TODO:
 
         # Wing Info
-        self.xWingMeanChord, self.yWingMeanChord = xyMeanChord(stateVariables['wing'])
-        self.wingArea, self.meanChord, self.wingSpan, self.wingSweep, self.wingTipX = MDO.infoSurface(stateVariables['wing'])
-        self.taperRatioWing = stateVariables['wing']['tip']['chord']/stateVariables['wing']['root']['chord']
-        self.aspectRatio = self.wingSpan**2/self.wingArea
-        if "aileron" in controlVariables:
-            self.aileronArea = self.wingArea*controlVariables["aileron"]["spanStartPercentage"]*\
-                               (1-controlVariables["aileron"]["cHinge"])
-        else:
-            self.aileronArea = self.wingArea*0.4*0.2
+        self.wing = Surface(surfaceDict=stateVariables['wing'],
+                            controlVariables=controlVariables,
+                            name="wing")
 
         # Horizontal Info
         if 'horizontal' in stateVariables:
-            self.horizontalArea, self.horizontalMeanChord, self.horizontalSpan, self.horizontalSweep, self.horizontalTipX = \
-                MDO.infoSurface(stateVariables['horizontal'])
-            self.xHorizontalMeanChord, yHorizontalMeanChord = xyMeanChord(stateVariables['horizontal'])
-
+            self.horizontal = Surface(surfaceDict=stateVariables['horizontal'],
+                                      controlVariables=controlVariables,
+                                      name="horizontal")
         # Vertical Info
-        self.verticalArea, self.verticalMeanChord, self.verticalSpan, self.verticalSweep, self.verticalTipX = \
-            MDO.infoSurface(stateVariables['vertical'])
-        self.xVerticalMeanChord, yVerticalMeanChord = xyMeanChord(stateVariables['vertical'])
-
+        if 'vertical' in stateVariables:
+            self.vertical = Surface(surfaceDict=stateVariables['vertical'],
+                                    controlVariables=controlVariables,
+                                    name="vertical")
         # Fuselage Info
-        lengthFuselage = 1.2
-        diameterFuselage = 0.5
-        self.finenessRatio = lengthFuselage / diameterFuselage
-        self.fuselageWetArea = np.pi * diameterFuselage * lengthFuselage * (1 - 2 / self.finenessRatio) ** (2.0 / 3.0) * (1 + 1 / self.finenessRatio ** 2)
-        self.fuselageLength = lengthFuselage
-        self.interferenceFactor = 1.05
-        self.coefficientFriction = 0.455/(np.log10(self.reynoldsCalc) ** 2.58 * (1 + 0.144 * self.machCalc ** 2) ** 0.58)
-
-        # Gimbal
-        self.gimbalFrontalArea = 3.1415*0.20**2
-
-        # All Else Weight
-        # self.allElse = {  # Atobá Data (kg, m)
-        #     "propeller": [2.6*9.81, -3.1],
-        #     "brakes": [2.38*9.81, -.350],
-        #     "parachute": [13*9.81, 0],
-        #     "gimbal": [3*9.81, 0],
-        #     "receptors": [0.424*9.81, 0],
-        #     "batery60Ah": [12.7*9.81, 0],
-        #     "batery12Ah": [3.845*9.81, 0],
-        #     "ballast": [10*9.81, 0]
-        # }  # TODO:
-        self.allElse = {  # Atobá Data (kg, m)
-            "All": [0*9.81, -3.1],
-        }
+        self.fuselage = Fuselage(length=1.2,
+                                 diameter=0.5,
+                                 reynoldsCalc=self.reynoldsCalc,
+                                 machCalc=self.machCalc)
 
         # Landing Gear Info
         self.xNoseLG = -2  # TODO
@@ -104,23 +76,15 @@ class AircraftInfo:
         self.cLMax = None  # TODO:
 
         # Weight and Cg Info
-        self.engineWeight = 63*9.81  # Atobá Data
-        self.xEngine = -2.5  # TODO
-
-        self.initialMTOW = 200 * 9.81
-        weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
-        self.weightEmpty = weightEmpty
-        self.weightFuel = 0 * 9.81
+        self.weight = Weight(initialMTOW=200 * 9.81)
+        self.cg = Cg()
+        self.weight.empty, self.cg.empty = MDO.weightCalc(self, method="Raymer")
 
         weightVar = os.getenv("WEIGHT")
         if weightVar == 'Raymer':
-            self.MTOW = self.weightEmpty + self.weightFuel
+            self.weight.MTOW = self.weight.empty + self.weight.fuel
         else:
-            self.MTOW = float(weightVar)*9.81
-
-        self.cgEmpty = cgEmpty
-        self.cgFull = 0.0  # TODO:
-        self.cgCalc = 0.31625  # TODO: (cgFull + cgCalc)/2
+            self.weight.MTOW = float(weightVar) * 9.81
 
         # Stall
         self.alphaStalls = None
@@ -137,10 +101,7 @@ class AircraftInfo:
         self.staticMargin = None
 
         # Thrust Curve
-
-        self.thrustV0 = None
-        self.thrustV1 = None
-        self.thrustV2 = None
+        self.thrust = Thrust()
 
 
 def xyMeanChord(surfDict):
@@ -183,4 +144,89 @@ def xyMeanChord(surfDict):
         xSec += span*tan(sweepLE)
 
     return [xMeanChord, yMeanChord]
+
+
+class Surface:
+    def __init__(self, surfaceDict=None, controlVariables=None, name=None):
+        self.xMeanChord, self.yMeanChord = xyMeanChord(surfaceDict)
+        self.area, self.meanChord, self.span, self.sweep, self.tipX = MDO.infoSurface(surfaceDict)
+        self.taperRatio = surfaceDict['tip']['chord']/surfaceDict['root']['chord']
+        self.aspectRatio = self.span**2/self.area
+
+        if "aileron" in controlVariables and name == 'wing':
+            self.aileronArea = self.area*controlVariables["aileron"]["spanStartPercentage"]*\
+                               (1-controlVariables["aileron"]["cHinge"])
+        else:
+            self.aileronArea = self.area*0.4*0.2  # Standard Value
+
+        if "ruddervator" in controlVariables and name == 'vertical':
+            pass  # TODO:
+
+        if "elevator" in controlVariables and name == 'horizontal':
+            self.elevatorArea = self.area * controlVariables["elevator"]["spanStartPercentage"] * \
+                               (1 - controlVariables["elevator"]["cHinge"])
+        else:
+            self.elevatorArea = self.area * 0.4 * 0.2  # TODO: Change this parameters to inputs
+
+        if "rudder" in controlVariables and name == 'vertical':
+            self.rudderArea = self.area * controlVariables["rudder"]["spanStartPercentage"] * \
+                                (1 - controlVariables["rudder"]["cHinge"])
+        else:
+            self.rudderArea = self.area * 0.4 * 0.2
+
+
+class Fuselage:
+    def __init__(self, length=1.2, diameter=0.5, reynoldsCalc=None, machCalc=None):
+        self.finenessRatio = length / diameter
+        self.wetArea = np.pi * diameter * length * (1 - 2 / self.finenessRatio) ** (2.0 / 3.0) * (1 + 1 / self.finenessRatio ** 2)
+        self.length = length
+        self.interferenceFactor = 1.05
+        self.coefficientFriction = 0.455/(np.log10(reynoldsCalc) ** 2.58 * (1 + 0.144 * machCalc ** 2) ** 0.58)
+        # Gimbal
+        self.gimbalFrontalArea = 3.1415*0.20**2
+
+
+class Thrust:
+    def __init__(self):
+        self.v0 = None
+        self.v1 = None
+        self.v2 = None
+
+
+class Weight:
+    def __init__(self, initialMTOW=200 * 9.81):
+        self.engine = 63 * 9.81  # Atobá Data
+
+        self.initialMTOW = initialMTOW
+        # weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
+        self.empty = None
+        self.fuel = 0 * 9.81
+
+        # All Else Weight
+        # self.allElse = {  # Atobá Data (kg, m)
+        #     "propeller": [2.6*9.81, -3.1],
+        #     "brakes": [2.38*9.81, -.350],
+        #     "parachute": [13*9.81, 0],
+        #     "gimbal": [3*9.81, 0],
+        #     "receptors": [0.424*9.81, 0],
+        #     "batery60Ah": [12.7*9.81, 0],
+        #     "batery12Ah": [3.845*9.81, 0],
+        #     "ballast": [10*9.81, 0]
+        # }  # TODO:
+        self.allElse = {  # Atobá Data (kg, m)
+            "All": [0 * 9.81, -3.1],
+        }
+
+        # self.cgEmpty = cgEmpty
+        # self.cgFull = 0.0  # TODO:
+        # self.cgCalc = 0.31625  # TODO: (cgFull + cgCalc)/2
+
+
+class Cg:
+    def __init__(self):
+        self.engine = [-2.5, 0, 0]  # TODO
+        self.empty = None
+        self.full = 0.0  # TODO:
+        self.calc = 0.31625  # TODO: (cgFull + cgCalc)/2
+
 

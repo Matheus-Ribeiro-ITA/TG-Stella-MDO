@@ -47,8 +47,7 @@ def plotStall(aircraftInfo):
     # plt.ylabel(' Angle of Stall (deg)')
     # # plt.ylim((10, 20))
     # plt.show()
-    
-    
+
 
 def _slopAproximation(aoa, clStrips, clMaxAirfoil):
     

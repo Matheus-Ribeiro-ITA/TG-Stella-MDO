@@ -97,5 +97,11 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
             momentKgCm = [round(moment, 2)*10 for moment in moments]
             print(f"[Aileron, Flap, Elevator moments] {momentKgCm} Kg.cm")
 
+    # ---- Flight Envelope ---------------------------
+    if 'y' in config['output']['FLIGHT_ENVELOPE'].lower():
+        if PLOT:
+            envelope = MDO.flightEnvelop(aircraftInfo)
+            envelope.plot()
+
     if PRINT:
         print("------------------------------")

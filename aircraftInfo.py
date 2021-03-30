@@ -69,11 +69,13 @@ class AircraftInfo:
         self.cLRun = None
         self.cDRunAvl = None
         self.cDRun = None
+        self.cLMax = None
+        self.cLAlpha0 = None
+        self.cLSlope = None
 
         # Flight Info
         self.cLCruise = None
         self.loiterTime = 3600
-        self.cLMax = None  # TODO:
 
         # Weight and Cg Info
         self.weight = Weight(initialMTOW=200 * 9.81)
@@ -201,6 +203,7 @@ class Weight:
         # weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
         self.empty = None
         self.fuel = 0 * 9.81
+        self.MTOW = None
 
         # All Else Weight
         # self.allElse = {  # Atobá Data (kg, m)

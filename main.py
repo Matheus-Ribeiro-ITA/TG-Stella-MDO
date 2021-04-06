@@ -209,7 +209,7 @@ engineInfo = {
         "consumptionMaxLperH": 12,  # liters/hour
         "consumptionCruiseLperH": 7,  # liters/hour
         "fuelDensityKgperL": 0.84,  # kg/liter
-        "BSFC": 1*0.001644  # Table 8.1 Gundlach: (0.7 - 1) lb/(hp.h), conversion 0.001644 to g/(kW.h)
+        "BSFC": 1*608.2773878418  # Table 8.1 Gundlach: (0.7 - 1) lb/(hp.h), 1.8 for 12 l/hr, conversion 608.2773878418 to g/(kW.h)
     },  # Check figure 2.1 for correct value. Slide 248
     "altitudeCorrection": {  # From USAF thesis Travis D. Husaboe
         '1500': 0.89,
@@ -227,7 +227,6 @@ results = MDO.avlMain(aircraftInfo, mission, verticalType=verticalType)
 
 # ---- Results -----------------------------------------
 MDO.mainResults(results=results, aircraftInfo=aircraftInfo, mission=mission)
-
 
 # ---- Time-----------------------------------------
 print(f"Process Time: {(time.time() - startTime)} s")

@@ -22,6 +22,7 @@ class AircraftInfo:
         self.stateVariables = stateVariables.copy()
         self.controlVariables = controlVariables
         self.engineInfo = engineInfo
+        self.engine = Engine(engineInfo)
 
         self.machCalc = 0.1  # TODO:
         self.reynoldsCalc = 1*10**6  # TODO:
@@ -103,7 +104,7 @@ class AircraftInfo:
         self.staticMargin = None
 
         # Thrust Curve
-        self.thrust = Thrust()
+        self.thrust = Thrust(engineInfo)
 
 
 def xyMeanChord(surfDict):
@@ -189,10 +190,11 @@ class Fuselage:
 
 
 class Thrust:
-    def __init__(self):
+    def __init__(self, engineInfo):
         self.v0 = None
         self.v1 = None
         self.v2 = None
+        self.slopeHeight = engineInfo['altitudeCorrection']['slope']
 
 
 class Weight:
@@ -232,4 +234,10 @@ class Cg:
         self.full = 0.0  # TODO:
         self.calc = 0.31625  # TODO: (cgFull + cgCalc)/2
 
+
+class Engine:
+    def __init__(self, engineInfo):
+        self.name = engineInfo['name']
+        self.consumptionMaxLperH = engineInfo['engineFC']['consumptionMaxLperH']
+        self.fuelDensity = engineInfo['engineFC']['fuelDensityKgperL']
 

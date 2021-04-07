@@ -270,8 +270,8 @@ class Performance:
 
 @dataclass
 class FlightInfo:
-    cD: float = None
-    cL: float = None
+    cD: list = None
+    cL: list = None
     range: float = None
     time: float = None
 

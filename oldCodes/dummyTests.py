@@ -13,7 +13,7 @@ startTime = time.time()
 # ----Debug bool----------------------------------------------
 
 config = ConfigParser()
-config.read(os.path.join("outputsConfig.cfg"))
+config.read(os.path.join("../outputsConfig.cfg"))
 
 os.environ['DEBUG'] = config['env']['DEBUG']
 os.environ['PLOT'] = config['env']['PLOT']

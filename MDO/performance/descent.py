@@ -1,7 +1,6 @@
 import numpy as np
 from MDO.auxTools import atmosphere
 import scipy
-import os
 
 
 def descentFuel(aircraftInfo=None, heightInitial=1500, heightFinal=0, rateOfDescent=1, nSteps=20, logger=None):
@@ -52,22 +51,11 @@ def descentFuel(aircraftInfo=None, heightInitial=1500, heightFinal=0, rateOfDesc
         velocityDescent = r.x
         if not r.success:
             logger.warning(f"Descent speed convergence failed")
-        # thrustRequired = r.fun - rateOfDescent*mtow/velocityDescent
-        # thrust = (v0 + v1 * velocityDescent + v2 * velocityDescent ** 2) * (1 + heightSlope * heights[i])
-        # throttle = thrustRequired/thrust
         throttle = r.fun
         time = (heights[i+1] - heights[i])/rateOfDescent
         xDist += r.x[0] * time
         fuelKgS = aircraftInfo.engine.consumptionMaxLperH*aircraftInfo.engine.fuelDensity*throttle/3600
         totalFuelKg += fuelKgS*time
-
-        # print(f"Altitude {height}")
-        # print(f"Velocity {r.x}")
-        # print(f"Fun {r.fun}")
-        # print(f"Drag {drag}")
-        # print("Time: ", time)
-        # print("Total Fuel: ", totalFuel, " kg")
-        # print("")
 
     aircraftInfo.weight.fuelDescent = totalFuelKg[0]*9.8
     aircraftInfo.performance.descent.time = (heightInitial - heightFinal) / rateOfDescent
@@ -75,9 +63,3 @@ def descentFuel(aircraftInfo=None, heightInitial=1500, heightFinal=0, rateOfDesc
 
     return
 
-
-
-
-    # plt.scatter(velocities, heights)
-    # plt.xlim([0, 100])
-    # plt.show()

@@ -25,17 +25,16 @@ def cruise(aircraftInfo=None, avlCases=None, fuelKg=None, fuelDescentKg=None, nS
     fuelKgArray = np.linspace(fuelKg, fuelDescentKg, nSteps)
     totalTime = 0
     rangeCruise = 0
+    aircraftInfo.performance.cruise.cL = []
+    aircraftInfo.performance.cruise.cD = []
     for i in range(len(fuelKgArray)-1):
         fuelKg = (fuelKgArray[i]+fuelKgArray[i+1])/2
         aircraftWeight = emptyWeight + fuelKg*9.8
-
         cL = 2 * aircraftWeight / (wingArea * velocityCruise ** 2 * rho)
-        aircraftInfo.performance.cruise.cL = cL
+        aircraftInfo.performance.cruise.cL.append(cL)
         cD = cD0 + cD1 * cL + cD2 * cL ** 2
-        aircraftInfo.performance.cruise.cD = cD0 + cD1 * cL + cD2 * cL ** 2
-
+        aircraftInfo.performance.cruise.cD.append(cD0 + cD1 * cL + cD2 * cL ** 2)
         aircraftInfo.dragCruise = 1 / 2 * rho * cD * velocityCruise ** 2 * aircraftInfo.wing.area
-
         thrust = (v0 + v1 * velocityCruise + v2 * velocityCruise ** 2) * (1 + heightSlope * heightCruise)
         throttle = aircraftInfo.dragCruise / thrust
         fuelKgS = aircraftInfo.engine.consumptionMaxLperH * aircraftInfo.engine.fuelDensity * throttle / 3600

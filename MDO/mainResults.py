@@ -152,10 +152,11 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         rangeClimb = aircraftInfo.performance.climb.range
         rangeCruise = aircraftInfo.performance.cruise.range
         rangeDescent = aircraftInfo.performance.descent.range
+        rangeAll = rangeDescent + rangeCruise + rangeDescent
 
         if PLOT:
             missionPlot = [[0, runway / 1000, rangeClimb / 1000, (rangeClimb + rangeCruise) / 1000,
-                            (rangeDescent + rangeCruise + rangeDescent) / 1000],
+                            rangeAll / 1000],
                            [0, 0, 1500, 1500, 0]]
 
             plt.plot(missionPlot[0], missionPlot[1])
@@ -164,7 +165,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             plt.show()
 
         if PRINT:
-            print(f"Range flight: {round((rangeDescent + rangeCruise + rangeDescent) / 1000, 1)} km")
+            print(f"Range flight: {round( rangeAll/ 1000, 1)} km")
 
     # ---- End ---------------------------
     if PRINT:

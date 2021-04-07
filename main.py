@@ -1,8 +1,6 @@
 import time
 from _collections import OrderedDict
-from configparser import ConfigParser
 import numpy as np
-import os
 
 from aircraftInfo import AircraftInfo
 import MDO
@@ -15,14 +13,7 @@ logger = MDO.createLog(name="main")
 logger.info("------------------BEGIN------------------")
 
 # ----Config ----------------------------------------------
-
-config = ConfigParser()
-config.read(os.path.join("outputsConfig.cfg"))
-
-os.environ['DEBUG'] = config['env']['DEBUG']
-os.environ['PLOT'] = config['env']['PLOT']
-os.environ['PRINT'] = config['env']['PRINT']
-os.environ['WEIGHT'] = config['methods']['WEIGHT']
+MDO.parseConfig("outputsConfig.cfg")
 
 # ----Vertical Stabilizer-------------------------------------
 # Options: "conventional", "h", "v".

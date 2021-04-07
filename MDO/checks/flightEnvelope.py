@@ -31,7 +31,7 @@ def flightEnvelop(aircraftInfo, maxheight=4*10**3):
         T, p, rho, mi = atmosphere(height)
         gotVmin = False
         gotVmax = False
-        gotCeiling= False
+        gotCeiling = False
         efficiencyAltitude = 1 + slopeAltitude * height
 
         for velocity in velocities:

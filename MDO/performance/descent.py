@@ -1,13 +1,12 @@
-from MDO.auxTools import atmosphere
 import numpy as np
+from MDO.auxTools import atmosphere
 import scipy
-import matplotlib.pyplot as plt
 
 
-def climbFuel(aircraftInfo=None, heightInitial=0, heightFinal=1500, rateOfClimb=1, nSteps=20):
+def descentFuel(aircraftInfo=None, heightInitial=1500, heightFinal=0, rateOfDescent=1, nSteps=20):
 
     wingArea = aircraftInfo.wing.area
-    weightTakeOff = aircraftInfo.weight.empty + aircraftInfo.weight.fuel - aircraftInfo.weight.fuelTakeOff
+    weightLand = aircraftInfo.weight.empty + aircraftInfo.weight.fuelReserve
     v0 = aircraftInfo.thrust.v0
     v1 = aircraftInfo.thrust.v1
     v2 = aircraftInfo.thrust.v2
@@ -16,7 +15,7 @@ def climbFuel(aircraftInfo=None, heightInitial=0, heightFinal=1500, rateOfClimb=
     cD1 = aircraftInfo.cD1
     cD2 = aircraftInfo.k
 
-    heights = np.linspace(heightInitial, heightFinal, nSteps)
+    heights = np.linspace(heightFinal, heightInitial, nSteps)
 
     def funDrag(velocity):
         cL = 2 * weight / (wingArea * velocity ** 2 * rho)
@@ -24,12 +23,12 @@ def climbFuel(aircraftInfo=None, heightInitial=0, heightFinal=1500, rateOfClimb=
 
     def funThrottleRequired(velocity):
         thrustMax = (v0 + v1 * velocity + v2 * velocity ** 2) * (1 + heightSlope * heights[i])
-        return (funDrag(velocity) + rateOfClimb*weight/velocity)/thrustMax
+        return (funDrag(velocity) - rateOfDescent*weight/velocity)/thrustMax
 
     def rateConstraint(velocity):
-        thrustMax = (v0 + v1 * velocity + v2 * velocity ** 2) * (1 + heightSlope * height)
+        thrustMin = (v0 + v1 * velocity + v2 * velocity ** 2) * (1 + heightSlope * height)*0.1
         drag = funDrag(velocity)
-        return (thrustMax - drag) * velocity / weight - rateOfClimb
+        return (drag - thrustMin) * velocity / weight - rateOfDescent
 
     def velocityUpperConstraint(velocity):
         return 90 - velocity
@@ -41,21 +40,22 @@ def climbFuel(aircraftInfo=None, heightInitial=0, heightFinal=1500, rateOfClimb=
             {'type': 'ineq', 'fun': velocityUpperConstraint},
             {'type': 'ineq', 'fun': velocityLowerConstraint}]
 
-    velocityClimb = 25
+    velocityDescent = 15
     xDist = 0
     totalFuelKg = 0.0  # Weird: I declare as float but it becomes a np.array
+
     for i in range(len(heights)-1):
-        weight = weightTakeOff - totalFuelKg * 9.8
+        weight = weightLand + totalFuelKg * 9.8
         height = (heights[i]+heights[i+1])/2
         T, p, rho, mi = atmosphere(height)
-        r = scipy.optimize.minimize(funThrottleRequired, velocityClimb, constraints=cons)
-        velocityClimb = r.x
-        # thrustRequired = r.fun + rateOfClimb*mtow/velocityClimb
-        # thrustMax = (v0 + v1 * velocityClimb + v2 * velocityClimb ** 2) * (1 + heightSlope * heights[i])
-        # throttle = thrustRequired/thrustMax
+        r = scipy.optimize.minimize(funThrottleRequired, velocityDescent, constraints=cons)
+        velocityDescent = r.x
+        # thrustRequired = r.fun - rateOfDescent*mtow/velocityDescent
+        # thrust = (v0 + v1 * velocityDescent + v2 * velocityDescent ** 2) * (1 + heightSlope * heights[i])
+        # throttle = thrustRequired/thrust
         throttle = r.fun
-        time = (heights[i+1] - heights[i])/rateOfClimb
-        xDist += r.x*time
+        time = (heights[i+1] - heights[i])/rateOfDescent
+        xDist += r.x * time
         fuelKgS = aircraftInfo.engine.consumptionMaxLperH*aircraftInfo.engine.fuelDensity*throttle/3600
         totalFuelKg += fuelKgS*time
 
@@ -67,15 +67,12 @@ def climbFuel(aircraftInfo=None, heightInitial=0, heightFinal=1500, rateOfClimb=
         # print("Total Fuel: ", totalFuel, " kg")
         # print("")
 
-    totalTime = (heightFinal-heightInitial)/rateOfClimb
+    totalTime = (heightInitial - heightFinal) / rateOfDescent
     return totalFuelKg[0]*9.8, totalTime, xDist
+
+
 
 
     # plt.scatter(velocities, heights)
     # plt.xlim([0, 100])
     # plt.show()
-
-
-
-
-

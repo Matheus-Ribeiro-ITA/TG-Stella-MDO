@@ -1,7 +1,7 @@
 import os
 from configparser import ConfigParser
-
 import MDO
+import matplotlib.pyplot as plt
 
 config = ConfigParser()
 config.read(os.path.join("outputsConfig.cfg"))
@@ -65,38 +65,58 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
         if "takeOffRun" in mission:
             [aircraftInfo.cDRunAvl, cDParasite, aircraftInfo.cDRun, aircraftInfo.cLRun] = MDO.getRun(results,
                                                                                                      aircraftInfo)
-        aircraftInfo.alphaRun = results["trimmed"]["Totals"]["Alpha"]
-        # mission['takeOffRun']["alpha"] = aircraftInfo.alphaRun
-        [runway, speedTakeOff, timeTakeOff] = MDO.performance.takeOffRoll(aircraftInfo, dt=0.01, nsteps=15000)
-        maxPowerKw = aircraftInfo.engineInfo['maxPowerHp'] * 0.7457
-        massTakeOff = timeTakeOff * (maxPowerKw * aircraftInfo.engineInfo['engineFC']['BSFC'] / 3600)
-        if PRINT:
-            print(f"Aircraft TOW: {aircraftInfo.weight.MTOW / 9.81} kg")
-            print(f"Runway Length: {round(runway, 3)} m")
-            print(f"Take Off Speed: {speedTakeOff} m/s")
-            print(f"Time TakeOff: {timeTakeOff} s")
-            print(f"Fuel mass TakeOff: {round(massTakeOff, 1)} g")
-            print(f"CD Run AVL: {aircraftInfo.cDRunAvl}")
-            print(f"CD Run Total: {aircraftInfo.cDRun}")
-            print(f"Alpha Run: {round(aircraftInfo.alphaRun, 4)} º")
+            aircraftInfo.alphaRun = results["trimmed"]["Totals"]["Alpha"]
+            # mission['takeOffRun']["alpha"] = aircraftInfo.alphaRun
+            [runway, speedTakeOff, timeTakeOff] = MDO.performance.takeOffRoll(aircraftInfo, dt=0.01, nsteps=15000)
+            aircraftInfo.weight.fuelTakeOff = timeTakeOff * (aircraftInfo.engine.consumptionMaxLperH * \
+                                                             aircraftInfo.engine.fuelDensity / 3600) * 9.8
+            if PRINT:
+                print(f"Aircraft TOW: {aircraftInfo.weight.MTOW / 9.81} kg")
+                print(f"Runway Length: {round(runway, 3)} m")
+                print(f"Take Off Speed: {speedTakeOff} m/s")
+                print(f"Time TakeOff: {timeTakeOff} s")
+                print(f"Fuel mass TakeOff: {round(aircraftInfo.weight.fuelTakeOff / 9.8, 1)} kg")
+                print(f"CD Run AVL: {aircraftInfo.cDRunAvl}")
+                print(f"CD Run Total: {aircraftInfo.cDRun}")
+                print(f"Alpha Run: {round(aircraftInfo.alphaRun, 4)} º")
+    # ---- Descent ---------------------------------
+    if 'y' in config['output']['DESCENT']:
+        aircraftInfo.weight.fuelDescent, timeDescent, xDistDescent = MDO.descentFuel(aircraftInfo=aircraftInfo,
+                                                                       heightInitial=1500,
+                                                                       heightFinal=0,
+                                                                       rateOfDescent=1,
+                                                                       nSteps=20)
 
-    if 'y' in config['output']['CLIMB'].lower():
-        [climbFuel, climbTime] = MDO.climbFuel(aircraftInfo=aircraftInfo,
-                                               heightInitial=0,
-                                               heightFinal=1500,
-                                               rateOfClimb=1,
-                                               nSteps=20)
         if PRINT:
-            print(f"Fuel Climb: {climbFuel} kg")
-            print(f"Time Climb: {climbTime} kg")
+            print(f"fuel descent: {round(aircraftInfo.weight.fuelDescent / 9.8, 1)} kg")
+            print(f"time descent: {round(timeDescent / 60, 1)} min")
+
+    # ---- Climb ---------------------------------
+    if 'y' in config['output']['CLIMB'].lower():
+        aircraftInfo.weight.fuelClimb, climbTime, xDistClimb = MDO.climbFuel(aircraftInfo=aircraftInfo,
+                                                                             heightInitial=0,
+                                                                             heightFinal=1500,
+                                                                             rateOfClimb=1,
+                                                                             nSteps=20)
+        if PRINT:
+            print(f"Fuel Climb: {round(aircraftInfo.weight.fuelClimb / 9.8, 1)} kg")
+            print(f"Time Climb: {round(climbTime / 60, 1)} min")
+
     # ---- Cruise ---------------------------------
     if 'y' in config['output']['CRUISE'].lower():
-        aircraftInfo.cDCruiseAvl = results["trimmed"]["Totals"]["CDtot"]
-        aircraftInfo.dragCruiseAvl = 1 / 2 * 1.2 * aircraftInfo.cDCruiseAvl * mission['cruise'][
-            'vCruise'] ** 2 * aircraftInfo.wing.area
+        fuelKg = (aircraftInfo.weight.fuel - aircraftInfo.weight.fuelTakeOff - aircraftInfo.weight.fuelClimb) / 9.8
+        fuelDescentKg = (aircraftInfo.weight.fuelReserve + aircraftInfo.weight.fuelDescent) / 9.8
+
+        rangeCruise, timeCruise = MDO.cruise(aircraftInfo=aircraftInfo,
+                                             mission=mission,
+                                             fuelKg=fuelKg,
+                                             fuelDescentKg=fuelDescentKg,
+                                             nSteps=2)
         if PRINT:
-            print(f"Cd Cruise AVL: {round(aircraftInfo.cDCruiseAvl, 5)}")
-            print(f"Drag Cruise AVL: {round(aircraftInfo.dragCruiseAvl, 3)} N")
+            print(
+                f"Range Cruise: {round(rangeCruise / 1000, 2)} km, with {round(fuelKg - fuelDescentKg, 1)} kg of fuel")
+            print(
+                f"Time Cruise: {round(timeCruise / 3600, 0)} h e {round(timeCruise / 60 - round(timeCruise / 3600, 0) * 60, 1)} min")
 
     # ---- Lift Distribution ----------------------
     if 'y' in config['output']['LIFT_DIST'].lower():
@@ -120,3 +140,13 @@ def mainResults(results=None, aircraftInfo=None, mission=None):
 
     if PRINT:
         print("------------------------------")
+
+    # ---- Plot Mission Profile ---------------------------
+    if 1:
+        missionPlot = [[0, runway/1000, xDistClimb/1000, (xDistClimb + rangeCruise)/1000, (xDistClimb + rangeCruise + xDistDescent)/1000],
+                       [0, 0, 1500, 1500, 0]]
+
+        plt.plot(missionPlot[0], missionPlot[1])
+        plt.xlabel("Range (km)")
+        plt.ylabel("Altitude (m)")
+        plt.show()

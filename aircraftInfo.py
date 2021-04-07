@@ -2,6 +2,7 @@ import MDO
 import numpy as np
 from math import tan
 import os
+from dataclasses import dataclass
 
 
 class AircraftInfo:
@@ -75,19 +76,14 @@ class AircraftInfo:
         self.cLSlope = None
 
         # Flight Info
+        self.performance = Performance()
         self.cLCruise = None
         self.loiterTime = 3600
 
         # Weight and Cg Info
         self.weight = Weight(initialMTOW=200 * 9.81)
         self.cg = Cg()
-        self.weight.empty, self.cg.empty = MDO.weightCalc(self, method="Raymer")
 
-        weightVar = os.getenv("WEIGHT")
-        if weightVar == 'Raymer':
-            self.weight.MTOW = self.weight.empty + self.weight.fuel
-        else:
-            self.weight.MTOW = float(weightVar) * 9.81
 
         # Stall
         self.alphaStalls = None
@@ -199,13 +195,33 @@ class Thrust:
 
 class Weight:
     def __init__(self, initialMTOW=200 * 9.81):
-        self.engine = 63 * 9.81  # Atobá Data
+        self.engine = 63 * 9.8  # Atobá Data
 
         self.initialMTOW = initialMTOW
         # weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
-        self.empty = None
-        self.fuel = 0 * 9.81
-        self.MTOW = None
+        # self.empty = None
+        self.fuel = 20 * 9.8
+
+        self.fuelReserve = 5 * 9.8
+        self.fuelDescent = None
+        self.fuelCruise = None
+        self.fuelClimb = None
+        self.fuelTakeOff = None
+
+        self.fuelActual = self.fuel
+        # self.MTOW = None
+        self.allElse = {  # Atobá Data (kg, m)
+            "All": [0 * 9.8, -3.1],
+        }
+
+        weightVar = os.getenv("WEIGHT")
+        if weightVar == 'Raymer':
+            self.empty, _ = MDO.weightCalc(self, method="Raymer")
+            self.MTOW = self.empty + self.fuel
+        else:
+            self.empty = float(weightVar) * 9.81 - self.fuel
+            self.MTOW = float(weightVar) * 9.81
+
 
         # All Else Weight
         # self.allElse = {  # Atobá Data (kg, m)
@@ -218,9 +234,7 @@ class Weight:
         #     "batery12Ah": [3.845*9.81, 0],
         #     "ballast": [10*9.81, 0]
         # }  # TODO:
-        self.allElse = {  # Atobá Data (kg, m)
-            "All": [0 * 9.81, -3.1],
-        }
+
 
         # self.cgEmpty = cgEmpty
         # self.cgFull = 0.0  # TODO:
@@ -234,10 +248,29 @@ class Cg:
         self.full = 0.0  # TODO:
         self.calc = 0.31625  # TODO: (cgFull + cgCalc)/2
 
+        weightVar = os.getenv("WEIGHT")
+        if weightVar == 'Raymer':
+            _, self.empty = MDO.weightCalc(self, method="Raymer")
+        else:
+            self.empty = 0.31625
+
+
 
 class Engine:
     def __init__(self, engineInfo):
         self.name = engineInfo['name']
         self.consumptionMaxLperH = engineInfo['engineFC']['consumptionMaxLperH']
         self.fuelDensity = engineInfo['engineFC']['fuelDensityKgperL']
+
+
+class Performance:
+    def __init__(self):
+        self.cruise = BasicInfo()
+        self.climb = BasicInfo()
+
+
+@dataclass
+class BasicInfo:
+    cD: float = None
+    cL: float = None
 

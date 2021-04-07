@@ -2,6 +2,7 @@ import MDO
 import numpy as np
 from math import tan
 import os
+from dataclasses import dataclass
 
 
 class AircraftInfo:
@@ -22,6 +23,7 @@ class AircraftInfo:
         self.stateVariables = stateVariables.copy()
         self.controlVariables = controlVariables
         self.engineInfo = engineInfo
+        self.engine = Engine(engineInfo)
 
         self.machCalc = 0.1  # TODO:
         self.reynoldsCalc = 1*10**6  # TODO:
@@ -69,22 +71,18 @@ class AircraftInfo:
         self.cLRun = None
         self.cDRunAvl = None
         self.cDRun = None
+        self.cLMax = None
+        self.cLAlpha0 = None
+        self.cLSlope = None
 
         # Flight Info
+        self.performance = Performance()
         self.cLCruise = None
         self.loiterTime = 3600
-        self.cLMax = None  # TODO:
 
         # Weight and Cg Info
         self.weight = Weight(initialMTOW=200 * 9.81)
         self.cg = Cg()
-        self.weight.empty, self.cg.empty = MDO.weightCalc(self, method="Raymer")
-
-        weightVar = os.getenv("WEIGHT")
-        if weightVar == 'Raymer':
-            self.weight.MTOW = self.weight.empty + self.weight.fuel
-        else:
-            self.weight.MTOW = float(weightVar) * 9.81
 
         # Stall
         self.alphaStalls = None
@@ -101,7 +99,7 @@ class AircraftInfo:
         self.staticMargin = None
 
         # Thrust Curve
-        self.thrust = Thrust()
+        self.thrust = Thrust(engineInfo)
 
 
 def xyMeanChord(surfDict):
@@ -187,20 +185,42 @@ class Fuselage:
 
 
 class Thrust:
-    def __init__(self):
+    def __init__(self, engineInfo):
         self.v0 = None
         self.v1 = None
         self.v2 = None
+        self.slopeHeight = engineInfo['altitudeCorrection']['slope']
 
 
 class Weight:
     def __init__(self, initialMTOW=200 * 9.81):
-        self.engine = 63 * 9.81  # Atobá Data
+        self.engine = 63 * 9.8  # Atobá Data
 
         self.initialMTOW = initialMTOW
         # weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
-        self.empty = None
-        self.fuel = 0 * 9.81
+        # self.empty = None
+        self.fuel = 20 * 9.8
+
+        self.fuelReserve = 5 * 9.8
+        self.fuelDescent = None
+        self.fuelCruise = None
+        self.fuelClimb = None
+        self.fuelTakeOff = None
+
+        self.fuelActual = self.fuel
+        # self.MTOW = None
+        self.allElse = {  # Atobá Data (kg, m)
+            "All": [0 * 9.8, -3.1],
+        }
+
+        weightVar = os.getenv("WEIGHT")
+        if weightVar == 'Raymer':
+            self.empty, _ = MDO.weightCalc(self, method="Raymer")
+            self.MTOW = self.empty + self.fuel
+        else:
+            self.empty = float(weightVar) * 9.81 - self.fuel
+            self.MTOW = float(weightVar) * 9.81
+
 
         # All Else Weight
         # self.allElse = {  # Atobá Data (kg, m)
@@ -213,9 +233,7 @@ class Weight:
         #     "batery12Ah": [3.845*9.81, 0],
         #     "ballast": [10*9.81, 0]
         # }  # TODO:
-        self.allElse = {  # Atobá Data (kg, m)
-            "All": [0 * 9.81, -3.1],
-        }
+
 
         # self.cgEmpty = cgEmpty
         # self.cgFull = 0.0  # TODO:
@@ -228,5 +246,33 @@ class Cg:
         self.empty = None
         self.full = 0.0  # TODO:
         self.calc = 0.31625  # TODO: (cgFull + cgCalc)/2
+
+        weightVar = os.getenv("WEIGHT")
+        if weightVar == 'Raymer':
+            _, self.empty = MDO.weightCalc(self, method="Raymer")
+        else:
+            self.empty = 0.31625
+
+
+class Engine:
+    def __init__(self, engineInfo):
+        self.name = engineInfo['name']
+        self.consumptionMaxLperH = engineInfo['engineFC']['consumptionMaxLperH']
+        self.fuelDensity = engineInfo['engineFC']['fuelDensityKgperL']
+
+
+class Performance:
+    def __init__(self):
+        self.cruise = FlightInfo()
+        self.climb = FlightInfo()
+        self.descent = FlightInfo()
+
+
+@dataclass
+class FlightInfo:
+    cD: list = None
+    cL: list = None
+    range: float = None
+    time: float = None
 
 

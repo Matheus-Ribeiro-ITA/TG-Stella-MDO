@@ -1,8 +1,6 @@
 import time
 from _collections import OrderedDict
-from configparser import ConfigParser
 import numpy as np
-import os
 
 from aircraftInfo import AircraftInfo
 import MDO
@@ -10,16 +8,12 @@ import MDO
 # ----Process Time--------------------------------------------
 startTime = time.time()
 
-# ----Debug bool----------------------------------------------
+# ----logging--------------------------------------------
+logger = MDO.createLog(name="main")
+logger.info("------------------BEGIN------------------")
 
-config = ConfigParser()
-config.read(os.path.join("outputsConfig.cfg"))
-
-os.environ['DEBUG'] = config['env']['DEBUG']
-os.environ['PLOT'] = config['env']['PLOT']
-os.environ['PRINT'] = config['env']['PRINT']
-os.environ['WEIGHT'] = config['methods']['WEIGHT']
-
+# ----Config ----------------------------------------------
+MDO.parseConfig("outputsConfig.cfg")
 
 # ----Vertical Stabilizer-------------------------------------
 # Options: "conventional", "h", "v".
@@ -47,8 +41,8 @@ verticalTipChord = 0.375
 
 endPlateTipChord = 0.4
 
-wingSecPosition = wingSpan/2*wingSecPercentage
-wingPosSec = wingSpan/2*(1-wingSecPercentage)
+wingSecPosition = wingSpan / 2 * wingSecPercentage
+wingPosSec = wingSpan / 2 * (1 - wingSecPercentage)
 
 # ----Config---------------------------------------
 cgCalc = 0.25
@@ -92,8 +86,8 @@ stateVariables = {
         },
         "tip": {
             "chord": horizontalTipChord,
-            "b": horizontalSpan/2,
-            "sweepLE": np.arctan((horizontalRootChord-horizontalTipChord)/4/horizontalSpan/2),
+            "b": horizontalSpan / 2,
+            "sweepLE": np.arctan((horizontalRootChord - horizontalTipChord) / 4 / horizontalSpan / 2),
             "aoa": 0,
             "dihedral": 0,
             "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
@@ -111,7 +105,7 @@ stateVariables = {
         "tip": {
             "chord": verticalTipChord,
             "b": verticalSpan,
-            "sweepLE": np.arctan((verticalRootChord-verticalTipChord)/4/verticalSpan/2),
+            "sweepLE": np.arctan((verticalRootChord - verticalTipChord) / 4 / verticalSpan / 2),
             "aoa": 0,
             "dihedral": 0,
             "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
@@ -161,7 +155,7 @@ controlVariables = {
 }
 
 # ---- Avl Cases to analyse --------------------------------------------
-mission = {
+avlCases = {
     "cruise": {
         "altitude": 1500,
         "vCruise": 120 / 3.6,
@@ -209,8 +203,34 @@ engineInfo = {
         "consumptionMaxLperH": 12,  # liters/hour
         "consumptionCruiseLperH": 7,  # liters/hour
         "fuelDensityKgperL": 0.84,  # kg/liter
-        "BSFC": 1*0.001644  # Table 8.1 Gundlach: (0.7 - 1) lb/(hp.h), conversion 0.001644 to g/(kW.h)
-    }  # Check figure 2.1 for correct value. Slide 248
+        "BSFC": 1 * 608.2773878418
+        # Table 8.1 Gundlach: (0.7 - 1) lb/(hp.h), 1.8 for 12 l/hr, conversion 608.2773878418 to g/(kW.h)
+    },  # Check figure 2.1 for correct value. Slide 248
+    "altitudeCorrection": {  # From USAF thesis Travis D. Husaboe
+        '1500': 0.89,
+        '3000': 0.75,
+        'slope': (0.88 - 1) / 1500
+    }
+}
+
+# ---- Mission Profile ------------------------------------------
+missionProfile = {
+    "climb": {
+        "climbRate": 1,  # m/s
+        "initialAltitude": 0,
+        "endAltitude": 1500,
+        "nSteps": 10
+    },
+    "cruise": {
+        "altitude": 1500,
+        "nSteps": 10
+    },
+    "descent": {
+        "descentRate": 1,  # Positive value to descent
+        "endAltitude": 0,
+        "nSteps": 10
+    }
+
 }
 
 # ---- Aircraft Info Class ----------------------------------------
@@ -218,9 +238,13 @@ aircraftInfo = AircraftInfo(stateVariables, controlVariables, engineInfo=engineI
 aircraftInfo.cgCalc = cgCalc
 
 # ---- Avl -----------------------------------------
-results = MDO.avlMain(aircraftInfo, mission, verticalType=verticalType)
+results = MDO.avlMain(aircraftInfo, avlCases, verticalType=verticalType)
 
 # ---- Results -----------------------------------------
-MDO.mainResults(results=results, aircraftInfo=aircraftInfo, mission=mission)
+MDO.mainResults(results=results, aircraftInfo=aircraftInfo, avlCases=avlCases,
+                missionProfile=missionProfile, logger=logger)
+
 # ---- Time-----------------------------------------
-print(f"Process Time: {(time.time() - startTime)} s")
+print(f"Process Time: {round((time.time() - startTime),1)} s")
+logger.info(f"Process Time: {round((time.time() - startTime),1)} s")
+logger.info("------------------END------------------")

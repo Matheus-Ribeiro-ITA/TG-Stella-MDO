@@ -1,18 +1,5 @@
 import numpy as np
-
-
-def forward_euler(q0, qd, dt=0.01, nsteps=6000):
-    stts = [q0]
-    ts = [0.0]
-
-    for _ in range(nsteps):
-        qdt = qd(stts[-1])
-        q = stts[-1] + qdt * dt
-
-        stts.append(q)
-        ts.append(ts[-1] + dt)
-
-    return ts, np.vstack(stts)
+from MDO.auxTools import forward_euler
 
 
 def takeOffRoll(aircraftInfo, mu=0.03, ksafety=1.1, dt=0.01, nsteps=8000):
@@ -63,12 +50,13 @@ def takeOffRoll(aircraftInfo, mu=0.03, ksafety=1.1, dt=0.01, nsteps=8000):
     ts, qs = forward_euler(q0, qdot, dt=dt, nsteps=nsteps)
 
     finished_q = False
-    for q in qs:
+    for i, q in enumerate(qs):
         if q[1] >= Vto:
             finished_q = True
-            return q[0], q[1]
+            return q[0], q[1], i*dt
 
     if not finished_q:
         qs[-1, 0] = 9000
 
-    return qs[-1, 0], qs[-1, 1]
+    timeTakeOff = len(qs[:, 0])*dt
+    return qs[-1, 0], qs[-1, 1], timeTakeOff

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def rangeCruise(engineFC, mission, aircraftInfo):
+def rangeCruise(engineFC, avlCases, aircraftInfo):
     mf = 1.0
     mfFinal = aircraftInfo.weight.empty/aircraftInfo.weight.MTOW
     cLCruise = aircraftInfo.cLCruise
@@ -10,7 +10,7 @@ def rangeCruise(engineFC, mission, aircraftInfo):
     loiterTimer = aircraftInfo.loiterTime
     fuelFrac = engineFC["fuelFrac"]
     cCruise = engineFC["cCruise"]
-    vCruise = mission["cruise"]["vCruise"]
+    vCruise = avlCases["cruise"]["vCruise"]
 
     mfCruise = mf*fuelFrac["engineValue"]*fuelFrac["taxi"]*fuelFrac["takeOff"]*fuelFrac["climb"]
 

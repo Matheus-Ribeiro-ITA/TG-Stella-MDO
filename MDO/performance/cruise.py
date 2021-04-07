@@ -2,15 +2,15 @@ from MDO.auxTools import atmosphere
 import numpy as np
 
 
-def cruise(aircraftInfo=None, mission=None, fuelKg=None, fuelDescentKg=None, nSteps=10):
+def cruise(aircraftInfo=None, avlCases=None, fuelKg=None, fuelDescentKg=None, nSteps=10, logger=None):
     wingArea = aircraftInfo.wing.area
     emptyWeight = aircraftInfo.weight.empty
     v0 = aircraftInfo.thrust.v0
     v1 = aircraftInfo.thrust.v1
     v2 = aircraftInfo.thrust.v2
-    velocityCruise = mission['cruise']['vCruise']
+    velocityCruise = avlCases['cruise']['vCruise']
     heightSlope = aircraftInfo.thrust.slopeHeight
-    heightCruise = mission['cruise']['altitude']
+    heightCruise = avlCases['cruise']['altitude']
     cD0 = aircraftInfo.cD0
     cD1 = aircraftInfo.cD1
     cD2 = aircraftInfo.k
@@ -43,4 +43,6 @@ def cruise(aircraftInfo=None, mission=None, fuelKg=None, fuelDescentKg=None, nSt
         totalTime += time
         rangeCruise += velocityCruise*time
 
-    return rangeCruise, totalTime
+    aircraftInfo.performance.cruise.time = totalTime
+    aircraftInfo.performance.cruise.range = rangeCruise
+    return

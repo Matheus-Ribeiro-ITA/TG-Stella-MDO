@@ -84,7 +84,6 @@ class AircraftInfo:
         self.weight = Weight(initialMTOW=200 * 9.81)
         self.cg = Cg()
 
-
         # Stall
         self.alphaStalls = None
         self.stallPosition = None
@@ -255,7 +254,6 @@ class Cg:
             self.empty = 0.31625
 
 
-
 class Engine:
     def __init__(self, engineInfo):
         self.name = engineInfo['name']
@@ -265,12 +263,16 @@ class Engine:
 
 class Performance:
     def __init__(self):
-        self.cruise = BasicInfo()
-        self.climb = BasicInfo()
+        self.cruise = FlightInfo()
+        self.climb = FlightInfo()
+        self.descent = FlightInfo()
 
 
 @dataclass
-class BasicInfo:
+class FlightInfo:
     cD: float = None
     cL: float = None
+    range: float = None
+    time: float = None
+
 

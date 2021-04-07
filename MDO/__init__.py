@@ -6,6 +6,7 @@ from MDO.performance import *
 from MDO.airfoils import *
 from MDO.aerodynamics import *
 from MDO.auxTools import *
+from MDO.logging import *
 
 from .mainResults import mainResults
 from .avl import *

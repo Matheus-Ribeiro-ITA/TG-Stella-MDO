@@ -10,7 +10,11 @@ import MDO
 # ----Process Time--------------------------------------------
 startTime = time.time()
 
-# ----Debug bool----------------------------------------------
+# ----logging--------------------------------------------
+logger = MDO.createLog(name="main")
+logger.info("------------------BEGIN------------------")
+
+# ----Config ----------------------------------------------
 
 config = ConfigParser()
 config.read(os.path.join("outputsConfig.cfg"))
@@ -160,7 +164,7 @@ controlVariables = {
 }
 
 # ---- Avl Cases to analyse --------------------------------------------
-mission = {
+avlCases = {
     "cruise": {
         "altitude": 1500,
         "vCruise": 120 / 3.6,
@@ -218,16 +222,38 @@ engineInfo = {
     }
 }
 
+# ---- Mission Profile ------------------------------------------
+missionProfile = {
+    "climb": {
+        "climbRate": 1,  # m/s
+        "initialAltitude": 0,
+        "endAltitude": 1500,
+        "nSteps": 10
+    },
+    "cruise": {
+        "altitude": 1500,
+        "nSteps": 10
+    },
+    "descent": {
+        "descentRate": 1,  # Positive value to descent
+        "endAltitude": 0,
+        "nSteps": 10
+    }
+
+}
+
 # ---- Aircraft Info Class ----------------------------------------
 aircraftInfo = AircraftInfo(stateVariables, controlVariables, engineInfo=engineInfo)
 aircraftInfo.cgCalc = cgCalc
 
 # ---- Avl -----------------------------------------
-results = MDO.avlMain(aircraftInfo, mission, verticalType=verticalType)
+results = MDO.avlMain(aircraftInfo, avlCases, verticalType=verticalType)
 
 # ---- Results -----------------------------------------
-MDO.mainResults(results=results, aircraftInfo=aircraftInfo, mission=mission)
-
+MDO.mainResults(results=results, aircraftInfo=aircraftInfo, avlCases=avlCases,
+                missionProfile=missionProfile, logger=logger)
 
 # ---- Time-----------------------------------------
-print(f"Process Time: {(time.time() - startTime)} s")
+print(f"Process Time: {round((time.time() - startTime),1)} s")
+logger.info(f"Process Time: {round((time.time() - startTime),1)} s")
+logger.info("------------------END------------------")

@@ -4,7 +4,7 @@ import scipy
 import matplotlib.pyplot as plt
 
 
-def climbFuel(aircraftInfo=None, heightInitial=0, heightFinal=1500, rateOfClimb=1, nSteps=20):
+def climbFuel(aircraftInfo=None, heightInitial=0, heightFinal=1500, rateOfClimb=1, nSteps=20, logger=None):
 
     wingArea = aircraftInfo.wing.area
     weightTakeOff = aircraftInfo.weight.empty + aircraftInfo.weight.fuel - aircraftInfo.weight.fuelTakeOff
@@ -49,13 +49,15 @@ def climbFuel(aircraftInfo=None, heightInitial=0, heightFinal=1500, rateOfClimb=
         height = (heights[i]+heights[i+1])/2
         T, p, rho, mi = atmosphere(height)
         r = scipy.optimize.minimize(funThrottleRequired, velocityClimb, constraints=cons)
+        if not r.success:
+            logger.warning(f"Descent speed convergence failed")
         velocityClimb = r.x
         # thrustRequired = r.fun + rateOfClimb*mtow/velocityClimb
         # thrustMax = (v0 + v1 * velocityClimb + v2 * velocityClimb ** 2) * (1 + heightSlope * heights[i])
         # throttle = thrustRequired/thrustMax
         throttle = r.fun
         time = (heights[i+1] - heights[i])/rateOfClimb
-        xDist += r.x*time
+        xDist += r.x[0]*time
         fuelKgS = aircraftInfo.engine.consumptionMaxLperH*aircraftInfo.engine.fuelDensity*throttle/3600
         totalFuelKg += fuelKgS*time
 
@@ -67,8 +69,10 @@ def climbFuel(aircraftInfo=None, heightInitial=0, heightFinal=1500, rateOfClimb=
         # print("Total Fuel: ", totalFuel, " kg")
         # print("")
 
-    totalTime = (heightFinal-heightInitial)/rateOfClimb
-    return totalFuelKg[0]*9.8, totalTime, xDist
+    aircraftInfo.weight.fuelClimb = totalFuelKg[0]*9.8
+    aircraftInfo.performance.climb.time = (heightFinal-heightInitial)/rateOfClimb
+    aircraftInfo.performance.climb.range = xDist
+    return
 
 
     # plt.scatter(velocities, heights)

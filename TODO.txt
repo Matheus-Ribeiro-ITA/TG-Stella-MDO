@@ -8,7 +8,6 @@
 # TODO: Check if Component number is needed in AVL
 
 ## Performace
-# TODO: Adjust fuel consumption. [Check units]
 # TODO: Weight estimation [Doing]
 # TODO: Fuel capacity estimation
 # TODO: Eliptical lift curve
@@ -21,8 +20,6 @@
 # TODO: Add CG variation to analyses
 # TODO: Fix Polar fit warning
 
-# TODO: Look Howe for fuel comsumption
-https://aerocastle.files.wordpress.com/2012/05/aircraft-conceptual-design-synthesis.pdf
 ------------------DONE List---------------------------------
 
 # DONE: Ask for formula for LEMAC (Leading Edge MAC)
@@ -35,5 +32,6 @@ https://aerocastle.files.wordpress.com/2012/05/aircraft-conceptual-design-synthe
 # DONE: Add xfoil analyses
 # DONE: Change vertical format to V
 # DONE: Refactor
-
-
+# DONE: Adjust fuel consumption. [Check units]
+# DONE: Look Howe for fuel comsumption
+# https://aerocastle.files.wordpress.com/2012/05/aircraft-conceptual-design-synthesis.pdf

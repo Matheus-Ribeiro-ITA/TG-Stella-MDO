@@ -87,7 +87,7 @@ class Session(object):
         airfoil_names = self.geometry.external_files
         current_dir = os.getcwd()
         for airfoil in airfoil_names:
-            airfoil_path = os.path.join(current_dir, 'MDO\\airfoils\\coord_seligFmt', airfoil.split("_")[0])
+            airfoil_path = os.path.join(current_dir, 'MDO', 'airfoils', 'coord_seligFmt', airfoil.split("_")[0])
             shutil.copy(airfoil_path, target_dir)
 
     def _write_cases(self, target_dir):

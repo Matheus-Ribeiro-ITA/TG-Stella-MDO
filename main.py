@@ -235,7 +235,7 @@ missionProfile = {
 
 # ---- Aircraft Info Class ----------------------------------------
 aircraftInfo = AircraftInfo(stateVariables, controlVariables, engineInfo=engineInfo)
-aircraftInfo.cgCalc = cgCalc
+aircraftInfo.cg.calc = cgCalc
 
 # ---- Avl -----------------------------------------
 results = MDO.avlMain(aircraftInfo, avlCases, verticalType=verticalType)

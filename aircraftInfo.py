@@ -140,6 +140,7 @@ def xyMeanChord(surfDict):
             xMeanChord = xSec + ySec*tan(sweepLE)
             break
         xSec += span*tan(sweepLE)
+        spanSum += span
 
     return [xMeanChord, yMeanChord]
 

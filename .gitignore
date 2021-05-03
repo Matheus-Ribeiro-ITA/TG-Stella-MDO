@@ -127,5 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-trendLines/images/
+trendLines_dir/images/
 aircraft/

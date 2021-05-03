@@ -53,7 +53,7 @@ class UavDataFrame:
 
         else:
             self.df = pd.read_excel(
-                os.path.join(dirFolder, "04_Visualization.xlsx"),
+                os.path.join(dirFolder, "trendLines_dir", "04_Visualization.xlsx"),
                 engine='openpyxl',
             )
             self.df.to_pickle(dataFrameName)
@@ -116,6 +116,16 @@ class AtobaUAV:
         self.isCombustion = True
 
 
+LABELS = {
+    "mtow": "MTOW (kg)",
+    "wingSpan": "Envergadura (m)",
+    "payload": "Carga paga (kg)",
+    "range": "Alcance (km)",
+    "endurance": "Tempo de voo (hrs)",
+    "aspectRatio": "Alongamento",
+}
+
+
 def plotUavs(listUavs, xName, yName, stellaUav=None, save=False, lowerLimit=0, upperLimit=100):
     x = []
     y = []
@@ -138,21 +148,11 @@ def plotUavs(listUavs, xName, yName, stellaUav=None, save=False, lowerLimit=0, u
 
     ax.plot(sns.regplot, sns.boxplot)
     sns.set(style="white", color_codes=True)
-    ax.set_axis_labels(xlabel=xName, ylabel=yName, fontsize=16)
+    ax.set_axis_labels(xlabel=LABELS[xName], ylabel=LABELS[yName], fontsize=16)
 
     plt.gcf().subplots_adjust(bottom=0.25, left=0.25)
-    if save: plt.savefig(f'images/TrendLine_{xName}_{yName}.png', dpi=200)
+    if save: plt.savefig(f'trendLines_dir/images/TrendLine_{xName}_{yName}.png', dpi=200)
     plt.show()
 
 
 
-# uavDataFrame = UavDataFrame()
-# atoba = AtobaUAV()
-#
-# listUav = [Uav(*row[0:17]) for index, row in uavDataFrame.df.iterrows()]
-#
-# plotUavs(listUav, "wingSpan", "mtow", atoba)
-# plotUavs(listUav, "wingSpan", "payload", atoba)
-# plotUavs(listUav, "wingSpan", "range", atoba)
-# plotUavs(listUav, "wingSpan", "endurance", atoba)
-# plotUavs(listUav, "wingSpan", "aspectRatio", atoba)

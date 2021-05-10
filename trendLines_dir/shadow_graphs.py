@@ -4,27 +4,27 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 DRAG_INFO = {
-    "Pink_curve": ("CD ind", "deeppink", ".--"),
+    "Pink_curve": ("CD ind", "cornflowerblue", ".--"),
     "Unnamed: 1": "CD ind",
     "Blue_curve": ("CD prof", "blue", "v--"),
     "Unnamed: 3": "CD prof",
-    "Yellow_curve": ("CD fuse", "gold", "*--"),
+    "Yellow_curve": ("CD fuse", "darkblue", "*--"),
     "Unnamed: 5": "CD ind",
-    "Light_blue_curve": ("CD int", "aqua", "s--"),
+    "Light_blue_curve": ("CD int", "slateblue", "s--"),
     "Unnamed: 7": "CD int",
-    "Purple_curve": ("CD gear", "purple", "+--"),  # Cd yellow repeated
+    "Purple_curve": ("CD gear", "deepskyblue", "+--"),  # Cd yellow repeated
     "Unnamed: 9": "CD gear",
-    "Total Sum": ("CD total", "black", "d--")
+    "Total Sum": ("CD total", "slategray", "d--")
 }
 
 LIFT_INFO = {
-    "Pink_curve": ("Re = 259k", "deeppink", ".--"),
+    "Pink_curve": ("Re = 259k", "cornflowerblue", ".--"),
     "Unnamed: 1": "",
     "Blue_curve": ("Re = 186k", "blue", "v--"),
     "Unnamed: 3": "",
-    "Yellow_curve": ("Re = 461k", "gold", "*--"),
+    "Yellow_curve": ("Re = 461k", "darkblue", "*--"),
     "Unnamed: 5": "",
-    "Light_blue_curve": ("Re = 737k", "aqua", "s--"),
+    "Light_blue_curve": ("Re = 737k", "slateblue", "s--"),
     "Unnamed: 7": "",
 }
 
@@ -69,10 +69,10 @@ def aerodynamics_graphs():
     data_drag, names_drag = pass_data(df=drag_df, COLORS=DRAG_INFO)
     data_lift, names_lift = pass_data(df=lift_df, COLORS=LIFT_INFO)
 
-    plot_data(data=data_drag,
-              names=names_drag,
-              xlabel="Coeficiente de sustentação (CL)",
-              ylabel="Coeficiente de arrasto (CD)")
+    # plot_data(data=data_drag,
+    #           names=names_drag,
+    #           xlabel="Coeficiente de sustentação (CL)",
+    #           ylabel="Coeficiente de arrasto (CD)")
 
     plot_data(data=data_lift,
               names=names_lift,
@@ -131,7 +131,7 @@ def weight_pie_graph():
              WEIGHT_DATA["carga paga"] / total_weight * 100]
     # colors
     # colors = ['#ff9999', '#66b3ff', '#99ff99', '#ffcc99', '#e38dd9']
-    colors = ['#9c6c6b', '#7b9c6b', '#6b9c99', '#6b6d9c', '#9c6b96']
+    colors = ['cornflowerblue', 'deepskyblue', 'slateblue', '#D6D6D6', 'slategray']
     # explsion
     explode = ([0.05] * len(labels))
 
@@ -149,4 +149,5 @@ def weight_pie_graph():
 
 
 if __name__ == "__main__":
+    # aerodynamics_graphs()
     weight_pie_graph()

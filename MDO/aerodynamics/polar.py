@@ -56,7 +56,7 @@ def _parasiteDrag(aircraftInfo):
 
 
 def plotPolar(aircraftInfo):
-    t = np.linspace(-1.5, 1.5, 20, endpoint=True)
+    t = np.linspace(-1.5, 2, 20, endpoint=True)
 
     # Plot the square wave signal
     plt.plot(aircraftInfo.k * t ** 2 + aircraftInfo.cD0 + aircraftInfo.cD1 * t, t)

@@ -50,6 +50,9 @@ class Configuration(object):
 
         settings = dict()
         avl_path = parser['environment']['executable']
+        if '\\' in avl_path:
+            avl_path_list = avl_path.split('\\')
+            avl_path = os.path.join(*avl_path_list)
         try:
             settings['avl_bin'] = check_bin(bin_path=avl_path)
         except FileNotFoundError:

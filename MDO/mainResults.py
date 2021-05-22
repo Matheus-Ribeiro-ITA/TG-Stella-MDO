@@ -45,13 +45,13 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             print(f"CL Max aircraft: {aircraftInfo.cLMax}")
         if PLOT:
             MDO.plotStall(aircraftInfo)
-            MDO.plotliftDistribution(results, aircraftInfo)
+            MDO.plotliftDistribution(results, aircraftInfo, avlCases=avlCases)
 
-    # ---- Range ------------------------------------------
+    # ---- Range (Raymer)------------------------------------------
     if 'y' in config['output']['RANGE'].lower():
         rangeCruise = MDO.rangeCruise(aircraftInfo.engineInfo['engineFC'], avlCases, aircraftInfo)
         if PRINT:
-            print(f"Range: {rangeCruise}")
+            print(f"Range Brequet: {round(rangeCruise, 1)}")
 
     # ---- Thrust ---------------------------------
     if 'y' in config['output']['THRUST'].lower() \
@@ -74,11 +74,11 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             if PRINT:
                 print(f"Aircraft TOW: {aircraftInfo.weight.MTOW / 9.81} kg")
                 print(f"Runway Length: {round(runway, 3)} m")
-                print(f"Take Off Speed: {speedTakeOff} m/s")
-                print(f"Time TakeOff: {timeTakeOff} s")
+                print(f"Take Off Speed: {round(speedTakeOff, 2)} m/s")
+                print(f"Time TakeOff: {round(timeTakeOff, 2)} s")
                 print(f"Fuel mass TakeOff: {round(aircraftInfo.weight.fuelTakeOff / 9.8, 1)} kg")
-                print(f"CD Run AVL: {aircraftInfo.cDRunAvl}")
-                print(f"CD Run Total: {aircraftInfo.cDRun}")
+                print(f"CD Run AVL: {round(aircraftInfo.cDRunAvl, 5)}")
+                print(f"CD Run Total: {round(aircraftInfo.cDRun, 5)}")
                 print(f"Alpha Run: {round(aircraftInfo.alphaRun, 4)} º")
 
     # ---- Descent ---------------------------------

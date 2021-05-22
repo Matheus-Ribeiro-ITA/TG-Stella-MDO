@@ -1,20 +1,21 @@
 import logging
 from datetime import date
 
+
 def createLog(name=None):
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                        datefmt='%m-%d %H:%M',
-                        filename='myapp.log',
-                        filemode='w')
+    # logging.basicConfig(level=logging.DEBUG,
+    #                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+    #                     datefmt='%m-%d %H:%M',
+    #                     filename=f'logs\\{name}.log',
+    #                     filemode='a')
     # logging.basicConfig(level=logging.INFO)
     # Create a custom logger
     logger = logging.getLogger(name)
 
     # Create handlers
     c_handler = logging.StreamHandler()
-    today = date.today().strftime("%d_%m_%y")
-    f_handler = logging.FileHandler(f'logs\\{today}.log')
+    # today = date.today().strftime("%d_%m_%y")
+    f_handler = logging.FileHandler(f'logs\\{name}.log')
     c_handler.setLevel(logging.WARNING)
     f_handler.setLevel(logging.INFO)
 

@@ -21,7 +21,7 @@ def descentFuel(aircraftInfo=None, heightInitial=1500, heightFinal=0, rateOfDesc
         return 1/2*rho*velocity**2*wingArea*(cD0 + cD1 * cL + cD2 * cL ** 2)
 
     def funThrottleRequired(velocity):
-        thrustMax = (v0 + v1 * velocity + v2 * velocity ** 2) * (1 + heightSlope * heights[i])
+        thrustMax = (v0 + v1 * velocity + v2 * velocity ** 2) * (1 + heightSlope * height)
         return (funDrag(velocity) - rateOfDescent*weight/velocity)/thrustMax
 
     def rateConstraint(velocity):
@@ -50,7 +50,7 @@ def descentFuel(aircraftInfo=None, heightInitial=1500, heightFinal=0, rateOfDesc
         r = scipy.optimize.minimize(funThrottleRequired, velocityDescent, constraints=cons)
         velocityDescent = r.x
         if not r.success:
-            logger.warning(f"Descent speed convergence failed")
+            logger.warning(f"Descent speed convergence failed {r.fun}")
         throttle = r.fun
         time = (heights[i+1] - heights[i])/rateOfDescent
         xDist += r.x[0] * time

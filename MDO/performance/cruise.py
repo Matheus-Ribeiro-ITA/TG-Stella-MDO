@@ -5,10 +5,13 @@ import numpy as np
 def cruise(aircraftInfo=None, avlCases=None, fuelKg=None, fuelDescentKg=None, nSteps=10, logger=None):
     wingArea = aircraftInfo.wing.area
     emptyWeight = aircraftInfo.weight.empty
-    v0 = aircraftInfo.thrust.v0
-    v1 = aircraftInfo.thrust.v1
-    v2 = aircraftInfo.thrust.v2
+    t0 = aircraftInfo.thrust.v0
+    t1 = aircraftInfo.thrust.v1
+    t2 = aircraftInfo.thrust.v2
+
     velocityCruise = avlCases['cruise']['vCruise']
+
+
     heightSlope = aircraftInfo.thrust.slopeHeight
     heightCruise = avlCases['cruise']['altitude']
     cD0 = aircraftInfo.cD0
@@ -30,12 +33,16 @@ def cruise(aircraftInfo=None, avlCases=None, fuelKg=None, fuelDescentKg=None, nS
     for i in range(len(fuelKgArray)-1):
         fuelKg = (fuelKgArray[i]+fuelKgArray[i+1])/2
         aircraftWeight = emptyWeight + fuelKg*9.8
+
+        velocityCruise = np.sqrt(2*aircraftWeight/(rho*wingArea)*np.sqrt(cD2/cD0))
+        # print("New/old velocity: ", velocityCruise, " / ", avlCases['cruise']['vCruise'])
+
         cL = 2 * aircraftWeight / (wingArea * velocityCruise ** 2 * rho)
         aircraftInfo.performance.cruise.cL.append(cL)
         cD = cD0 + cD1 * cL + cD2 * cL ** 2
         aircraftInfo.performance.cruise.cD.append(cD0 + cD1 * cL + cD2 * cL ** 2)
         aircraftInfo.dragCruise = 1 / 2 * rho * cD * velocityCruise ** 2 * aircraftInfo.wing.area
-        thrust = (v0 + v1 * velocityCruise + v2 * velocityCruise ** 2) * (1 + heightSlope * heightCruise)
+        thrust = (t0 + t1 * velocityCruise + t2 * velocityCruise ** 2) * (1 + heightSlope * heightCruise)
         throttle = aircraftInfo.dragCruise / thrust
         fuelKgS = aircraftInfo.engine.consumptionMaxLperH * aircraftInfo.engine.fuelDensity * throttle / 3600
         time = (fuelKgArray[i]-fuelKgArray[i+1])/fuelKgS

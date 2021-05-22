@@ -106,7 +106,6 @@ class Envelope:
         self.vMaxStruct = vMaxStruct
         self.vMinEngine = list(zip(*vMinEngine))
         self.vMaxEngine = list(zip(*vMaxEngine))
-        print(vMaxEngine)
 
     def plot(self):
         plt.plot([0, 50], [self.ceiling, self.ceiling], label='Service Ceiling')

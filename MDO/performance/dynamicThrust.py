@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve, curve_fit
+import os
+import pandas as pd
 
 
 def dynamicThrust(engineInfo, velocity, method="actuatorDisk"):
@@ -12,13 +14,13 @@ def dynamicThrust(engineInfo, velocity, method="actuatorDisk"):
         aircraftInfo[object]:
     """
 
-    radiusPropeller = engineInfo['propellerInches'][0]*0.0254/2
-    diskArea = 3.1415*radiusPropeller**2
+    radiusPropeller = engineInfo['propellerInches'][0] * 0.0254 / 2
+    diskArea = 3.1415 * radiusPropeller ** 2
     diameterInches = engineInfo['propellerInches'][0]
     pitchInches = engineInfo['propellerInches'][1]
     rpm = engineInfo['RPM']
     powerHp = engineInfo['maxPowerHp']
-    power = 745.7*powerHp
+    power = 745.7 * powerHp
 
     def _actuatorSolver(velocity, etaCorrection):
         """
@@ -33,10 +35,11 @@ def dynamicThrust(engineInfo, velocity, method="actuatorDisk"):
         ## Return:
         - Thrust [float]: Max thrust provided.
         """
+
         def _actuatorDiskTheory(thrustRequired):
             """Formula derived from 'Designing Unmanned Aircraft Systems: A Comprehensive Approach'"""
-            deltaV = np.sqrt(velocity**2 + 2*thrustRequired/(1.225*diskArea)) - velocity
-            etaIdeal = 1/(deltaV/(2*velocity) + 1)
+            deltaV = np.sqrt(velocity ** 2 + 2 * thrustRequired / (1.225 * diskArea)) - velocity
+            etaIdeal = 1 / (deltaV / (2 * velocity) + 1)
             thrustReal = power * etaIdeal * etaCorrection / velocity
             erroThrust = thrustReal - thrustRequired
             return erroThrust
@@ -51,7 +54,8 @@ def dynamicThrust(engineInfo, velocity, method="actuatorDisk"):
 
         dynamicCorrection: correction discussed on website
         """
-        return 4.392399*10**-8*rpm * diameterInches**3.5/(np.sqrt(pitchInches))*(4.23333*10**-4*rpm*pitchInches - velocity/dynamicCorrection)
+        return 4.392399 * 10 ** -8 * rpm * diameterInches ** 3.5 / (np.sqrt(pitchInches)) * (
+                    4.23333 * 10 ** -4 * rpm * pitchInches - velocity / dynamicCorrection)
 
     METHOD = {
         "actuatorDisk": _actuatorSolver(velocity, 0.5),
@@ -62,7 +66,6 @@ def dynamicThrust(engineInfo, velocity, method="actuatorDisk"):
 
 
 def dynamicThrustCurve(engineInfo, method="actuatorDisk"):
-
     velocityList = np.linspace(0.5, 50, 10)
     thrustList = [dynamicThrust(engineInfo, velocity, method=method) for velocity in velocityList]
 
@@ -105,10 +108,11 @@ def plotDynamicThrust(engineInfo):
         ## Return:
         - Thrust [float]: Max thrust provided.
         """
+
         def _actuatorDiskTheory(thrustRequired):
             """Formula derived from 'Designing Unmanned Aircraft Systems: A Comprehensive Approach'"""
-            deltaV = np.sqrt(velocity**2 + 2*thrustRequired/(1.225*diskArea)) - velocity
-            etaIdeal = 1/(deltaV/(2*velocity) + 1)
+            deltaV = np.sqrt(velocity ** 2 + 2 * thrustRequired / (1.225 * diskArea)) - velocity
+            etaIdeal = 1 / (deltaV / (2 * velocity) + 1)
             thrustReal = power * etaIdeal * etaCorrection / velocity
             erroThrust = thrustReal - thrustRequired
             return erroThrust
@@ -123,23 +127,28 @@ def plotDynamicThrust(engineInfo):
 
         dynamicCorrection: correction discussed on website
         """
-        return 4.392399*10**-8*rpm * diameterInches**3.5/(np.sqrt(pitchInches))*(4.23333*10**-4*rpm*pitchInches - velocity/dynamicCorrection)
+        return 4.392399 * 10 ** -8 * rpm * diameterInches ** 3.5 / (np.sqrt(pitchInches)) * (
+                    4.23333 * 10 ** -4 * rpm * pitchInches - velocity / dynamicCorrection)
 
-    velocityList = np.linspace(0.5, 50, 40)
-    thrustActuator = [_actuatorSolver(velocity, 0.5) for velocity in velocityList]
-    thrustInternet = [_thrustInternetFormula(velocity, 1)*0.68 for velocity in velocityList]
-    thrustInternet35p = [_thrustInternetFormula(velocity, 1.30)*0.68 for velocity in velocityList]
+    velocityList = np.linspace(10, 50, 40)
+    thrustActuator = [_actuatorSolver(velocity, 0.85) for velocity in velocityList]
+    thrustInternet = [_thrustInternetFormula(velocity, 1) * 0.68 for velocity in velocityList]
+    thrustInternet35p = [_thrustInternetFormula(velocity, 1.30) * 0.68 for velocity in velocityList]
+    aa = list(map(lambda x: x * (1 + 1150 * (0.88 - 1) / 1500), thrustActuator))
+    aaa = list(map(lambda x: x * (1 + 2300 * (0.88 - 1) / 1500), thrustActuator))
+    plt.plot(velocityList, thrustActuator, '-',  color='deepskyblue', label="0 m (Disco atuador)")
+    plt.plot(velocityList, aa, '--',  color='slateblue', label="1150 m (Disco atuador)")
+    plt.plot(velocityList, aaa, '.', color='darkblue', label="2300 m (Disco atuador)")
+    # plt.scatter(velocityList, thrustInternet, color='r', label="Internet Guy Formula")
+    # plt.scatter(velocityList, thrustInternet35p, color='green', label="Internet Guy Formula (30% correction)")
 
-    plt.scatter(velocityList, thrustActuator, color='b', label="Actuator Disk Theory (90% correction)")
-    plt.scatter(velocityList, thrustInternet, color='r', label="Internet Guy Formula")
-    plt.scatter(velocityList, thrustInternet35p, color='green', label="Internet Guy Formula (30% correction)")
-    plt.xlabel("Velocity (m/s)")
-    plt.ylabel("Thrust (N)")
+    thrust_graphs_shadow()
+    plt.xlabel("Velocidade (m/s)")
+    plt.ylabel("Empuxo (N)")
     plt.legend()
     plt.grid()
+    plt.savefig("trendLines_dir/images/" + "shadow_vs_disk")
     plt.show()
-
-
 
     # velocityList = np.linspace(2, 60, 20)
     # etaIdeal50N = [actuatorDiskTheory(velocity, 5) for velocity in velocityList]
@@ -152,3 +161,98 @@ def plotDynamicThrust(engineInfo):
     # plt.scatter(velocityList, thrust)
     # plt.show()
 
+
+FLAP_INFO = {
+    "15kft": ("4500 m (GUNDLACH, 2004)", "cornflowerblue", ".--"),
+    "Unnamed: 1": "CD ind",
+    "11.25kft": ("3450 m (GUNDLACH, 2004)", "blue", "v--"),
+    "Unnamed: 3": "CD prof",
+    "7.5kft": ("2300 m (GUNDLACH, 2004)", "darkblue", "*--"),
+    "Unnamed: 5": "CD ind",
+    "3.75kft": ("1150 m (GUNDLACH, 2004)", "slateblue", "s--"),
+    "Unnamed: 7": "CD int",
+    "0kft": ("0 m (GUNDLACH, 2004)", "deepskyblue", "+--"),  # Cd yellow repeated
+    "Unnamed: 9": "CD int",
+}
+
+
+def pass_data(df=None, COLORS=None):
+    columns = df.columns
+    names = [COLORS[column] for column in columns]
+    data = []
+
+    for i, column in enumerate(columns):
+        if column.startswith("Unn"):
+            a = [float(df[column].iloc[i]) * 4.45 for i in range(1, df[column].shape[0])]
+        else:
+            a = [float(df[column].iloc[i]) * 0.514444 for i in range(1, df[column].shape[0])]
+        data.append(a)
+    return data, names
+
+
+def plot_data(data=None, names=None, xlabel="X label", ylabel="Y label"):
+    for i in range(4, len(data), 2):
+        plt.plot(data[i], data[i + 1], names[i][2], color=names[i][1], label=names[i][0])
+    # plt.plot(data[8], data[9], names[8][2], color=names[8][1], label=names[8][0])
+
+    # plt.legend()
+    # plt.grid()
+    # plt.xlabel(xlabel)
+    # plt.ylabel(ylabel)
+    # plt.xlim([0, 60])
+    # plt.savefig("trendLines_dir/images/" + "thrust_shadow")
+    # plt.show()
+
+
+def thrust_graphs_shadow():
+    CWD = os.getcwd()
+    thrust_df = pd.read_csv(os.path.join(CWD, "trendLines_dir", "shadow_data", "Thrust_datasets.csv"), sep=',')
+    data_thrust, names_drag = pass_data(df=thrust_df, COLORS=FLAP_INFO)
+
+    print(data_thrust[8][:-5], data_thrust[9][:-5])
+    m, b = np.polyfit([0, 1150, 2300], [data_thrust[9][0]/data_thrust[9][0],
+                                        data_thrust[7][0]/data_thrust[9][0],
+                                        data_thrust[5][0]/data_thrust[9][0]], 1)
+    print(m, b)
+    # print(data_thrust[5][0] / data_thrust[7][0])
+    # print(data_thrust[3][0] / data_thrust[7][0])
+    # print(data_thrust[1][0] / data_thrust[7][0])
+
+    plot_data(data=data_thrust,
+              names=names_drag,
+              xlabel="Velocidade (m/s)",
+              ylabel="Tração máximo (N)")
+    return
+
+
+engineInfo = {
+    "name": "DLE 170",
+    "maxPowerHp": 38,
+    "maxThrust": 343,
+    "propellerInches": [28, 12],
+    "RPM": 7500,
+    "engineFC": {
+        "fuelFrac": {
+            'engineValue': 0.998,
+            'taxi': 0.998,
+            'takeOff': 0.998,
+            'climb': 0.995,
+            "descent": 0.990,
+            "landing": 0.992
+        },
+        "cCruise": 0.03794037940379404,  # 0.068 standard value
+        "consumptionMaxLperH": 12,  # liters/hour
+        "consumptionCruiseLperH": 7,  # liters/hour
+        "fuelDensityKgperL": 0.84,  # kg/liter
+        "BSFC": 1 * 608.2773878418
+        # Table 8.1 Gundlach: (0.7 - 1) lb/(hp.h), 1.8 for 12 l/hr, conversion 608.2773878418 to g/(kW.h)
+    },  # Check figure 2.1 for correct value. Slide 248
+    "altitudeCorrection": {  # From USAF thesis Travis D. Husaboe
+        '1500': 0.89,
+        '3000': 0.75,
+        'slope': (0.88 - 1) / 1500
+    }
+}
+
+if __name__ == "__main__":
+    plotDynamicThrust(engineInfo)

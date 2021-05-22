@@ -166,8 +166,8 @@ avlCases = {
     #     "loadFactor": 1.5
     # },  # Change to Clmax
     "polar": {
-        "cLPoints": [0.2, 0.44, 0.8, 1.2]
-    },
+        "cLPoints": [-0.2, 0.6, 0.8, 1.2]   #  [-0.5, -0.4, 0.2, 0.44, 0.8, 1, 1.2, 1.3]
+    },  # [-0.2, 0.6, 0.8, 1.2]
     "takeOffRun": {
         'alpha': 5,
         'flap': 0,

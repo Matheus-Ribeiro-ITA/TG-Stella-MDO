@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 trendLines/images/
 aircraft/
+trendLines_dir/images/

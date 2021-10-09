@@ -18,8 +18,8 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
     if 'y' in config['output']['NEUTRAL_POINT'].lower():
         MDO.stability.getNeutralPoint(results, aircraftInfo)
         if PRINT:
-            print("Neutral Point: ", aircraftInfo.xNeutralPoint)
-            print(f"EM: {round(aircraftInfo.staticMargin, 2)} %")
+            print("Neutral Point: ", round(aircraftInfo.staticMargin, 4))
+            print(f"SM: {round(aircraftInfo.staticMargin, 2)} %")
 
     # ---- Deflections Check --------------------------------------
     if 'y' in config['output']['DEFLECTIONS'].lower():
@@ -31,7 +31,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
     if 'y' in config['output']['POLAR'].lower():
         [aircraftInfo.cD0, aircraftInfo.cD1, aircraftInfo.k, aircraftInfo.dataPolar] = MDO.polar(results, aircraftInfo)
         if PRINT:
-            print("Polar:", aircraftInfo.cD0, aircraftInfo.cD1, aircraftInfo.k)
+            print("Polar:", round(aircraftInfo.cD0, 4), round(aircraftInfo.cD1, 4), round(aircraftInfo.k, 4))
         if PLOT:
             MDO.plotPolar(aircraftInfo)
 
@@ -42,7 +42,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         if PRINT:
             print("Wing Stall: ", round(aircraftInfo.alphaStallWing, 1), "deg at ",
                   round(2 * aircraftInfo.stallPositionWing / aircraftInfo.wing.span * 100, 2), "% of wing")
-            print(f"CL Max aircraft: {aircraftInfo.cLMax}")
+            print(f"CL Max aircraft: {round(aircraftInfo.cLMax, 2)}")
         if PLOT:
             MDO.plotStall(aircraftInfo)
             MDO.plotliftDistribution(results, aircraftInfo, avlCases=avlCases)
@@ -59,7 +59,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         [aircraftInfo.thrust.v0, aircraftInfo.thrust.v1, aircraftInfo.thrust.v2] = MDO.performance.dynamicThrustCurve(
             aircraftInfo.engineInfo, method="actuatorDisk")
         if PRINT:
-            print(f"Thrust: {aircraftInfo.thrust.v0}, {aircraftInfo.thrust.v1}, {aircraftInfo.thrust.v2}")
+            print(f"Thrust: {round(aircraftInfo.thrust.v0, 2)}, {round(aircraftInfo.thrust.v1, 2)}, {round(aircraftInfo.thrust.v2, 2)}")
 
     # ---- Take Off ---------------------------------
     if 'y' in config['output']['TAKEOFF'].lower():
@@ -72,14 +72,14 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             aircraftInfo.weight.fuelTakeOff = timeTakeOff * (
                     aircraftInfo.engine.consumptionMaxLperH * aircraftInfo.engine.fuelDensity / 3600) * 9.8
             if PRINT:
-                print(f"Aircraft TOW: {aircraftInfo.weight.MTOW / 9.81} kg")
+                print(f"Aircraft TOW: {round(aircraftInfo.weight.MTOW / 9.81, 3)} kg")
                 print(f"Runway Length: {round(runway, 3)} m")
                 print(f"Take Off Speed: {round(speedTakeOff, 2)} m/s")
                 print(f"Time TakeOff: {round(timeTakeOff, 2)} s")
                 print(f"Fuel mass TakeOff: {round(aircraftInfo.weight.fuelTakeOff / 9.8, 1)} kg")
                 print(f"CD Run AVL: {round(aircraftInfo.cDRunAvl, 5)}")
                 print(f"CD Run Total: {round(aircraftInfo.cDRun, 5)}")
-                print(f"Alpha Run: {round(aircraftInfo.alphaRun, 4)} º")
+                print(f"Alpha Run: {round(aircraftInfo.alphaRun, 3)} º")
 
     # ---- Descent ---------------------------------
     if 'y' in config['output']['DESCENT']:

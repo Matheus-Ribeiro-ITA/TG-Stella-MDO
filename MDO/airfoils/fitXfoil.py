@@ -44,6 +44,7 @@ airfoilPolar = {
     'clmax': None,
 }
 
+
 def loadData():
     """
     # Description:

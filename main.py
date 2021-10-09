@@ -16,7 +16,8 @@ logger.info("------------------BEGIN------------------")
 MDO.parseConfig("outputsConfig.cfg")
 
 # ----Vertical Stabilizer-------------------------------------
-# Options: "conventional", "h", "v".
+# Options: "conventional", "v".
+# Warning: option "h" is broken
 verticalType = "v"
 
 # --Airfoils------------------------------------------------
@@ -77,7 +78,7 @@ stateVariables = {
     }),
     "horizontal": OrderedDict({
         "root": {
-            "chord": horizontalRootChord,
+            "chord": horizontalRootChord, 
             "aoa": 0,
             "x": horizontalXPosition,
             "y": 0,
@@ -111,19 +112,19 @@ stateVariables = {
             "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
         }
     }),
-    "endPlate": OrderedDict({
-        "root": {
-            "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
-        },
-        "tip": {
-            "chord": 0,
-            "b": endPlateTipChord,
-            "sweepLE": 0,
-            "aoa": 0,
-            "dihedral": 0,
-            "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
-        }
-    })
+    # "endPlate": OrderedDict({
+    #     "root": {
+    #         "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
+    #     },
+    #     "tip": {
+    #         "chord": 0,
+    #         "b": endPlateTipChord,
+    #         "sweepLE": 0,
+    #         "aoa": 0,
+    #         "dihedral": 0,
+    #         "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
+    #     }
+    # })
 }
 
 # ---- Control Surfaces definition --------------------------------------------
@@ -175,12 +176,12 @@ avlCases = {
     # "untrimmed_polar": {
     #     "cLPoints": [0.2, 0.44, 0.8]
     # }
-    "hingeMoment": {
-        'alpha': 8,
-        'flap': 20,
-        'aileron': 20,
-        'elevator': 20
-    }
+    # "hingeMoment": {
+    #     'alpha': 8,
+    #     'flap': 20,
+    #     'aileron': 20,
+    #     'elevator': 20
+    # }
 }
 
 # ---- Engine Info ------------------------------------------
@@ -234,13 +235,16 @@ missionProfile = {
 }
 
 # ---- Aircraft Info Class ----------------------------------------
+
 aircraftInfo = AircraftInfo(stateVariables, controlVariables, engineInfo=engineInfo)
 aircraftInfo.cg.calc = cgCalc
 
 # ---- Avl -----------------------------------------
+print(f"Calculating avlMain: {round((time.time() - startTime),1)} s")
 results = MDO.avlMain(aircraftInfo, avlCases, verticalType=verticalType)
 
 # ---- Results -----------------------------------------
+print(f"Calculating mainResults: {round((time.time() - startTime),1)} s")
 MDO.mainResults(results=results, aircraftInfo=aircraftInfo, avlCases=avlCases,
                 missionProfile=missionProfile, logger=logger)
 

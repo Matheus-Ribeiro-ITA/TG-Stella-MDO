@@ -11,6 +11,9 @@ config.read(os.path.join("outputsConfig.cfg"))
 def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=None, logger=None):
     PRINT = os.getenv('PRINT').lower() == 'yes'
     PLOT = os.getenv('PLOT').lower() == 'yes'
+
+    output_dict = {}
+
     if PRINT:
         print("------------------------------")
 
@@ -21,11 +24,19 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             print("Neutral Point: ", round(aircraftInfo.staticMargin, 4))
             print(f"SM: {round(aircraftInfo.staticMargin, 2)} %")
 
+        output_dict['neutral_point'] = aircraftInfo.staticMargin
+        output_dict['static_margin'] = aircraftInfo.staticMargin
+
     # ---- Deflections Check --------------------------------------
     if 'y' in config['output']['DEFLECTIONS'].lower():
         deflections = MDO.Deflections(results, aircraftInfo.controlVariables)
         if PRINT:
             print("Deflections:", deflections.cruise)
+
+        output_dict['deflection_cruise_aileron'] = deflections.cruise['aileron']
+        output_dict['deflection_cruise_elevator'] = deflections.cruise['elevator']
+        output_dict['deflection_cruise_rudder'] = deflections.cruise['rudder']
+        output_dict['deflection_cruise_flap'] = deflections.cruise['flap']
 
     # ---- Polar --------------------------------------------------
     if 'y' in config['output']['POLAR'].lower():
@@ -34,6 +45,10 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             print("Polar:", round(aircraftInfo.cD0, 4), round(aircraftInfo.cD1, 4), round(aircraftInfo.k, 4))
         if PLOT:
             MDO.plotPolar(aircraftInfo)
+
+        output_dict['cd0'] = aircraftInfo.cD0
+        output_dict['cd1'] = aircraftInfo.cD1
+        output_dict['cd2'] = aircraftInfo.k
 
     # ---- Stall --------------------------------------------------
     if 'y' in config['output']['STALL'].lower() \
@@ -46,6 +61,9 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         if PLOT:
             MDO.plotStall(aircraftInfo)
             MDO.plotliftDistribution(results, aircraftInfo, avlCases=avlCases)
+
+        output_dict['alphaStallWing'] = aircraftInfo.alphaStallWing
+        output_dict['stallPositionWing'] = 2 * aircraftInfo.stallPositionWing / aircraftInfo.wing.span * 100
 
     # ---- Range (Raymer)------------------------------------------
     if 'y' in config['output']['RANGE'].lower():
@@ -81,6 +99,15 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
                 print(f"CD Run Total: {round(aircraftInfo.cDRun, 5)}")
                 print(f"Alpha Run: {round(aircraftInfo.alphaRun, 3)} º")
 
+            output_dict['mtow'] = aircraftInfo.weight.MTOW
+            output_dict['runway'] = runway
+            output_dict['speedTakeOff'] = speedTakeOff
+            output_dict['timeTakeOff'] = timeTakeOff
+            output_dict['fuelTakeOff'] = aircraftInfo.weight.fuelTakeOff
+            output_dict['cDRunAvl'] = aircraftInfo.cDRunAvl
+            output_dict['cDRun'] = aircraftInfo.cDRun
+            output_dict['alphaRun'] = aircraftInfo.alphaRun
+
     # ---- Descent ---------------------------------
     if 'y' in config['output']['DESCENT']:
         MDO.descentFuel(aircraftInfo=aircraftInfo,
@@ -94,6 +121,9 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             print(f"fuel descent: {round(aircraftInfo.weight.fuelDescent / 9.8, 1)} kg")
             print(f"time descent: {round(aircraftInfo.performance.descent.time / 60, 1)} min")
 
+        output_dict['fuelDescent'] = aircraftInfo.weight.fuelDescent
+        output_dict['descentTime'] = aircraftInfo.performance.descent.time
+
     # ---- Climb ---------------------------------
     if 'y' in config['output']['CLIMB'].lower():
         MDO.climbFuel(aircraftInfo=aircraftInfo,
@@ -105,6 +135,9 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         if PRINT:
             print(f"Fuel Climb: {round(aircraftInfo.weight.fuelClimb / 9.8, 1)} kg")
             print(f"Time Climb: {round(aircraftInfo.performance.climb.time / 60, 1)} min")
+
+        output_dict['fuelClimb'] = aircraftInfo.weight.fuelClimb
+        output_dict['timeClimb'] = aircraftInfo.performance.climb.time
 
     # ---- Cruise ---------------------------------
     if 'y' in config['output']['CRUISE'].lower():
@@ -123,6 +156,8 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             print(
                 f"Time Cruise: {math.floor(aircraftInfo.performance.cruise.time / 3600)} h e {round(aircraftInfo.performance.cruise.time / 60 - math.floor(aircraftInfo.performance.cruise.time / 3600) * 60, 1)} min")
 
+        output_dict['cruiseRange'] = aircraftInfo.performance.cruise.range / 1000
+        output_dict['timeClimb'] = aircraftInfo.performance.climb.time
     # ---- Lift Distribution ----------------------
     if 'y' in config['output']['LIFT_DIST'].lower():
         MDO.liftDistNewton(results, avlCases)
@@ -170,3 +205,5 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
     # ---- End ---------------------------
     if PRINT:
         print("------------------------------")
+
+    return output_dict

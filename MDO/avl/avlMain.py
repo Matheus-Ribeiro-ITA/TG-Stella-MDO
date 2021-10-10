@@ -23,7 +23,7 @@ def avlMain(aircraftInfo, mission, verticalType="conventional"):
         cases=avl.avlRunBuild(mission,
                               aircraftInfo)
     )
-    print("Aee")
+
     # -----Save results-----------------------------------------
     if 'y' in os.getenv('DEBUG').lower():
         with open("aircraft/results.json", "w", encoding="utf-8") as file:

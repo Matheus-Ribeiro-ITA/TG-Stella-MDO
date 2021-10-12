@@ -202,6 +202,8 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         if PRINT:
             print(f"Range flight: {round( rangeAll/ 1000, 1)} km")
 
+        output_dict['range_all'] = rangeAll
+
     # ---- End ---------------------------
     if PRINT:
         print("------------------------------")

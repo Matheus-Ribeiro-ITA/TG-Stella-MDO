@@ -54,7 +54,11 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
     for ii in range(n_samples):
         print(f"Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
         # Evaluate sample
-        results_to_append = main(X[ii,:], logger=logger)
+        try:
+            results_to_append = main(X[ii,:], logger=logger)
+        except ValueError:
+            print(f"SKIPPING Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
+            continue
         states_to_append = pd.DataFrame(dict(zip(inputs_names, X[ii,:])), index=[0])
         results_to_append = pd.concat([states_to_append, results_to_append], axis=1)
 
@@ -92,7 +96,7 @@ if __name__ == '__main__':
           0.5, 0.2, 0.2, 0.5,
           0.5, 0.2, 0.2]
 
-    up = [6, 0.6, 0.75, 0.75,
+    ub = [6, 0.6, 0.75, 0.75,
           2.5, 0.7, 0.7, 2.5,
           1.5, 0.7, 0.7]
 
@@ -100,5 +104,5 @@ if __name__ == '__main__':
 
     sampling_type = 'real_random'
 
-    run_doe(n_inputs=n_inputs, lb=lb, ub=up, n_samples=n_samples, sampling_type=sampling_type,
+    run_doe(n_inputs=n_inputs, lb=lb, ub=ub, n_samples=n_samples, sampling_type=sampling_type,
             logger=logger, inputs_names=inputs_names)

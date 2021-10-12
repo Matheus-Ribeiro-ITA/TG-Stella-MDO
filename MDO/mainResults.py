@@ -21,10 +21,10 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
     if 'y' in config['output']['NEUTRAL_POINT'].lower():
         MDO.stability.getNeutralPoint(results, aircraftInfo)
         if PRINT:
-            print("Neutral Point: ", round(aircraftInfo.staticMargin, 4))
+            print("Neutral Point: ", round(aircraftInfo.xNeutralPoint, 4))
             print(f"SM: {round(aircraftInfo.staticMargin, 2)} %")
 
-        output_dict['neutral_point'] = aircraftInfo.staticMargin
+        output_dict['neutral_point'] = aircraftInfo.xNeutralPoint
         output_dict['static_margin'] = aircraftInfo.staticMargin
 
     # ---- Deflections Check --------------------------------------

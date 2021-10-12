@@ -3,12 +3,9 @@ Script to run DOE for the project
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
 from pymoo.factory import get_sampling
 from pymoo.interface import sample
-from DOE.utils.aux_tools import corrdot
 import time
 
 from main import main
@@ -55,7 +52,7 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
     df_results = pd.DataFrame()
 
     for ii in range(n_samples):
-        print(f"Case {ii}/{n_samples}, Time: {round(time.time() -startTime, 2)} s")
+        print(f"Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
         # Evaluate sample
         results_to_append = main(X[ii,:], logger=logger)
         states_to_append = pd.DataFrame(dict(zip(inputs_names, X[ii,:])), index=[0])
@@ -64,8 +61,6 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
         # df_results[len(df_results.index)] = results_list
         df_results = df_results.append(results_to_append, ignore_index=True)
 
-
-        print(df_results)
         df_results.to_csv(f'DOE/database/{filename}.csv', index=False)
 
     # # Create a pandas dataframe with all the information
@@ -93,15 +88,15 @@ if __name__ == '__main__':
                     'horizontalSpan', 'horizontalRootChord', 'horizontalTipChord', 'horizontalXPosition',
                     'verticalSpan', 'verticalRootChord', 'verticalTipChord']
 
-    lb = [4, 0.4, 0.6, 0.3,
-          1, 0.4, 0.4, 1.5,
-          0.6, 0.3, 0.3]
+    lb = [4, 0.4, 0.3, 0.3,
+          0.5, 0.2, 0.2, 0.5,
+          0.5, 0.2, 0.2]
 
-    up = [8, 0.6, 0.75, 0.4,
-          2, 0.6, 0.6, 2.5,
-          1, 0.45, 0.45]
+    up = [6, 0.6, 0.75, 0.75,
+          2.5, 0.7, 0.7, 2.5,
+          1.5, 0.7, 0.7]
 
-    n_samples = 10
+    n_samples = 1000
 
     sampling_type = 'real_random'
 

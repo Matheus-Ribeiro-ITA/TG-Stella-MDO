@@ -24,6 +24,14 @@ ub = [6, 0.6, 0.75, 0.75,
 
 bounds = Bounds(lb, ub)
 
+options= {
+    'grad': None,
+    'xtol': 1e-08,
+    'gtol': 1e-08,
+    'barrier_tol': 1e-08,
+    'sparse_jacobian': None,
+    'maxiter': 1000, 'verbose': 0, 'finite_diff_rel_step': None, 'initial_constr_penalty': 1.0, 'initial_tr_radius': 1.0, 'initial_barrier_parameter': 0.1, 'initial_barrier_tolerance': 0.1, 'factorization_method': None, 'disp': False}
+
 res = differential_evolution(objectiveFun,
                              bounds=bounds,
                              callback=callbackGenetic,

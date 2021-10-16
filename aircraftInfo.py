@@ -83,6 +83,9 @@ class AircraftInfo:
         # Weight and Cg Info
         self.weight = Weight(initialMTOW=200 * 9.81)
         self.cg = Cg()
+        self.weight.calc(aircraftInfo=self)
+        self.cg.calc()
+
 
         # Stall
         self.alphaStalls = None
@@ -151,6 +154,7 @@ class Surface:
         self.area, self.meanChord, self.span, self.sweep, self.tipX = MDO.infoSurface(surfaceDict)
         self.taperRatio = surfaceDict['tip']['chord']/surfaceDict['root']['chord']
         self.aspectRatio = self.span**2/self.area
+        self.rootX = surfaceDict['root']['x']
 
         if "aileron" in controlVariables and name == 'wing':
             self.aileronArea = self.area*controlVariables["aileron"]["spanStartPercentage"]*\
@@ -211,12 +215,13 @@ class Weight:
         self.fuelActual = self.fuel
         # self.MTOW = None
         self.allElse = {  # Atobá Data (kg, m)
-            "All": [0 * 9.8, -3.1],
+            "All": [30 * 9.8, -3.1],
         }
 
+    def calc(self, aircraftInfo):
         weightVar = os.getenv("WEIGHT")
         if weightVar == 'Raymer':
-            self.empty, _ = MDO.weightCalc(self, method="Raymer")
+            self.empty, _ = MDO.weightCalc(aircraftInfo, weightInfo=self, method="Raymer")
             self.MTOW = self.empty + self.fuel
         else:
             self.empty = float(weightVar) * 9.81 - self.fuel
@@ -246,8 +251,9 @@ class Cg:
         self.engine = [-2.5, 0, 0]  # TODO
         self.empty = None
         self.full = 0.0  # TODO:
-        self.calc = 0.31625  # TODO: (cgFull + cgCalc)/2
+        self.cg_cruise = 0.31625  # TODO: (cgFull + cgCalc)/2
 
+    def calc(self):
         weightVar = os.getenv("WEIGHT")
         if weightVar == 'Raymer':
             _, self.empty = MDO.weightCalc(self, method="Raymer")

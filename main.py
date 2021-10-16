@@ -77,7 +77,7 @@ if __name__ == '__main__':
     # ----Config ----------------------------------------------
     MDO.parseConfig("outputsConfig.cfg")
 
-    num_states = 10
+    num_states = 11
     x_states = np.array([0.0] * num_states)
 
     x_states[0] = 6  # wingSpan = 6

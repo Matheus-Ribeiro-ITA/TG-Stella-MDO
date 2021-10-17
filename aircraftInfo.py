@@ -112,6 +112,10 @@ class AircraftInfo:
         else:
             self.cg.calc = cgFixed
 
+        if 'y' in os.getenv('DEBUG').lower():
+            print("-"*10)
+            print(f"xNeutralPoint: {self.xNeutralPoint}")
+
 
 class Surface:
     def __init__(self, surfaceDict=None, controlVariables=None, name=None):

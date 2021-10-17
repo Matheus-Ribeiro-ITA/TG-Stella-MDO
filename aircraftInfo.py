@@ -82,9 +82,9 @@ class AircraftInfo:
 
         # Weight and Cg Info
         self.weight = Weight(initialMTOW=200 * 9.81)
-        self.cg = Cg()
+        self.cg = Cg(self)
         self.weight.calc(aircraftInfo=self)
-        self.cg.calc()
+        # self.cg.calc()
 
 
         # Stall
@@ -104,48 +104,13 @@ class AircraftInfo:
         # Thrust Curve
         self.thrust = Thrust(engineInfo)
 
+    def adjustCG(self, cgFixed=None, smFixedPercent=None):
 
-def xyMeanChord(surfDict):
-    """
-    # Description:
-        Calculates x distance from root LE of the mean aerodynamic chord.
-    See Gundlach, Jay-Designing Unmanned Aircraft Systems -
-    A Comprehensive Approach-American Institute of Aeronautics and Astronautics (2012) for equations.
-
-    ## Params:
-        -
-    """
-    keysSurfaceDict = list(surfDict.keys())
-    spanSum = 0
-    dArea = 0
-    areaTotal = 0
-    for i in range(len(keysSurfaceDict) - 1):
-        cRoot = surfDict[keysSurfaceDict[i]]['chord']
-        cTip = surfDict[keysSurfaceDict[i+1]]['chord']
-        span = surfDict[keysSurfaceDict[i+1]]['b']
-
-        d = span/3*(cRoot + 2*cTip)/(cRoot + cTip) + spanSum
-        area = (cTip+cRoot)/2*span
-
-        dArea += d*area
-        spanSum += span
-        areaTotal += area
-
-    yMeanChord = dArea/areaTotal
-    spanSum = 0
-    xSec = 0
-    for i in range(len(keysSurfaceDict) - 1):
-        span = surfDict[keysSurfaceDict[i+1]]['b']
-        sweepLE = surfDict[keysSurfaceDict[i+1]]['sweepLE']
-
-        if spanSum < yMeanChord < spanSum + span:
-            ySec = yMeanChord-spanSum
-            xMeanChord = xSec + ySec*tan(sweepLE)
-            break
-        xSec += span*tan(sweepLE)
-        spanSum += span
-
-    return [xMeanChord, yMeanChord]
+        if smFixedPercent is not None:
+            if self.xNeutralPoint is None: raise Exception("Neutral Point not calculated for some reason")
+            self.cg.calc = self.xNeutralPoint - smFixedPercent*self.wing.meanChord/100
+        else:
+            self.cg.calc = cgFixed
 
 
 class Surface:
@@ -218,6 +183,11 @@ class Weight:
             "All": [30 * 9.8, -3.1],
         }
 
+        self.wing = None
+        self.horizontal = None
+        self.vertical = None
+        self.fuselage = None
+
     def calc(self, aircraftInfo):
         weightVar = os.getenv("WEIGHT")
         if weightVar == 'Raymer':
@@ -241,24 +211,27 @@ class Weight:
         # }  # TODO:
 
 
-        # self.cgEmpty = cgEmpty
-        # self.cgFull = 0.0  # TODO:
-        # self.cgCalc = 0.31625  # TODO: (cgFull + cgCalc)/2
-
-
 class Cg:
-    def __init__(self):
-        self.engine = [-2.5, 0, 0]  # TODO
-        self.empty = None
-        self.full = 0.0  # TODO:
+    def __init__(self, aircraftInfo):
+        self.engine = [aircraftInfo.fuselage.length, 0, 0]  # TODO
+        self.wing = None
+        self.horizontal = None
+        self.vertical = None
+        self.fuselage = None
+        self.fuel = 0.0  # TODO:
+
+        self.full = []
+        self.empty = []
+
+        self.calc = None
         self.cg_cruise = 0.31625  # TODO: (cgFull + cgCalc)/2
 
-    def calc(self):
-        weightVar = os.getenv("WEIGHT")
-        if weightVar == 'Raymer':
-            _, self.empty = MDO.weightCalc(self, method="Raymer")
-        else:
-            self.empty = 0.31625
+    # def calc(self):
+    #     weightVar = os.getenv("WEIGHT")
+    #     if weightVar == 'Raymer':
+    #         _, self.empty = MDO.weightCalc(self, method="Raymer")
+    #     else:
+    #         self.empty = 0.31625
 
 
 class Engine:
@@ -273,6 +246,49 @@ class Performance:
         self.cruise = FlightInfo()
         self.climb = FlightInfo()
         self.descent = FlightInfo()
+
+
+def xyMeanChord(surfDict):
+    """
+    # Description:
+        Calculates x distance from root LE of the mean aerodynamic chord.
+    See Gundlach, Jay-Designing Unmanned Aircraft Systems -
+    A Comprehensive Approach-American Institute of Aeronautics and Astronautics (2012) for equations.
+
+    ## Params:
+        -
+    """
+    keysSurfaceDict = list(surfDict.keys())
+    spanSum = 0
+    dArea = 0
+    areaTotal = 0
+    for i in range(len(keysSurfaceDict) - 1):
+        cRoot = surfDict[keysSurfaceDict[i]]['chord']
+        cTip = surfDict[keysSurfaceDict[i+1]]['chord']
+        span = surfDict[keysSurfaceDict[i+1]]['b']
+
+        d = span/3*(cRoot + 2*cTip)/(cRoot + cTip) + spanSum
+        area = (cTip+cRoot)/2*span
+
+        dArea += d*area
+        spanSum += span
+        areaTotal += area
+
+    yMeanChord = dArea/areaTotal
+    spanSum = 0
+    xSec = 0
+    for i in range(len(keysSurfaceDict) - 1):
+        span = surfDict[keysSurfaceDict[i+1]]['b']
+        sweepLE = surfDict[keysSurfaceDict[i+1]]['sweepLE']
+
+        if spanSum < yMeanChord < spanSum + span:
+            ySec = yMeanChord-spanSum
+            xMeanChord = xSec + ySec*tan(sweepLE)
+            break
+        xSec += span*tan(sweepLE)
+        spanSum += span
+
+    return [xMeanChord, yMeanChord]
 
 
 @dataclass

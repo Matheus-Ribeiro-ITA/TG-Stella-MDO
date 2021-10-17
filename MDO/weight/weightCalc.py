@@ -64,6 +64,9 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
         wingWeight = wingWeightBtu / 0.224809  # wingWeight: Wing weight in N.
         xCgWing = xWingMeanChord + 0.4 * wingMeanChord
 
+        aircraftInfo.cg.wing = [xCgWing, 0, 0]
+        aircraftInfo.weight.wing = wingWeight
+
         if os.environ["DEBUG"].lower() == 'yes':
             print("-"*10)
             print('Wing Weight and CG: ', wingWeight, xCgWing)
@@ -72,9 +75,16 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
 
         return wingWeight, xCgWing
 
-    def _raymerStabSurfaces(surfaceArea, meanChord, xMeanChord, xRoot):
+    def _raymerStabSurfaces(surfaceArea, meanChord, xMeanChord, xRoot, name='horizontal'):
         weight = 10 * 9.81 * surfaceArea
         xcg = xRoot + xMeanChord + 0.4 * meanChord
+
+        if name == 'horizontal':
+            aircraftInfo.cg.horizontal = [xcg, 0, 0]
+            aircraftInfo.weight.horizontal = weight
+        elif name == 'vertical':
+            aircraftInfo.cg.vertical = [xcg, 0, 0]
+            aircraftInfo.weight.vertical = weight
 
         if os.environ["DEBUG"].lower() == 'yes':
             print("-" * 10)
@@ -85,6 +95,10 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
     def _raymerFuselage():
         Wf = 7 * 9.81 * fuselageWetArea
         xcgf = 0.45 * fuselageLength
+
+        aircraftInfo.cg.fuselage = [xcgf, 0, 0]
+        aircraftInfo.weight.fuselage = Wf
+
         if os.environ["DEBUG"].lower() == 'yes':
             print("-" * 10)
             print('Fuselage Weight and CG: ', Wf, xcgf)
@@ -114,8 +128,8 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
 
     methods = {
         "Raymer": [_raymerWing(),
-                   _raymerStabSurfaces(horizontalArea, horizontalMeanChord, xHorizontalMeanChord, xHorizontalRoot),
-                   _raymerStabSurfaces(verticalArea, verticalMeanChord, xVerticalMeanChord, xVerticalRoot),
+                   _raymerStabSurfaces(horizontalArea, horizontalMeanChord, xHorizontalMeanChord, xHorizontalRoot, name='horizontal'),
+                   _raymerStabSurfaces(verticalArea, verticalMeanChord, xVerticalMeanChord, xVerticalRoot,  name='vertical'),
                    _raymerFuselage(),
                    _raymerLandingGear(mtow, aircraftInfo.xNoseLG, 0.15),
                    _raymerLandingGear(mtow, aircraftInfo.xMainLG, 0.85),

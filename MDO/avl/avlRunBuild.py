@@ -99,4 +99,9 @@ def avlRunBuild(mission, aircraftInfo):
                                aileorn=aileronParam,
                                elevator=elevatorParam))
 
+    if "neutralPoint" in mission:
+        alphaParam = avlW.Parameter(name='alpha', setting='alpha', value=mission['neutralPoint']['alpha'])
+        cases.append(avlW.Case(name="NeutralPoint",
+                               alpha=alphaParam))
+
     return cases

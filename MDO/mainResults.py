@@ -163,7 +163,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         MDO.liftDistNewton(results, avlCases)
 
     # ---- Hinge Moment ---------------------------
-    if 'y' in config['output']['HINGE_MOMENT'].lower():
+    if 'y' in config['output']['TOTAL_HINGE_MOMENT'].lower():
         momentPerPressure = MDO.getHingeMoment(results, aircraftInfo)
         velocity = 20
         rho = 1.2
@@ -179,7 +179,6 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             envelope.plot()
 
     # ---- Plot Mission Profile ---------------------------
-
     if 'y' in config['output']['CRUISE'].lower() and \
             'y' in config['output']['CLIMB'].lower() and \
             'y' in config['output']['DESCENT'].lower():
@@ -203,6 +202,16 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
             print(f"Range flight: {round( rangeAll/ 1000, 1)} km")
 
         output_dict['range_all'] = rangeAll
+
+    # ---- Check CG Positionable ---------------------------
+    if 'y' in config['output']['CG_POSITIONABLE'].lower():
+        cgPositionable, allElseCgPercentFuselage= MDO.cgPositionable(aircraftInfo)
+
+        if PRINT:
+            print(f"Cg Positionable: {cgPositionable}, at {allElseCgPercentFuselage} of fuselage")
+
+        output_dict['cgPostionable'] = cgPositionable
+        output_dict['allElseCgPercentFuselage'] = allElseCgPercentFuselage
 
     # ---- End ---------------------------
     if PRINT:

@@ -144,7 +144,13 @@ def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=No
         #     'flap': 20,
         #     'aileron': 20,
         #     'elevator': 20
-        # }
+        # },
+    }
+
+    avlMandatoryCases = {
+        "neutralPoint": {
+            "alpha": 3
+        }
     }
 
     # ---- Engine Info ------------------------------------------
@@ -197,4 +203,4 @@ def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=No
 
     }
 
-    return stateVariables, controlVariables, avlCases, engineInfo, missionProfile
+    return stateVariables, controlVariables, avlMandatoryCases, avlCases, engineInfo, missionProfile

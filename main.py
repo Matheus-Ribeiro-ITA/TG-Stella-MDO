@@ -38,11 +38,12 @@ def main(x_states, logger=None):
     wingSecPosition = wingSpan / 2 * wingSecPercentage
     wingPosSec = wingSpan / 2 * (1 - wingSecPercentage)
 
-    # ----Config---------------------------------------
-    cgCalc = 0.25
-
+    # ----Config CG---------------------------------------
+    # Priority order: smFixed > cgFixed
+    cgFixed = None
+    smFixedPercent = 5  # In percentage
     # ----Parser to dict---------------------------------------
-    stateVariables, controlVariables, avlCases, engineInfo, missionProfile = MDO.set_state_variables(
+    stateVariables, controlVariables, avlMandatoryCases, avlCases, engineInfo, missionProfile = MDO.set_state_variables(
         wingRootChord=wingRootChord, wingAirfoil=wingAirfoil, wingMiddleChord=wingMiddleChord,
         wingSecPosition=wingSecPosition, wingTipChord=wingTipChord, wingPosSec=wingPosSec,
         horizontalRootChord=horizontalRootChord, horizontalXPosition=horizontalXPosition,
@@ -52,9 +53,15 @@ def main(x_states, logger=None):
     )
 
     # ---- Aircraft Info Class ----------------------------------------
-
     aircraftInfo = AircraftInfo(stateVariables, controlVariables, engineInfo=engineInfo)
-    aircraftInfo.cg.calc = cgCalc
+
+    # ---- Aircraft Neutral Point Calc ----------------------------------------
+    if smFixedPercent is not None:
+        results = MDO.avlMain(aircraftInfo, avlMandatoryCases, verticalType=verticalType)
+        aircraftInfo.xNeutralPoint = results['NeutralPoint']['StabilityDerivatives']['Xnp']
+        aircraftInfo.adjustCG(cgFixed=None, smFixedPercent=smFixedPercent)
+    else:
+        aircraftInfo.adjustCG(cgFixed=cgFixed, smFixedPercent=None)
 
     # ---- Avl -----------------------------------------
     results = MDO.avlMain(aircraftInfo, avlCases, verticalType=verticalType)

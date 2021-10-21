@@ -10,7 +10,7 @@ def cgPositionable(aircraftInfo):
     allElseCG = (aircraftInfo.cg.calc*aircraftInfo.weight.MTOW - (
     aircraftInfo.cg.wing[0]*aircraftInfo.weight.wing +
     aircraftInfo.cg.fuselage[0]*aircraftInfo.weight.fuselage +
-    aircraftInfo.cg.horizontal[0]*aircraftInfo.weight.horizontal +
+    # aircraftInfo.cg.horizontal[0]*aircraftInfo.weight.horizontal +  # TODO: ADD V case
     aircraftInfo.cg.vertical[0]*aircraftInfo.weight.vertical)) / aircraftInfo.weight.allElse['All'][0]
 
     allElseCgPercentFuselage = allElseCG/aircraftInfo.fuselage.length

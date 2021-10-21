@@ -6,9 +6,9 @@ import MDO
 
 def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=None,
                         wingSecPosition=None, wingTipChord=None, wingPosSec=None,
-                        horizontalRootChord=None, horizontalXPosition=None, horizontalTipChord=None,
-                        horizontalSpan=None, verticalRootChord=None, verticalTipChord=None,
-                        verticalSpan=None, stabAirfoil=None):
+                        horizontalRootChord=None, horizontalXPosition=None, verticalXPosition=None,
+                        horizontalTipChord=None, horizontalSpan=None, verticalRootChord=None,
+                        verticalTipChord=None, verticalSpan=None, stabAirfoil=None):
 
 
     # ----Optimizer state Variables-------------------------------------------
@@ -39,29 +39,29 @@ def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=No
                 "airfoil": MDO.airfoils.AirfoilData(wingAirfoil)
             },
         }),
-        "horizontal": OrderedDict({
-            "root": {
-                "chord": horizontalRootChord,
-                "aoa": 0,
-                "x": horizontalXPosition,
-                "y": 0,
-                "z": 0.5,
-                "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
-            },
-            "tip": {
-                "chord": horizontalTipChord,
-                "b": horizontalSpan / 2,
-                "sweepLE": np.arctan((horizontalRootChord - horizontalTipChord) / 4 / horizontalSpan / 2),
-                "aoa": 0,
-                "dihedral": 0,
-                "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
-            }
-        }),
+        # "horizontal": OrderedDict({  # TODO: Add V case
+        #     "root": {
+        #         "chord": horizontalRootChord if horizontalRootChord is not None else 0,
+        #         "aoa": 0,
+        #         "x": horizontalXPosition if horizontalXPosition is not None else 0,
+        #         "y": 0,
+        #         "z": 0.5,
+        #         "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
+        #     },
+        #     "tip": {
+        #         "chord": horizontalTipChord,
+        #         "b": horizontalSpan / 2 if horizontalSpan is not None else 0,
+        #         "sweepLE": np.arctan((horizontalRootChord - horizontalTipChord) / 4 / horizontalSpan / 2) if horizontalSpan is not None else 0,
+        #         "aoa": 0,
+        #         "dihedral": 0,
+        #         "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
+        #     }
+        # }),
         "vertical": OrderedDict({
             "root": {
                 "chord": verticalRootChord,
                 "aoa": 0,
-                "x": horizontalXPosition,
+                "x": verticalXPosition,
                 "y": 0,
                 "z": 0.5,
                 "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)

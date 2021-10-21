@@ -350,7 +350,7 @@ def _addControl2States(stateVariables, controlVariables, verticalType="conventio
             stateVariables["wing"]["middle"].update({"control": "aileron"})
             stateVariables["wing"]["tip"].update({"control": "aileron"})
 
-    if "elevator" in controlVariables:
+    if "elevator" in controlVariables and verticalType != "v":
         elevatorDict = controlVariables["elevator"]
 
         DivisionValue = elevatorDict["spanStartPercentage"] * stateVariables["horizontal"]["tip"]["b"]

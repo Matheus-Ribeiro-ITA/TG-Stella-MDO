@@ -34,10 +34,10 @@ class AircraftInfo:
                             name="wing")
 
         # Horizontal Info
-        if 'horizontal' in stateVariables:
-            self.horizontal = Surface(surfaceDict=stateVariables['horizontal'],
-                                      controlVariables=controlVariables,
-                                      name="horizontal")
+        # if 'horizontal' in stateVariables:  # TODO: Add V case
+        #     self.horizontal = Surface(surfaceDict=stateVariables['horizontal'],
+        #                               controlVariables=controlVariables,
+        #                               name="horizontal")
         # Vertical Info
         if 'vertical' in stateVariables:
             self.vertical = Surface(surfaceDict=stateVariables['vertical'],
@@ -56,7 +56,7 @@ class AircraftInfo:
         # Airfoil Info
         self.cLMaxWingAirfoil = stateVariables["wing"]["root"]["airfoil"].clmax
 
-        self.cLMaxHorizontalAirfoil = stateVariables["horizontal"]["root"]["airfoil"].clmax
+        # self.cLMaxHorizontalAirfoil = stateVariables["horizontal"]["root"]["airfoil"].clmax  # TODO: Add V case
         self.tcRootWing = 0.123  # TODO:
 
         # Polar Info
@@ -285,7 +285,7 @@ def xyMeanChord(surfDict):
         span = surfDict[keysSurfaceDict[i+1]]['b']
         sweepLE = surfDict[keysSurfaceDict[i+1]]['sweepLE']
 
-        if spanSum < yMeanChord < spanSum + span:
+        if spanSum <= yMeanChord < spanSum + span:
             ySec = yMeanChord-spanSum
             xMeanChord = xSec + ySec*tan(sweepLE)
             break

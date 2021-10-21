@@ -22,10 +22,10 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
     xWingMeanChord = aircraftInfo.wing.xMeanChord
 
     # Horizontal
-    horizontalArea = aircraftInfo.horizontal.area
-    xHorizontalMeanChord = aircraftInfo.horizontal.xMeanChord
-    horizontalMeanChord = aircraftInfo.horizontal.meanChord
-    xHorizontalRoot = aircraftInfo.horizontal.rootX
+    # horizontalArea = aircraftInfo.horizontal.area   # TODO: Add V Case
+    # xHorizontalMeanChord = aircraftInfo.horizontal.xMeanChord
+    # horizontalMeanChord = aircraftInfo.horizontal.meanChord
+    # xHorizontalRoot = aircraftInfo.horizontal.rootX
 
     # Vertical
     verticalArea = aircraftInfo.vertical.area
@@ -47,21 +47,21 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
 
         if method_calc == 'General Aviation':
             mto6Btu = mtow * 0.224809  # lbf
-            wingWeightBtu = 0.036 * wingAreaFt ** 0.758 * (arWing/(np.cos(wingSweep)**2)) ** 0.6 \
+            wingWeightLbf = 0.036 * wingAreaFt ** 0.758 * (arWing/(np.cos(wingSweep)**2)) ** 0.6 \
                             * q ** 0.006 * taperRatioWing ** 0.04 \
                             * (100*tcRootWing/(np.cos(wingSweep))) ** (-0.3) \
                             * (mto6Btu * Nz) ** 0.49
 
-            wingWeightBtu = 2* wingWeightBtu # TODO: This is a correction carteada to make sense.
+            wingWeightLbf = 2* wingWeightLbf # TODO: This is a correction carteada to make sense.
         elif method_calc == 'Cargo Transport':
             controlAreaBtu = aileronArea * 10.7639  # Control Surface Area in ft^2.
             mto6Btu = mtow * 0.224809  # lbf
-            wingWeightBtu = 0.0051 * (mto6Btu * Nz) ** 0.557 * wingAreaFt ** 0.649 \
+            wingWeightLbf = 0.0051 * (mto6Btu * Nz) ** 0.557 * wingAreaFt ** 0.649 \
                             * arWing ** 0.55 * tcRootWing ** (-0.4) \
                             * (1 + taperRatioWing) ** 0.1 * \
                             (np.cos(wingSweep)) ** (-1) * controlAreaBtu ** 0.1
 
-        wingWeight = wingWeightBtu / 0.224809  # wingWeight: Wing weight in N.
+        wingWeight = wingWeightLbf / 0.224809  # wingWeight: Wing weight in N.
         xCgWing = xWingMeanChord + 0.4 * wingMeanChord
 
         aircraftInfo.cg.wing = [xCgWing, 0, 0]
@@ -128,7 +128,7 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
 
     methods = {
         "Raymer": [_raymerWing(),
-                   _raymerStabSurfaces(horizontalArea, horizontalMeanChord, xHorizontalMeanChord, xHorizontalRoot, name='horizontal'),
+                   # _raymerStabSurfaces(horizontalArea, horizontalMeanChord, xHorizontalMeanChord, xHorizontalRoot, name='horizontal'),  # TODO: Add V case
                    _raymerStabSurfaces(verticalArea, verticalMeanChord, xVerticalMeanChord, xVerticalRoot,  name='vertical'),
                    _raymerFuselage(),
                    _raymerLandingGear(mtow, aircraftInfo.xNoseLG, 0.15),

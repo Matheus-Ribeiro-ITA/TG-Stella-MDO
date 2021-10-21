@@ -1,13 +1,18 @@
+import os
 import time
 from _collections import OrderedDict
 import numpy as np
 import pandas as pd
+from configparser import ConfigParser
 
 from aircraftInfo import AircraftInfo
 import MDO
 
+config = ConfigParser()
+config.read(os.path.join("outputsConfig.cfg"))
 
-def main(x_states, logger=None):
+
+def main(x_states_global, logger=None):
     # ----Vertical Stabilizer-------------------------------------
     # Options: "conventional", "v".
     # Warning: option "h" is broken
@@ -18,20 +23,30 @@ def main(x_states, logger=None):
     stabAirfoil = "naca0012_cruise"
 
     # ----Variables Optimizer---------------------------------------
-    wingSpan = x_states[0]
-    wingSecPercentage = x_states[1]
-    wingRootChord = x_states[2]
-    wingTipChord = x_states[3]
-    wingMiddleChord = (wingRootChord + wingTipChord) / 2
+    x_states_avl = MDO.parseStateVariable(x_states_global)
 
-    horizontalSpan = x_states[4]
-    horizontalRootChord = x_states[5]
-    horizontalTipChord = x_states[6]
-    horizontalXPosition = x_states[7]
+    wingSpan = x_states_avl[0]
+    wingSecPercentage = x_states_avl[1]
+    wingRootChord = x_states_avl[2]
+    wingMiddleChord = x_states_avl[3]
+    wingTipChord = x_states_avl[4]
 
-    verticalSpan = x_states[8]
-    verticalRootChord = x_states[9]
-    verticalTipChord = x_states[10]
+    verticalSpan = x_states_avl[5]
+    verticalRootChord = x_states_avl[6]
+    verticalTipChord = x_states_avl[7]
+    verticalXPosition = x_states_avl[8]
+
+    if os.environ["DEBUG"] == 'yes':
+        print(f"wingSpan: {wingSpan}")
+        print(f"wingSecPercentage: {wingSecPercentage}")
+        print(f"wingRootChord: {wingRootChord}")
+        print(f"wingMiddleChord: {wingMiddleChord}")
+        print(f"wingTipChord: {wingTipChord}")
+        print(f"verticalSpan: {verticalSpan}")
+        print(f"verticalRootChord: {verticalRootChord}")
+        print(f"verticalTipChord: {verticalTipChord}")
+        print(f"verticalXPosition: {verticalXPosition}")
+
 
     # endPlateTipChord = 0.4
 
@@ -46,9 +61,10 @@ def main(x_states, logger=None):
     stateVariables, controlVariables, avlMandatoryCases, avlCases, engineInfo, missionProfile = MDO.set_state_variables(
         wingRootChord=wingRootChord, wingAirfoil=wingAirfoil, wingMiddleChord=wingMiddleChord,
         wingSecPosition=wingSecPosition, wingTipChord=wingTipChord, wingPosSec=wingPosSec,
-        horizontalRootChord=horizontalRootChord, horizontalXPosition=horizontalXPosition,
-        horizontalTipChord=horizontalTipChord,
-        horizontalSpan=horizontalSpan, verticalRootChord=verticalRootChord, verticalTipChord=verticalTipChord,
+        horizontalRootChord=None,
+        horizontalXPosition=None, verticalXPosition=verticalXPosition,
+        horizontalTipChord=None,
+        horizontalSpan=None, verticalRootChord=verticalRootChord, verticalTipChord=verticalTipChord,
         verticalSpan=verticalSpan, stabAirfoil=stabAirfoil
     )
 
@@ -84,30 +100,41 @@ if __name__ == '__main__':
     # ----Config ----------------------------------------------
     MDO.parseConfig("outputsConfig.cfg")
 
-    num_states = 11
-    x_states = np.array([0.0] * num_states)
+    num_states = 9
+    x_states_global = np.array([0.0] * num_states)
 
-    x_states[0] = 6  # wingSpan = 6
-    x_states[1] = 0.5  # wingSecPercentage = 0.5
-    x_states[2] = 0.68  # wingRootChord = 0.68
-    x_states[3] = 0.35  # wingTipChord = 0.35
-    wingMiddleChord = (x_states[2] + x_states[3]) / 2
+    x_states_global[0] = 9  # aspectRatio
+    x_states_global[1] = 0.5  # wingSecPercentage =
+    x_states_global[2] = 3  # wingArea =
+    x_states_global[3] = 1  # taperRatio1 =
+    x_states_global[4] = 1  # taperRatio2 =
+    x_states_global[5] = 5  # aspectRatioV =
+    x_states_global[6] = 1  # areaV =
+    x_states_global[7] = 1  # taperV =
+    x_states_global[8] = 1.5  # posXV =
 
-    x_states[4] = 1.5  # horizontalSpan = 1.5
-    x_states[5] = 0.5  # horizontalRootChord = 0.5
-    x_states[6] = 0.5  # horizontalTipChord = 0.5
-    x_states[7] = 2  # horizontalXPosition = 2
 
-    x_states[8] = 0.8  # verticalSpan = 0.8 Remember that is H vertical
-    x_states[9] = 0.375  # verticalRootChord = 0.375
-    x_states[10] = 0.375  # verticalTipChord = 0.375
+    # x_states[0] = 6  # wingSpan = 6
+    # x_states[1] = 0.5  # wingSecPercentage = 0.5
+    # x_states[2] = 0.68  # wingRootChord = 0.68
+    # x_states[3] = 0.35  # wingTipChord = 0.35
+    # wingMiddleChord = (x_states[2] + x_states[3]) / 2
+    #
+    # x_states[4] = 1.5  # horizontalSpan = 1.5
+    # x_states[5] = 0.5  # horizontalRootChord = 0.5
+    # x_states[6] = 0.5  # horizontalTipChord = 0.5
+    # x_states[7] = 2  # horizontalXPosition = 2
+    #
+    # x_states[8] = 0.8  # verticalSpan = 0.8 Remember that is H vertical
+    # x_states[9] = 0.375  # verticalRootChord = 0.375
+    # x_states[10] = 0.375  # verticalTipChord = 0.375
 
     # endPlateTipChord = 0.4  # endPlateTipChord = 0.4
 
-    wingSecPosition = x_states[0] / 2 * x_states[1]
-    wingPosSec = x_states[0] / 2 * (1 - x_states[1])
+    # wingSecPosition = x_states[0] / 2 * x_states[1]
+    # wingPosSec = x_states[0] / 2 * (1 - x_states[1])
 
-    main(x_states)
+    main(x_states_global)
 
     # ---- Time-----------------------------------------
     print(f"Process Time: {round((time.time() - startTime), 1)} s")

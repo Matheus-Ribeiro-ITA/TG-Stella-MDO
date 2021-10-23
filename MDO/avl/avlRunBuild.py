@@ -100,14 +100,24 @@ def avlRunBuild(mission, aircraftInfo):
                                elevator=elevatorParam))
 
     if "neutralPoint" in mission:
-        T, p, rho, mi = atmosphere(mission["neutralPoint"]["altitude"])
-        vCruise = mission["neutralPoint"]["vCruise"]
-        aircraftInfo.cLCruise = 2 * weight / (rho * vCruise ** 2 * wingArea)
-        clParam = avlW.Parameter(name='alpha', setting='CL', value=aircraftInfo.cLCruise)
-        # alphaParam = avlW.Parameter(name='alpha', setting='alpha', value=mission['neutralPoint']['alpha'])
-        trimParam = avlW.Parameter(name='elevator', setting='Cm', value=0.0)
-        cases.append(avlW.Case(name="NeutralPoint",
-                               alpha=clParam,
-                               elevator=trimParam))
+
+        # Method of alpha 3 and 6
+        for i, alpha in enumerate(mission["neutralPoint"]["alphas"]):
+            clParam = avlW.Parameter(name='alpha', setting='alpha', value=alpha)
+            # trimParam = avl.Parameter(name='elevator', setting='Cm', value=0.0)
+            cases.append(avlW.Case(name="NeutralPoint_" + str(i),
+                                   alpha=clParam))
+
+        # Method of vCruise 80 and 120
+        # for i, vCruise in enumerate(mission["neutralPoint"]["vCruise"]):
+        #     T, p, rho, mi = atmosphere(mission["neutralPoint"]["altitude"])
+        #     # vCruise = mission["neutralPoint"]["vCruise"]
+        #     aircraftInfo.cLCruise = 2 * weight / (rho * vCruise ** 2 * wingArea)
+        #     clParam = avlW.Parameter(name='alpha', setting='CL', value=aircraftInfo.cLCruise)
+        #     # alphaParam = avlW.Parameter(name='alpha', setting='alpha', value=mission['neutralPoint']['alpha'])
+        #     trimParam = avlW.Parameter(name='elevator', setting='Cm', value=0.0)
+        #     cases.append(avlW.Case(name="NeutralPoint_" + str(i),
+        #                            alpha=clParam,
+        #                            elevator=trimParam))
 
     return cases

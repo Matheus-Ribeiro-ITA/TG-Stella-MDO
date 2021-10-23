@@ -74,7 +74,15 @@ def main(x_states_global, logger=None):
     # ---- Aircraft Neutral Point Calc ----------------------------------------
     if smFixedPercent is not None:
         results = MDO.avlMain(aircraftInfo, avlMandatoryCases, verticalType=verticalType)
-        aircraftInfo.xNeutralPoint = results['NeutralPoint']['StabilityDerivatives']['Xnp']
+        # cL1 = results['NeutralPoint_0']['Totals']['CLtot']
+        # cL2 = results['NeutralPoint_1']['Totals']['CLtot']
+        # cm1 = results['NeutralPoint_0']['Totals']['Cmtot']
+        # cm2 = results['NeutralPoint_1']['Totals']['Cmtot']
+        #
+        # test = (cL2 - cL1)/(cm2-cm1)
+
+        aircraftInfo.xNeutralPoint = (results['NeutralPoint_0']['StabilityDerivatives']['Xnp']
+                                      + results['NeutralPoint_1']['StabilityDerivatives']['Xnp'])/2
         aircraftInfo.adjustCG(cgFixed=None, smFixedPercent=smFixedPercent)
     else:
         aircraftInfo.adjustCG(cgFixed=cgFixed, smFixedPercent=None)
@@ -104,14 +112,14 @@ if __name__ == '__main__':
     x_states_global = np.array([0.0] * num_states)
 
     x_states_global[0] = 9  # aspectRatio
-    x_states_global[1] = 0.5  # wingSecPercentage =
-    x_states_global[2] = 3  # wingArea =
-    x_states_global[3] = 1  # taperRatio1 =
-    x_states_global[4] = 1  # taperRatio2 =
-    x_states_global[5] = 5  # aspectRatioV =
-    x_states_global[6] = 1  # areaV =
-    x_states_global[7] = 1  # taperV =
-    x_states_global[8] = 1.5  # posXV =
+    x_states_global[1] = 0.5  # wingSecPercentage
+    x_states_global[2] = 3  # wingArea
+    x_states_global[3] = 1  # taperRatio1
+    x_states_global[4] = 1  # taperRatio2
+    x_states_global[5] = 5  # aspectRatioV
+    x_states_global[6] = 0.8  # areaV
+    x_states_global[7] = 1  # taperV
+    x_states_global[8] = 1.5  # posXV
 
 
     # x_states[0] = 6  # wingSpan = 6

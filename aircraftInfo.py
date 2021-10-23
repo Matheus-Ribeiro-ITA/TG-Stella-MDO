@@ -115,6 +115,8 @@ class AircraftInfo:
         if 'y' in os.getenv('DEBUG').lower():
             print("-"*10)
             print(f"xNeutralPoint: {self.xNeutralPoint}")
+            print(f"xCG: {self.cg.calc}")
+            print(f"MeanChord: {self.wing.meanChord}")
 
 
 class Surface:

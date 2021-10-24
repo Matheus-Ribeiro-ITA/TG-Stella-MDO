@@ -13,7 +13,7 @@ def cgPositionable(aircraftInfo):
     # aircraftInfo.cg.horizontal[0]*aircraftInfo.weight.horizontal +  # TODO: ADD V case
     aircraftInfo.cg.vertical[0]*aircraftInfo.weight.vertical)) / aircraftInfo.weight.allElse['All'][0]
 
-    allElseCgPercentFuselage = allElseCG/aircraftInfo.fuselage.length
+    allElseCgPercentFuselage = (allElseCG/aircraftInfo.fuselage.length)*100
 
     secure_factor = 0.8
 

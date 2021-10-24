@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 
 class AircraftInfo:
-    def __init__(self, stateVariables, controlVariables, engineInfo=None):
+    def __init__(self, stateVariables, controlVariables, engineInfo=None, optimizationVariables=None):
         """
         # Description:
         - Aircraft Info that can be useful on AVL and other calculations.
@@ -21,6 +21,7 @@ class AircraftInfo:
         - wingSpan [float]: Wing span.
         """
         self.stateVariables = stateVariables.copy()
+        self.optimizationVariables = optimizationVariables
         self.controlVariables = controlVariables
         self.engineInfo = engineInfo
         self.engine = Engine(engineInfo)
@@ -44,8 +45,8 @@ class AircraftInfo:
                                     controlVariables=controlVariables,
                                     name="vertical")
         # Fuselage Info
-        self.fuselage = Fuselage(length=1.2,
-                                 diameter=0.5,
+        self.fuselage = Fuselage(length=stateVariables['fuselage']['length'],
+                                 diameter=stateVariables['fuselage']['diameter'],
                                  reynoldsCalc=self.reynoldsCalc,
                                  machCalc=self.machCalc)
 

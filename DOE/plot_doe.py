@@ -8,22 +8,13 @@ from DOE.utils.aux_tools import corrdot
 
 
 def plot_doe(plot_type=0, filename='results'):
-
     # ------------------------------------------------------------------------------------------------------------------
     # Read and treat data
 
     doe_df = pd.read_csv(f'DOE/database/{filename}.csv')
 
-    fixex_outputs = ['deflection_cruise_aileron', 'deflection_cruise_rudder',
-                    'deflection_cruise_flap', 'mtow',
-                    'descentTime', 'timeClimb']
-
-    useless_outputs = ['neutral_point', 'cDRunAvl', 'alphaRun',
-                       'timeTakeOff', 'fuelTakeOff']
-
-    doe_df = doe_df.drop(columns=fixex_outputs)
-    doe_df = doe_df.drop(columns=useless_outputs)
-    print(doe_df.shape)
+    doe_df = _filterDoe(doe_df)
+    print("Df shape: ", doe_df.shape)
 
     filename_to_save = filename + f'_{doe_df.shape[0]}_por_{doe_df.shape[1]}'
     # ------------------------------------------------------------------------------------------------------------------
@@ -33,7 +24,7 @@ def plot_doe(plot_type=0, filename='results'):
     if plot_type == 0:
 
         # Simple plot
-        fig = sns.pairplot(doe_df,corner=True)
+        fig = sns.pairplot(doe_df, corner=True)
 
     elif plot_type == 1:
 
@@ -51,9 +42,22 @@ def plot_doe(plot_type=0, filename='results'):
     fig.savefig(f'DOE/images/{filename_to_save}.png')
 
 
+def _filterDoe(doe_df):
 
+    outputs_to_drop = ['deflection_cruise_aileron', 'deflection_cruise_rudder',
+                       'deflection_cruise_flap', 'mtow',
+                       'descentTime', 'timeClimb', 'neutral_point', 'cDRunAvl', 'alphaRun',
+                       'timeTakeOff', 'fuelTakeOff',
+                       'cd0', 'cd1', 'cd2', 'cDRun',
+                       'cgPostionable']
 
+    doe_df = doe_df.drop(columns=outputs_to_drop)
 
+    doe_df = doe_df[doe_df['cruiseRange'] < 150]
+    doe_df = doe_df[doe_df['cruiseRange'] > 0]
+    doe_df = doe_df[doe_df['deflection_cruise_elevator'] < 0]
+
+    return doe_df
 
 
 if __name__ == '__main__':

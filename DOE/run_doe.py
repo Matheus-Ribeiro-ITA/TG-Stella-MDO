@@ -51,21 +51,26 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
 
     df_results = pd.DataFrame()
 
+    failed_count = 0
+
     for ii in range(n_samples):
         print(f"Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
         # Evaluate sample
         try:
-            results_to_append = main(X[ii,:], logger=logger)
-        except ValueError:
+            results_to_append = main(X[ii, :], logger=logger)
+        except (FileNotFoundError, ValueError) as e:
             print(f"SKIPPING Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
+            failed_count += 1
             continue
-        states_to_append = pd.DataFrame(dict(zip(inputs_names, X[ii,:])), index=[0])
+        states_to_append = pd.DataFrame(dict(zip(inputs_names, X[ii, :])), index=[0])
         results_to_append = pd.concat([states_to_append, results_to_append], axis=1)
 
         # df_results[len(df_results.index)] = results_list
         df_results = df_results.append(results_to_append, ignore_index=True)
 
         df_results.to_csv(f'DOE/database/{filename}.csv', index=False)
+
+    print(f"Done {n_samples - failed_count}/{n_samples}")
 
     # # Create a pandas dataframe with all the information
     # df = pd.DataFrame({'x1' : X[:,0],
@@ -86,21 +91,20 @@ if __name__ == '__main__':
     # ----Config ----------------------------------------------
     MDO.parseConfig("outputsConfig.cfg")
 
-    n_inputs = 11
+    inputs_names = ['aspectRatio', 'wingSecPercentage', 'wingArea', 'taperRatio1', 'taperRatio2',
+                    'aspectRatioV', 'areaV', 'taperV', 'posXV',
+                    'fuselageLength']
 
-    inputs_names = ['wingSpan', 'wingSecPercentage', 'wingRootChord', 'wingTipChord',
-                    'horizontalSpan', 'horizontalRootChord', 'horizontalTipChord', 'horizontalXPosition',
-                    'verticalSpan', 'verticalRootChord', 'verticalTipChord']
+    n_inputs = len(inputs_names)
 
-    lb = [4, 0.4, 0.3, 0.3,
-          0.5, 0.2, 0.2, 0.5,
-          0.5, 0.2, 0.2]
+    lb = [6, 0.4, 1.5, 0.5, 0.5,
+          3, 0.5, 0.5, 0.5,
+          1]
+    ub = [12, 0.6, 2.5, 1.0, 1.0,
+          9, 1.5, 1, 2.5,
+          2]
 
-    ub = [6, 0.6, 0.75, 0.75,
-          2.5, 0.7, 0.7, 2.5,
-          1.5, 0.7, 0.7]
-
-    n_samples = 1000
+    n_samples = 500
 
     sampling_type = 'real_random'
 

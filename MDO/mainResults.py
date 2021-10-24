@@ -201,7 +201,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         if PRINT:
             print(f"Range flight: {round( rangeAll/ 1000, 1)} km")
 
-        output_dict['range_all'] = rangeAll
+        output_dict['range_all'] = rangeAll / 1000
 
     # ---- Check CG Positionable ---------------------------
     if 'y' in config['output']['CG_POSITIONABLE'].lower():
@@ -212,6 +212,9 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
 
         output_dict['cgPostionable'] = cgPositionable
         output_dict['allElseCgPercentFuselage'] = allElseCgPercentFuselage
+
+    # ---- Check CG Positionable ---------------------------
+    MDO.checkOutputValues(output_dict, aircraftInfo)
 
     # ---- End ---------------------------
     if PRINT:

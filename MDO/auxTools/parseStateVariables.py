@@ -111,4 +111,9 @@ def parseStateVariable(x_states_global, variables='short'):
         x_states[7] = verticalTipChord
         x_states[8] = verticalXPosition
 
+        # -----------------------------
+        # Fuselage
+        fuselageLength = x_states_global[9]
+        x_states[9] = fuselageLength
+
         return x_states

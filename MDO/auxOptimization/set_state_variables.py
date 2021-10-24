@@ -8,7 +8,8 @@ def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=No
                         wingSecPosition=None, wingTipChord=None, wingPosSec=None,
                         horizontalRootChord=None, horizontalXPosition=None, verticalXPosition=None,
                         horizontalTipChord=None, horizontalSpan=None, verticalRootChord=None,
-                        verticalTipChord=None, verticalSpan=None, stabAirfoil=None):
+                        verticalTipChord=None, verticalSpan=None, stabAirfoil=None,
+                        fuselageLength=None, fuselageDiameter=0.5):
 
 
     # ----Optimizer state Variables-------------------------------------------
@@ -88,6 +89,10 @@ def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=No
         #         "airfoil": MDO.airfoils.AirfoilData(stabAirfoil)
         #     }
         # })
+        "fuselage": OrderedDict({
+            'length': fuselageLength,
+            'diameter': fuselageDiameter
+        }),
     }
 
     # ---- Control Surfaces definition --------------------------------------------

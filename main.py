@@ -36,6 +36,8 @@ def main(x_states_global, logger=None):
     verticalTipChord = x_states_avl[7]
     verticalXPosition = x_states_avl[8]
 
+    fuselageLength = x_states_avl[9]
+
     if os.environ["DEBUG"] == 'yes':
         print(f"wingSpan: {wingSpan}")
         print(f"wingSecPercentage: {wingSecPercentage}")
@@ -46,6 +48,7 @@ def main(x_states_global, logger=None):
         print(f"verticalRootChord: {verticalRootChord}")
         print(f"verticalTipChord: {verticalTipChord}")
         print(f"verticalXPosition: {verticalXPosition}")
+        print(f"fuselageLength: {fuselageLength}")
 
 
     # endPlateTipChord = 0.4
@@ -65,11 +68,12 @@ def main(x_states_global, logger=None):
         horizontalXPosition=None, verticalXPosition=verticalXPosition,
         horizontalTipChord=None,
         horizontalSpan=None, verticalRootChord=verticalRootChord, verticalTipChord=verticalTipChord,
-        verticalSpan=verticalSpan, stabAirfoil=stabAirfoil
+        verticalSpan=verticalSpan, stabAirfoil=stabAirfoil,
+        fuselageLength=fuselageLength
     )
 
     # ---- Aircraft Info Class ----------------------------------------
-    aircraftInfo = AircraftInfo(stateVariables, controlVariables, engineInfo=engineInfo)
+    aircraftInfo = AircraftInfo(stateVariables, controlVariables, engineInfo=engineInfo, optimizationVariables=x_states_global)
 
     # ---- Aircraft Neutral Point Calc ----------------------------------------
     if smFixedPercent is not None:

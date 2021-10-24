@@ -45,7 +45,7 @@ def plot_doe(plot_type=0, filename='results'):
 def _filterDoe(doe_df):
 
     outputs_to_drop = ['deflection_cruise_aileron', 'deflection_cruise_rudder',
-                       'deflection_cruise_flap', 'mtow',
+                       'deflection_cruise_flap',
                        'descentTime', 'timeClimb', 'neutral_point', 'cDRunAvl', 'alphaRun',
                        'timeTakeOff', 'fuelTakeOff',
                        'cd0', 'cd1', 'cd2', 'cDRun',
@@ -53,9 +53,20 @@ def _filterDoe(doe_df):
 
     doe_df = doe_df.drop(columns=outputs_to_drop)
 
-    doe_df = doe_df[doe_df['cruiseRange'] < 150]
+    # -----------------------------------------
+    numRows = doe_df.shape[0]
+    doe_df = doe_df[doe_df['cruiseRange'] < 500]
+    print(f"Cutted {numRows - doe_df.shape[0]}, range < 500")
+    # -----------------------------------------
+    numRows = doe_df.shape[0]
     doe_df = doe_df[doe_df['cruiseRange'] > 0]
-    doe_df = doe_df[doe_df['deflection_cruise_elevator'] < 0]
+    print(f"Cutted {numRows - doe_df.shape[0]}, range > 0")
+    # -----------------------------------------
+    # numRows = doe_df.shape[0]
+    # doe_df = doe_df[doe_df['deflection_cruise_elevator'] < 0]
+    # print(f"Cutted {numRows - doe_df.shape[0]}, elevator < 0")
+    # -----------------------------------------
+    numRows = doe_df.shape[0]
 
     return doe_df
 

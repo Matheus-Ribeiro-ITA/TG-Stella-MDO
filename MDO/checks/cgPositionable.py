@@ -15,7 +15,7 @@ def cgPositionable(aircraftInfo):
 
     allElseCgPercentFuselage = (allElseCG/aircraftInfo.fuselage.length)*100
 
-    secure_factor = 0.8
+    secure_factor = 80
 
     passed = False
 

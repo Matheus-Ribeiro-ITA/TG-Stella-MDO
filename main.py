@@ -59,7 +59,7 @@ def main(x_states_global, logger=None):
     # ----Config CG---------------------------------------
     # Priority order: smFixed > cgFixed
     cgFixed = None
-    smFixedPercent = 5  # In percentage
+    smFixedPercent = 10  # In percentage
     # ----Parser to dict---------------------------------------
     stateVariables, controlVariables, avlMandatoryCases, avlCases, engineInfo, missionProfile = MDO.set_state_variables(
         wingRootChord=wingRootChord, wingAirfoil=wingAirfoil, wingMiddleChord=wingMiddleChord,

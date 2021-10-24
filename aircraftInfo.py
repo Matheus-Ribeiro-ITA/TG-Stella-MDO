@@ -199,7 +199,9 @@ class Weight:
         weightVar = os.getenv("WEIGHT")
         if weightVar == 'Raymer':
             self.empty, _ = MDO.weightCalc(aircraftInfo, weightInfo=self, method="Raymer")
-            self.MTOW = self.empty + self.fuel
+            self.MTOW = 180*9.81  # TODO: ADD MTOW variable
+            self.fuel = self.MTOW - self.empty
+            # self.MTOW = self.empty + self.fuel
         else:
             self.empty = float(weightVar) * 9.81 - self.fuel
             self.MTOW = float(weightVar) * 9.81

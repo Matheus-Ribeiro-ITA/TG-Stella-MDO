@@ -99,6 +99,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
                 print(f"CD Run Total: {round(aircraftInfo.cDRun, 5)}")
                 print(f"Alpha Run: {round(aircraftInfo.alphaRun, 3)} º")
 
+            output_dict['weightEmpty'] = aircraftInfo.weight.empty
             output_dict['mtow'] = aircraftInfo.weight.MTOW
             output_dict['runway'] = runway
             output_dict['speedTakeOff'] = speedTakeOff

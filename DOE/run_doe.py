@@ -58,7 +58,7 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
         # Evaluate sample
         try:
             results_to_append = main(X[ii, :], logger=logger)
-        except (FileNotFoundError, ValueError) as e:
+        except (FileNotFoundError, ValueError, TypeError) as e:
             print(f"SKIPPING Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
             failed_count += 1
             continue
@@ -91,22 +91,98 @@ if __name__ == '__main__':
     # ----Config ----------------------------------------------
     MDO.parseConfig("outputsConfig.cfg")
 
+    # ---------------------------------------------------------------
+    # Case all variables
     inputs_names = ['aspectRatio', 'wingSecPercentage', 'wingArea', 'taperRatio1', 'taperRatio2',
                     'aspectRatioV', 'areaV', 'taperV', 'posXV',
                     'fuselageLength']
 
     n_inputs = len(inputs_names)
 
-    lb = [6, 0.4, 1.5, 0.5, 0.5,
-          3, 0.5, 0.5, 0.5,
+    lb = [4, 0.3, 0.6, 0.3, 0.3,
+          3, 0.2, 0.5, 0.5,
           1]
-    ub = [12, 0.6, 2.5, 1.0, 1.0,
-          9, 1.5, 1, 2.5,
+    ub = [14, 0.8, 3.0, 1.0, 1.0,
+          6, 1.5, 1, 2.5,
           2]
+
+    n_samples = 1500
+
+    sampling_type = 'real_random'
+
+    run_doe(n_inputs=n_inputs, lb=lb, ub=ub,
+            n_samples=n_samples, sampling_type=sampling_type,
+            logger=logger, inputs_names=inputs_names,
+            filename='resultsAll')
+
+    # ---------------------------------------------------------------
+    # Case: Wing only
+    inputs_names = ['aspectRatio', 'wingSecPercentage', 'wingArea', 'taperRatio1', 'taperRatio2',
+                    'aspectRatioV', 'areaV', 'taperV', 'posXV',
+                    'fuselageLength']
+
+    n_inputs = len(inputs_names)
+
+    lb = [4, 0.3, 0.8, 0.3, 0.3,
+          4, 0.6, 0.6, 1.5,
+          1.5]
+    ub = [14, 0.8, 3.0, 1.0, 1.0,
+          4, 0.6, 0.6, 1.5,
+          1.5]
+
+    n_samples = 1500
+
+    sampling_type = 'real_random'
+
+    run_doe(n_inputs=n_inputs, lb=lb, ub=ub,
+            n_samples=n_samples, sampling_type=sampling_type,
+            logger=logger, inputs_names=inputs_names,
+            filename='resultsWing')
+
+    # ---------------------------------------------------------------
+    # Case: Stabilizer only
+    inputs_names = ['aspectRatio', 'wingSecPercentage', 'wingArea', 'taperRatio1', 'taperRatio2',
+                    'aspectRatioV', 'areaV', 'taperV', 'posXV',
+                    'fuselageLength']
+
+    n_inputs = len(inputs_names)
+
+    lb = [7, 0.5, 2, 0.6, 0.6,
+          3, 0.4, 0.5, 0.5,
+          1.5]
+    ub = [7, 0.5, 2, 0.6, 0.6,
+          6, 1, 0.8, 2.5,
+          1.5]
+
+    n_samples = 1500
+
+    sampling_type = 'real_random'
+
+    run_doe(n_inputs=n_inputs, lb=lb, ub=ub,
+            n_samples=n_samples, sampling_type=sampling_type,
+            logger=logger, inputs_names=inputs_names,
+            filename='resultsStab')
+
+    # ---------------------------------------------------------------
+    # Case: Fuselage only
+    inputs_names = ['aspectRatio', 'wingSecPercentage', 'wingArea', 'taperRatio1', 'taperRatio2',
+                    'aspectRatioV', 'areaV', 'taperV', 'posXV',
+                    'fuselageLength']
+
+    n_inputs = len(inputs_names)
+
+    lb = [7, 0.5, 2, 0.6, 0.6,
+          4, 0.6, 0.7, 1.5,
+          1.0]
+    ub = [7, 0.5, 2, 0.6, 0.6,
+          4, 0.6, 0.7, 1.5,
+          2.5]
 
     n_samples = 500
 
     sampling_type = 'real_random'
 
-    run_doe(n_inputs=n_inputs, lb=lb, ub=ub, n_samples=n_samples, sampling_type=sampling_type,
-            logger=logger, inputs_names=inputs_names)
+    run_doe(n_inputs=n_inputs, lb=lb, ub=ub,
+            n_samples=n_samples, sampling_type=sampling_type,
+            logger=logger, inputs_names=inputs_names,
+            filename='resultsFuselage')

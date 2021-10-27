@@ -155,8 +155,8 @@ def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=No
     avlMandatoryCases = {
         "neutralPoint": {
             "alphas": [0, 6]
-            # "altitude": 1500,
-            # "vCruise": [95/3.6, 130 / 3.6],
+        # "altitude": 1500,
+        # "vCruise": [120/3.6],
         }
     }
 

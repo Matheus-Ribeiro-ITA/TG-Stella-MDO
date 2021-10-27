@@ -19,3 +19,4 @@ def parseConfig(pathToFile="outputsConfig.cfg"):
     os.environ['PLOT'] = config['env']['PLOT']
     os.environ['PRINT'] = config['env']['PRINT']
     os.environ['WEIGHT'] = config['methods']['WEIGHT']
+    os.environ['MTOW'] = config['methods']['MTOW']

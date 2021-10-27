@@ -170,7 +170,7 @@ class Thrust:
 
 
 class Weight:
-    def __init__(self, initialMTOW=200 * 9.81):
+    def __init__(self, initialMTOW=150 * 9.81):
         self.engine = 63 * 9.8  # Atobá Data
 
         self.initialMTOW = initialMTOW
@@ -184,10 +184,9 @@ class Weight:
         self.fuelClimb = None
         self.fuelTakeOff = None
 
-        self.fuelActual = self.fuel
         # self.MTOW = None
         self.allElse = {  # Atobá Data (kg, m)
-            "All": [30 * 9.8, -3.1],
+            "All": [20 * 9.8, 0],
         }
 
         self.wing = None
@@ -199,13 +198,17 @@ class Weight:
         weightVar = os.getenv("WEIGHT")
         if weightVar == 'Raymer':
             self.empty, _ = MDO.weightCalc(aircraftInfo, weightInfo=self, method="Raymer")
-            self.MTOW = 180*9.81  # TODO: ADD MTOW variable
+            self.MTOW = int(os.getenv("MTOW"))*9.81  # TODO: ADD MTOW variable
             self.fuel = self.MTOW - self.empty
+
+            if self.fuel < 0:
+                raise ValueError(f"Aircraft too heavy: {self.empty}/{self.MTOW}")
             # self.MTOW = self.empty + self.fuel
         else:
             self.empty = float(weightVar) * 9.81 - self.fuel
             self.MTOW = float(weightVar) * 9.81
 
+        self.fuelActual = self.fuel
 
         # All Else Weight
         # self.allElse = {  # Atobá Data (kg, m)

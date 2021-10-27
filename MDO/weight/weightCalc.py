@@ -52,7 +52,7 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
                             * (100*tcRootWing/(np.cos(wingSweep))) ** (-0.3) \
                             * (mto6Btu * Nz) ** 0.49
 
-            wingWeightLbf = 2* wingWeightLbf # TODO: This is a correction carteada to make sense.
+            wingWeightLbf = 1.8* wingWeightLbf # TODO: This is a correction carteada to make sense.
         elif method_calc == 'Cargo Transport':
             controlAreaBtu = aileronArea * 10.7639  # Control Surface Area in ft^2.
             mto6Btu = mtow * 0.224809  # lbf

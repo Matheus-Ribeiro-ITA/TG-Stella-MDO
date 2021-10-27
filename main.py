@@ -84,7 +84,7 @@ def main(x_states_global, logger=None):
         # cm2 = results['NeutralPoint_1']['Totals']['Cmtot']
         #
         # test = (cL2 - cL1)/(cm2-cm1)
-
+        # aircraftInfo.xNeutralPoint = results['NeutralPoint_0']['StabilityDerivatives']['Xnp']
         aircraftInfo.xNeutralPoint = (results['NeutralPoint_0']['StabilityDerivatives']['Xnp']
                                       + results['NeutralPoint_1']['StabilityDerivatives']['Xnp'])/2
         aircraftInfo.adjustCG(cgFixed=None, smFixedPercent=smFixedPercent)
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     # ----Config ----------------------------------------------
     MDO.parseConfig("outputsConfig.cfg")
 
-    num_states = 9
+    num_states = 10
     x_states_global = np.array([0.0] * num_states)
 
     x_states_global[0] = 9  # aspectRatio
@@ -124,6 +124,7 @@ if __name__ == '__main__':
     x_states_global[6] = 0.8  # areaV
     x_states_global[7] = 1  # taperV
     x_states_global[8] = 1.5  # posXV
+    x_states_global[9] = 1.5  # fuselageLength
 
 
     # x_states[0] = 6  # wingSpan = 6

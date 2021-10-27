@@ -91,6 +91,8 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
                     aircraftInfo.engine.consumptionMaxLperH * aircraftInfo.engine.fuelDensity / 3600) * 9.8
             if PRINT:
                 print(f"Aircraft TOW: {round(aircraftInfo.weight.MTOW / 9.81, 3)} kg")
+                print(f"Aircraft Empty Weight: {round(aircraftInfo.weight.empty / 9.81, 3)} kg")
+                print(f"Aircraft Fuel: {round(aircraftInfo.weight.fuel / 9.81, 3)} kg")
                 print(f"Runway Length: {round(runway, 3)} m")
                 print(f"Take Off Speed: {round(speedTakeOff, 2)} m/s")
                 print(f"Time TakeOff: {round(timeTakeOff, 2)} s")
@@ -101,6 +103,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
 
             output_dict['weightEmpty'] = aircraftInfo.weight.empty
             output_dict['mtow'] = aircraftInfo.weight.MTOW
+            output_dict['fuelTotal'] = aircraftInfo.weight.fuel
             output_dict['runway'] = runway
             output_dict['speedTakeOff'] = speedTakeOff
             output_dict['timeTakeOff'] = timeTakeOff

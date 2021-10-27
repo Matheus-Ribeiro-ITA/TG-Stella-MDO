@@ -49,13 +49,13 @@ def _filterDoe(doe_df):
                        'descentTime', 'timeClimb', 'neutral_point', 'cDRunAvl', 'alphaRun',
                        'timeTakeOff', 'fuelTakeOff',
                        'cd0', 'cd1', 'cd2', 'cDRun',
-                       'cgPostionable']
+                       'cgPostionable', 'mtow']
 
     doe_df = doe_df.drop(columns=outputs_to_drop)
 
     # -----------------------------------------
     numRows = doe_df.shape[0]
-    doe_df = doe_df[doe_df['cruiseRange'] < 500]
+    doe_df = doe_df[doe_df['cruiseRange'] < 200]
     print(f"Cutted {numRows - doe_df.shape[0]}, range < 500")
     # -----------------------------------------
     numRows = doe_df.shape[0]
@@ -67,9 +67,14 @@ def _filterDoe(doe_df):
     # print(f"Cutted {numRows - doe_df.shape[0]}, elevator < 0")
     # -----------------------------------------
     numRows = doe_df.shape[0]
+    doe_df = doe_df[doe_df['runway'] < 3000]
+    print(f"Cutted {numRows - doe_df.shape[0]}, runaway < 3000")
 
     return doe_df
 
 
 if __name__ == '__main__':
-    plot_doe()
+    plot_doe(filename='resultsAll')
+    plot_doe(filename='resultsWing')
+    plot_doe(filename='resultsStab')
+    plot_doe(filename='resultsFuselage')

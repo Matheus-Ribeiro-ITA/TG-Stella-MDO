@@ -82,7 +82,7 @@ class AircraftInfo:
         self.loiterTime = 3600
 
         # Weight and Cg Info
-        self.weight = Weight(initialMTOW=200 * 9.81)
+        self.weight = Weight(initialMTOW=100 * 9.81)
         self.cg = Cg(self)
         self.weight.calc(aircraftInfo=self)
         # self.cg.calc()
@@ -170,13 +170,13 @@ class Thrust:
 
 
 class Weight:
-    def __init__(self, initialMTOW=150 * 9.81):
+    def __init__(self, initialMTOW=100 * 9.81):
         self.engine = 63 * 9.8  # Atobá Data
 
         self.initialMTOW = initialMTOW
         # weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
         # self.empty = None
-        self.fuel = 20 * 9.8
+        # self.fuel = 20 * 9.8
 
         self.fuelReserve = 5 * 9.8
         self.fuelDescent = None

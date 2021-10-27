@@ -38,7 +38,7 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
     fuselageLength = aircraftInfo.fuselage.length
 
     # Cruise
-    q = 1/2*(1*0.0765)*(20*3.28084)**2  # TODO: Dynamic pressure at cruise
+    q = 1/2*(1*0.0765)*(30*3.28084)**2  # TODO: Dynamic pressure at cruise
 
     def _raymerWing(method_calc='General Aviation'):
         """Calculated with formula from Raymer new book page 576"""
@@ -52,7 +52,8 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
                             * (100*tcRootWing/(np.cos(wingSweep))) ** (-0.3) \
                             * (mto6Btu * Nz) ** 0.49
 
-            wingWeightLbf = 1.8* wingWeightLbf # TODO: This is a correction carteada to make sense.
+            wingWeightLbf = wingWeightLbf # TODO: This is a correction carteada to make sense.
+
         elif method_calc == 'Cargo Transport':
             controlAreaBtu = aileronArea * 10.7639  # Control Surface Area in ft^2.
             mto6Btu = mtow * 0.224809  # lbf

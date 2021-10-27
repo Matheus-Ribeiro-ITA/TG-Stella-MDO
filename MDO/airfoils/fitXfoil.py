@@ -111,7 +111,7 @@ def _polarData(dataList, mission="cruise"):
             alphaCDmin = data["alphas"][data["CDs"].index(cDmin)]
             cLCDmin = data["CLs"][data["CDs"].index(cDmin)]
 
-            for CL in [-0.1, cLCDmin, 1.1]:
+            for CL in [-1.5, cLCDmin, 1.8]:  # TODO: Adjust to get best value (CLmax is too much)
                 CD = _objectivePolar(CL, cD0, cD1, k)
                 CLs.append(CL)
                 CDs.append(CD)

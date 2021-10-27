@@ -4,7 +4,7 @@ from MDO.auxTools import forward_euler
 
 def takeOffRoll(aircraftInfo, mu=0.03, ksafety=1.1, dt=0.01, nsteps=8000):
     rho = 1.225  # TODO:
-    CLmax = aircraftInfo.cLMax + 0.4  # TODO: Add flap to takeOff
+    CLmax = aircraftInfo.cLMax*1.45  # TODO: Add flap to takeOff
 
     Sref = aircraftInfo.wing.area
     TOW = aircraftInfo.weight.MTOW

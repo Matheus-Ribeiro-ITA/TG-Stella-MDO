@@ -19,7 +19,9 @@ def main(x_states_global, logger=None):
     verticalType = "v"
 
     # --Airfoils------------------------------------------------
-    wingAirfoil = "ls417mod_cruise"
+    wingAirfoil = "ls417mod_cruise"  # Stella Airfoil
+    # wingAirfoil = "naca4415_cruise"  # Shadow 200 Airfoil
+
     stabAirfoil = "naca0012_cruise"
 
     # ----Variables Optimizer---------------------------------------
@@ -115,16 +117,39 @@ if __name__ == '__main__':
     num_states = 10
     x_states_global = np.array([0.0] * num_states)
 
-    x_states_global[0] = 9  # aspectRatio
+    # Shadow Values
+    # cWing = 3.9/7.07 = 0.55
+    # areaWing = 3.9^2/7.07 = 2.15
+
+    # b_stab_view_top = 99/330*3.9 = 1.17
+    # c_stab_view_top = 62/96*0.55 = 0.355
+    # areaStab = 1.17*sqrt(2)*0.355 = 0.587
+    # arStab = 1.17^2/0.587 = 2.33
+    # fuselageLength = 3.4*312/580 = 1.83
+    # posV = 3.4*350/580 = 2.05
+    # fuselageDiam = 3.4*31/580 = 0.18
+
+    # x_states_global[0] = 7.07  # aspectRatio
+    # x_states_global[1] = 0.5  # wingSecPercentage
+    # x_states_global[2] = 2.15  # wingArea
+    # x_states_global[3] = 1  # taperRatio1
+    # x_states_global[4] = 1  # taperRatio2
+    # x_states_global[5] = 5  # aspectRatioV
+    # x_states_global[6] = 0.8  # areaV
+    # x_states_global[7] = 1  # taperV
+    # x_states_global[8] = 1.5  # posXV
+    # x_states_global[9] = 1.5  # fuselageLength
+
+    x_states_global[0] = 7.07  # aspectRatio
     x_states_global[1] = 0.5  # wingSecPercentage
-    x_states_global[2] = 3  # wingArea
+    x_states_global[2] = 2.15  # wingArea
     x_states_global[3] = 1  # taperRatio1
     x_states_global[4] = 1  # taperRatio2
-    x_states_global[5] = 5  # aspectRatioV
-    x_states_global[6] = 0.8  # areaV
+    x_states_global[5] = 2.33  # aspectRatioV
+    x_states_global[6] = 0.587  # areaV
     x_states_global[7] = 1  # taperV
-    x_states_global[8] = 1.5  # posXV
-    x_states_global[9] = 1.5  # fuselageLength
+    x_states_global[8] = 2.05  # posXV
+    x_states_global[9] = 1.83  # fuselageLength
 
 
     # x_states[0] = 6  # wingSpan = 6

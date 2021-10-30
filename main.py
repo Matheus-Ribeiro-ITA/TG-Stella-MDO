@@ -12,10 +12,10 @@ config = ConfigParser()
 config.read(os.path.join("outputsConfig.cfg"))
 
 
-def main(x_states_global, logger=None):
+def main(x_states_global, logger=None, x_states_default_values=None):
     # ----Vertical Stabilizer-------------------------------------
     # Options: "conventional", "v".
-    # Warning: option "h" is broken
+    # Warning: option "H" is broken
     verticalType = "v"
 
     # --Airfoils------------------------------------------------
@@ -25,7 +25,9 @@ def main(x_states_global, logger=None):
     stabAirfoil = "naca0012_cruise"
 
     # ----Variables Optimizer---------------------------------------
-    x_states_avl = MDO.parseStateVariable(x_states_global)
+    x_states_avl = MDO.parseStateVariable(x_states_global,
+                                          variables='short',
+                                          x_states_default_values=x_states_default_values)
 
     wingSpan = x_states_avl[0]
     wingSecPercentage = x_states_avl[1]
@@ -46,7 +48,7 @@ def main(x_states_global, logger=None):
         print(f"wingRootChord: {wingRootChord}")
         print(f"wingMiddleChord: {wingMiddleChord}")
         print(f"wingTipChord: {wingTipChord}")
-        print(f"verticalSpan: {verticalSpan}")
+        print(f"verticalSpanAVL: {verticalSpan}")
         print(f"verticalRootChord: {verticalRootChord}")
         print(f"verticalTipChord: {verticalTipChord}")
         print(f"verticalXPosition: {verticalXPosition}")
@@ -114,42 +116,55 @@ if __name__ == '__main__':
     # ----Config ----------------------------------------------
     MDO.parseConfig("outputsConfig.cfg")
 
-    num_states = 10
-    x_states_global = np.array([0.0] * num_states)
-
     # Shadow Values
     # cWing = 3.9/7.07 = 0.55
     # areaWing = 3.9^2/7.07 = 2.15
 
     # b_stab_view_top = 99/330*3.9 = 1.17
     # c_stab_view_top = 62/96*0.55 = 0.355
-    # areaStab = 1.17*sqrt(2)*0.355 = 0.587
-    # arStab = 1.17^2/0.587 = 2.33
+    # areaStab = 1.17*sqrt(2)*0.355 = 0.587 = 0.41535 sem sqrt(2)
+    # arStab = b_stab_view_to^2/ = 1.17^2/0.587 = 2.33 or 3.29 sem sqrt(2)
     # fuselageLength = 3.4*312/580 = 1.83
     # posV = 3.4*350/580 = 2.05
     # fuselageDiam = 3.4*31/580 = 0.18
 
+    # SHADOW 200
     # x_states_global[0] = 7.07  # aspectRatio
     # x_states_global[1] = 0.5  # wingSecPercentage
     # x_states_global[2] = 2.15  # wingArea
     # x_states_global[3] = 1  # taperRatio1
     # x_states_global[4] = 1  # taperRatio2
-    # x_states_global[5] = 5  # aspectRatioV
-    # x_states_global[6] = 0.8  # areaV
+    # x_states_global[5] = 2.33  # aspectRatioV
+    # x_states_global[6] = 0.587  # areaV
     # x_states_global[7] = 1  # taperV
-    # x_states_global[8] = 1.5  # posXV
-    # x_states_global[9] = 1.5  # fuselageLength
+    # x_states_global[8] = 2.05  # posXV
+    # x_states_global[9] = 1.83  # fuselageLength
 
-    x_states_global[0] = 7.07  # aspectRatio
-    x_states_global[1] = 0.5  # wingSecPercentage
-    x_states_global[2] = 2.15  # wingArea
-    x_states_global[3] = 1  # taperRatio1
-    x_states_global[4] = 1  # taperRatio2
-    x_states_global[5] = 2.33  # aspectRatioV
-    x_states_global[6] = 0.587  # areaV
-    x_states_global[7] = 1  # taperV
-    x_states_global[8] = 2.05  # posXV
-    x_states_global[9] = 1.83  # fuselageLength
+    x_states_global = {
+        'aspectRatio': 7.07,
+        'wingSecPercentage': 0.5,
+        'wingArea': 2.15,
+        'taperRatio1': 1,
+        'taperRatio2': 1,
+        'aspectRatioV': 3.29,  # AR from top view
+        'areaV': 0.41535,  # Area from top view
+        'taperV': 1,
+        'posXV': 2.05,
+        'fuselageLength': 1.83
+    }
+
+    x_states_default_values = {
+        'aspectRatio': 7.07,
+        'wingSecPercentage': 0.5,
+        'wingArea': 2.15,
+        'taperRatio1': 1,
+        'taperRatio2': 1,
+        'aspectRatioV': 2.33,
+        'areaV': 0.587,
+        'taperV': 1,
+        'posXV': 2.05,
+        'fuselageLength': 1.83
+    }
 
 
     # x_states[0] = 6  # wingSpan = 6
@@ -172,7 +187,7 @@ if __name__ == '__main__':
     # wingSecPosition = x_states[0] / 2 * x_states[1]
     # wingPosSec = x_states[0] / 2 * (1 - x_states[1])
 
-    main(x_states_global)
+    main(x_states_global, x_states_default_values=x_states_default_values)
 
     # ---- Time-----------------------------------------
     print(f"Process Time: {round((time.time() - startTime), 1)} s")

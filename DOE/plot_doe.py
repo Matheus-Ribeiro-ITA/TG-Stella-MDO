@@ -54,9 +54,9 @@ def _filterDoe(doe_df):
     doe_df = doe_df.drop(columns=outputs_to_drop)
 
     # -----------------------------------------
-    numRows = doe_df.shape[0]
-    doe_df = doe_df[doe_df['cruiseRange'] < 200]
-    print(f"Cutted {numRows - doe_df.shape[0]}, range < 500")
+    # numRows = doe_df.shape[0]
+    # doe_df = doe_df[doe_df['cruiseRange'] < 1200]
+    # print(f"Cutted {numRows - doe_df.shape[0]}, range < 200")
     # -----------------------------------------
     numRows = doe_df.shape[0]
     doe_df = doe_df[doe_df['cruiseRange'] > 0]
@@ -69,6 +69,21 @@ def _filterDoe(doe_df):
     numRows = doe_df.shape[0]
     doe_df = doe_df[doe_df['runway'] < 3000]
     print(f"Cutted {numRows - doe_df.shape[0]}, runaway < 3000")
+
+    # -----------------------------------------
+    numRows = doe_df.shape[0]
+    doe_df = doe_df[doe_df['alphaStallWing'] > 0]
+    print(f"Cutted {numRows - doe_df.shape[0]}, alphaStallWing > 0")
+
+    # -----------------------------------------
+    numRows = doe_df.shape[0]
+    doe_df = doe_df[doe_df['stallPositionWing'] > 0]
+    print(f"Cutted {numRows - doe_df.shape[0]}, stallPositionWing > 0")
+
+    # -----------------------------------------
+    numRows = doe_df.shape[0]
+    doe_df = doe_df[doe_df['staticMargin'] > 0]
+    print(f"Cutted {numRows - doe_df.shape[0]}, staticMargin > 0")
 
     return doe_df
 

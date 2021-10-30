@@ -58,7 +58,7 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
         # Evaluate sample
         try:
             results_to_append = main(X[ii, :], logger=logger)
-        except (FileNotFoundError, ValueError, TypeError) as e:
+        except:
             print(f"SKIPPING Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
             failed_count += 1
             continue

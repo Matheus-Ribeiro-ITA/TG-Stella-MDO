@@ -19,8 +19,8 @@ def main(x_states_global, logger=None):
     verticalType = "v"
 
     # --Airfoils------------------------------------------------
-    wingAirfoil = "ls417mod_cruise"  # Stella Airfoil
-    # wingAirfoil = "naca4415_cruise"  # Shadow 200 Airfoil
+    # wingAirfoil = "ls417mod_cruise"  # Stella Airfoil
+    wingAirfoil = "naca4415_cruise"  # Shadow 200 Airfoil
 
     stabAirfoil = "naca0012_cruise"
 
@@ -85,7 +85,7 @@ def main(x_states_global, logger=None):
         # cm1 = results['NeutralPoint_0']['Totals']['Cmtot']
         # cm2 = results['NeutralPoint_1']['Totals']['Cmtot']
         #
-        # test = (cL2 - cL1)/(cm2-cm1)
+        # test = (cm2-cm1)/(cL2 - cL1)
         # aircraftInfo.xNeutralPoint = results['NeutralPoint_0']['StabilityDerivatives']['Xnp']
         aircraftInfo.xNeutralPoint = (results['NeutralPoint_0']['StabilityDerivatives']['Xnp']
                                       + results['NeutralPoint_1']['StabilityDerivatives']['Xnp'])/2

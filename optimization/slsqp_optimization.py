@@ -28,17 +28,9 @@ lb = np.array([7.07*0.6/10,
 
 bounds = Bounds(lb, ub)
 
-# res = differential_evolution(objectiveFun,
-#                              bounds=bounds,
-#                              callback=callbackGenetic,
-#                              updating='immediate',  # Default = 'immediate'
-#                              tol=1e-2,    # Default = 0.01
-#                              popsize=15,  # Default = 15
-#                              disp=True)
-
 res = minimize(objectiveFun,
                Xstates0,
-               method='trust-constr',
+               method='SLSQP',
                bounds=bounds,
                callback=callbackfun,
                tol=1e-2,

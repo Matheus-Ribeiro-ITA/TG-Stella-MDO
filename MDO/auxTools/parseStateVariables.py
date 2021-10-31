@@ -89,9 +89,10 @@ def _parse_from_list(x_states_global):
     # sweepWing2 = x_states_global[7]
 
     wingSpan = np.sqrt(aspectRatio * wingArea)
-    wingRootChord = wingArea / wingSpan / \
-                    ((1 + taperRatio1) / 2 * wingSecPercentage + taperRatio1 * (1 + taperRatio2) / 2 * (
-                                1 - wingSecPercentage))
+    wingRootChord = wingArea / \
+                    wingSpan / \
+                    ((1 + taperRatio1) / 2 * wingSecPercentage + taperRatio1 * (1 + taperRatio2) / 2 *
+                     (1 - wingSecPercentage))
     wingMiddleChord = wingRootChord * taperRatio1  # wingMiddleChord
     wingTipChord = wingMiddleChord * taperRatio2  # wingTipChord
 

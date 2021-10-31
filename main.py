@@ -24,6 +24,10 @@ def main(x_states_global, logger=None, x_states_default_values=None):
 
     stabAirfoil = "naca0012_cruise"
 
+    # --Default Values------------------------------------------------
+    if x_states_default_values is None:
+        x_states_default_values = _get_default_values()
+
     # ----Variables Optimizer---------------------------------------
     x_states_avl = MDO.parseStateVariable(x_states_global,
                                           variables='short',
@@ -105,6 +109,22 @@ def main(x_states_global, logger=None, x_states_default_values=None):
     return pd.DataFrame(output_dict, index=[0])
 
 
+def _get_default_values():
+    x_states_default_values = {
+        'aspectRatio': 7.07,
+        'wingSecPercentage': 0.5,
+        'wingArea': 2.15,
+        'taperRatio1': 1,
+        'taperRatio2': 1,
+        'aspectRatioV': 3.29,  # AR from top view
+        'areaV': 0.41535,  # Area from top view
+        'taperV': 1,
+        'posXV': 2.05,
+        'fuselageLength': 1.83
+    }
+
+    return x_states_default_values
+
 if __name__ == '__main__':
     # ----Process Time--------------------------------------------
     startTime = time.time()
@@ -159,8 +179,8 @@ if __name__ == '__main__':
         'wingArea': 2.15,
         'taperRatio1': 1,
         'taperRatio2': 1,
-        'aspectRatioV': 2.33,
-        'areaV': 0.587,
+        'aspectRatioV': 3.29,  # AR from top view
+        'areaV': 0.41535,  # Area from top view
         'taperV': 1,
         'posXV': 2.05,
         'fuselageLength': 1.83

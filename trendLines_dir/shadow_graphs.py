@@ -46,19 +46,27 @@ def pass_data(df=None, COLORS=None):
     return data, names
 
 
-def plot_data(data=None, names=None, xlabel="X label", ylabel="Y label"):
-    # total = np.zeros(len(data[0]))
-    for i in range(0, len(data), 2):
-        plt.plot(data[i], data[i + 1], names[i][2], color=names[i][1], label=names[i][0])
-        # total += np.array(data[i + 1])
+def plot_data(data=None, names=None, xlabel="X label", ylabel="Y label", saveName='',
+              plotSum=False):
+    total = np.zeros(len(data[0]))
+    if names is not None:
+        for i in range(0, len(data), 2):
+            plt.plot(data[i], data[i + 1], names[i][2], color=names[i][1], label=names[i][0])
+            total += np.array(data[i + 1]) if plotSum else 0
+        if plotSum:
+            plt.plot(data[0], total, DRAG_INFO["Total Sum"][2], color=DRAG_INFO["Total Sum"][1], label=DRAG_INFO["Total Sum"][0])
+    else:
+        for i in range(0, len(data), 2):
+            plt.plot(data[i], data[i + 1])
 
-    # plt.plot(data[0], total, DRAG_INFO["Total Sum"][2], color=DRAG_INFO["Total Sum"][1], label=DRAG_INFO["Total Sum"][0])
     plt.legend()
     plt.grid()
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.savefig("trendLines_dir/images/" + ylabel)
+    plt.savefig("trendLines_dir/images/" + ylabel + saveName)
     plt.show()
+
+
 
 
 def aerodynamics_graphs():
@@ -66,19 +74,46 @@ def aerodynamics_graphs():
     drag_df = pd.read_csv(os.path.join(CWD, "trendLines_dir", "shadow_data", "Drag_shadow.csv"), sep=';')
     lift_df = pd.read_csv(os.path.join(CWD, "trendLines_dir", "shadow_data", "Lift_drag_datasets.csv"), sep=',')
 
-    print(lift_df.columns)
     data_drag, names_drag = pass_data(df=drag_df, COLORS=DRAG_INFO)
     data_lift, names_lift = pass_data(df=lift_df, COLORS=LIFT_INFO)
 
-    # plot_data(data=data_drag,
-    #           names=names_drag,
-    #           xlabel="Coeficiente de sustentação (CL)",
-    #           ylabel="Coeficiente de arrasto (CD)")
+    # Drag Polar Shadow 200
+    plot_data(data=data_drag,
+              names=names_drag,
+              xlabel="Coeficiente de sustentação (CL)",
+              ylabel="Coeficiente de arrasto (CD)",
+              plotSum=True)
 
     plot_data(data=data_lift,
               names=names_lift,
               xlabel="Coeficiente de sustentação (CL)",
               ylabel="Razão CL por CD")
+
+    # Drag Polar Shadow 200 vs custom data
+    cD0 = 0.0555
+    cD1 = 0.0039
+    cD2 = 0.0649
+    cLAircraft = np.linspace(0, 1.5, 20, endpoint=True)
+    cDAircraft = cD2 * cLAircraft ** 2 + cD0 + cD1 * cLAircraft
+
+    total = np.zeros(len(data_drag[0]))
+    for i in range(0, len(data_drag), 2):
+        total += np.array(data_drag[i + 1])
+
+    data_drag_comparison = [data_drag[0], total, cLAircraft, cDAircraft]
+    namesComparison = [('Gundlach', 'blue', 'v--'), '', ('Autor', 'darkorchid', '.--'), '']
+    plot_data(data=data_drag_comparison,
+              names=namesComparison,
+              xlabel="Coeficiente de sustentação (CL)",
+              ylabel="Coeficiente de arrasto (CD)",
+              saveName='comparison')
+
+    data_drag_comparison_cl_cd = [data_lift[0], data_lift[1], cLAircraft, cLAircraft/cDAircraft]
+    plot_data(data=data_drag_comparison_cl_cd,
+              names=namesComparison,
+              xlabel="Coeficiente de sustentação (CL)",
+              ylabel="Razão CL por CD",
+              saveName='comparison')
 
     return
 
@@ -150,5 +185,5 @@ def weight_pie_graph():
 
 
 if __name__ == "__main__":
-    # aerodynamics_graphs()
+    aerodynamics_graphs()
     weight_pie_graph()

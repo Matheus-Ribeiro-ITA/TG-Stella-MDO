@@ -57,7 +57,7 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
         print(f"Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
         # Evaluate sample
         try:
-            results_to_append = main(X[ii, :], logger=logger)
+            results_to_append = main(list(X[ii, :]), logger=logger)
         except:
             print(f"SKIPPING Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
             failed_count += 1

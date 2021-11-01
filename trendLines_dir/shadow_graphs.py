@@ -29,12 +29,13 @@ LIFT_INFO = {
 }
 
 WEIGHT_DATA = {
-    "estruturas": 64.4,
-    "avionica": 13.6,
-    "alternador": 12.7,
-    "combustivel": 29,
-    "carga paga": 23.6,
-    "Peso bruto de projeto": 143.3
+    "estruturas": 46.55,
+    "subsistemas": 18.45,
+    "avionica": 13.88,
+    "propulsao": 12.7,
+    "combustivel": 28.25,
+    "carga paga": 23.58,
+    "Peso bruto de projeto": 143.75
 }
 
 
@@ -88,7 +89,7 @@ def weight_bar_graph():
 
     men_means = [WEIGHT_DATA["estruturas"] / total_weight * 100,
                  WEIGHT_DATA["avionica"] / total_weight * 100,
-                 WEIGHT_DATA["alternador"] / total_weight * 100,
+                 WEIGHT_DATA["propulsao"] / total_weight * 100,
                  WEIGHT_DATA["combustivel"] / total_weight * 100,
                  WEIGHT_DATA["carga paga"] / total_weight * 100]
     # women_means = [25, 32, 34, 20, 25]
@@ -126,7 +127,7 @@ def weight_pie_graph():
     total_weight = WEIGHT_DATA["Peso bruto de projeto"]
     sizes = [WEIGHT_DATA["estruturas"] / total_weight * 100,
              WEIGHT_DATA["avionica"] / total_weight * 100,
-             WEIGHT_DATA["alternador"] / total_weight * 100,
+             WEIGHT_DATA["propulsao"] / total_weight * 100,
              WEIGHT_DATA["combustivel"] / total_weight * 100,
              WEIGHT_DATA["carga paga"] / total_weight * 100]
     # colors

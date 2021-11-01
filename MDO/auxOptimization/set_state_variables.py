@@ -127,7 +127,7 @@ def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=No
     avlCases = {
         "cruise": {
             "altitude": 1500,
-            "vCruise": 120 / 3.6,
+            "vCruise": 148 / 3.6,  # TODO: Variable cruise speed
         },  # Cruise trimmed (W/L = 1), change
         # "dive": {
         #     "altitude": 1000,

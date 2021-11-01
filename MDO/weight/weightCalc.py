@@ -52,7 +52,7 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
                             * (100*tcRootWing/(np.cos(wingSweep))) ** (-0.3) \
                             * (mto6Btu * Nz) ** 0.49
 
-            wingWeightLbf = wingWeightLbf # TODO: This is a correction carteada to make sense.
+            wingWeightLbf = wingWeightLbf*3  # TODO: This is a correction of weight to make sense.
 
         elif method_calc == 'Cargo Transport':
             controlAreaBtu = aileronArea * 10.7639  # Control Surface Area in ft^2.
@@ -70,7 +70,7 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
 
         if os.environ["DEBUG"].lower() == 'yes':
             print("-"*10)
-            print('Wing Weight and CG: ', wingWeight, xCgWing)
+            print(f'Wing Weight and CG: {wingWeight/9.81} kg', xCgWing)
             print(f'Wing area: {wingArea}')
             print(f'Weight/Area: {wingWeight/wingArea/9.81}')
 
@@ -86,10 +86,14 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
         elif name == 'vertical':
             aircraftInfo.cg.vertical = [xcg, 0, 0]
             aircraftInfo.weight.vertical = weight
+        elif name == 'vertical V':
+            aircraftInfo.cg.vertical = [xcg, 0, 0]
+            weight = weight*2
+            aircraftInfo.weight.vertical = weight*2
 
         if os.environ["DEBUG"].lower() == 'yes':
             print("-" * 10)
-            print('Horizontal or Vertical Weight and CG: ', weight, xcg)
+            print(f'Horizontal or Vertical Weight and CG: {weight/9.81} kg,', xcg)
             print(f'Weight/Area: {weight / surfaceArea / 9.81}')
         return weight, xcg
 
@@ -102,7 +106,7 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
 
         if os.environ["DEBUG"].lower() == 'yes':
             print("-" * 10)
-            print('Fuselage Weight and CG: ', Wf, xcgf)
+            print(f'Fuselage Weight and CG: {Wf/9.81} kg,', xcgf)
             print(f'Weight/Area: {Wf / fuselageWetArea / 9.81}')
         return Wf, xcgf
 
@@ -110,13 +114,13 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
         weightLandingGear = loadPercentage * weightFactor * W0
         if os.environ["DEBUG"].lower() == 'yes':
             print("-" * 10)
-            print('Landing Weight and CG: ', weightLandingGear, xCG)
+            print(f'Landing Gear Weight and CG: {weightLandingGear/9.81} kg,', xCG)
         return weightLandingGear, xCG
 
     def _engineWeight():
         if os.environ["DEBUG"].lower() == 'yes':
             print("-" * 10)
-            print('Engine Weight and CG: ', weightInfo.engine, aircraftInfo.cg.engine[0])
+            print(f'Engine Weight and CG: {weightInfo.engine/9.81} kg,', aircraftInfo.cg.engine[0])
         return weightInfo.engine, aircraftInfo.cg.engine[0]
 
     def _allElseWeight():
@@ -124,13 +128,13 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
         allElseWeightCG = sum([v[1] for v in weightInfo.allElse.values()])
         if os.environ["DEBUG"].lower() == 'yes':
             print("-" * 10)
-            print('All else Weight and CG: ', allElseWeight, allElseWeightCG)
+            print(f'All else Weight and CG: {allElseWeight/9.81} kg,', allElseWeightCG)
         return allElseWeight, allElseWeightCG
 
     methods = {
         "Raymer": [_raymerWing(),
                    # _raymerStabSurfaces(horizontalArea, horizontalMeanChord, xHorizontalMeanChord, xHorizontalRoot, name='horizontal'),  # TODO: Add V case
-                   _raymerStabSurfaces(verticalArea, verticalMeanChord, xVerticalMeanChord, xVerticalRoot,  name='vertical'),
+                   _raymerStabSurfaces(verticalArea, verticalMeanChord, xVerticalMeanChord, xVerticalRoot,  name='vertical V'),
                    _raymerFuselage(),
                    _raymerLandingGear(mtow, aircraftInfo.xNoseLG, 0.15),
                    _raymerLandingGear(mtow, aircraftInfo.xMainLG, 0.85),

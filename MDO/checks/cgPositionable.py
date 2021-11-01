@@ -7,11 +7,13 @@ def cgPositionable(aircraftInfo):
     it self to put the Center of Gravity on the correct Static Margin
     """
 
+    allElseWeight = sum([v[0] for v in aircraftInfo.weight.allElse.values()])
+
     allElseCG = (aircraftInfo.cg.calc*aircraftInfo.weight.MTOW - (
     aircraftInfo.cg.wing[0]*aircraftInfo.weight.wing +
     aircraftInfo.cg.fuselage[0]*aircraftInfo.weight.fuselage +
     # aircraftInfo.cg.horizontal[0]*aircraftInfo.weight.horizontal +  # TODO: ADD V case
-    aircraftInfo.cg.vertical[0]*aircraftInfo.weight.vertical)) / aircraftInfo.weight.allElse['All'][0]
+    aircraftInfo.cg.vertical[0]*aircraftInfo.weight.vertical)) / allElseWeight
 
     allElseCgPercentFuselage = (allElseCG/aircraftInfo.fuselage.length)*100
 

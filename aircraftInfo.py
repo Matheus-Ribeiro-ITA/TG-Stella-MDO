@@ -151,7 +151,7 @@ class Surface:
 
 
 class Fuselage:
-    def __init__(self, length=1.2, diameter=0.5, reynoldsCalc=None, machCalc=None):
+    def __init__(self, length=None, diameter=None, reynoldsCalc=None, machCalc=None):
         self.finenessRatio = length / diameter
         self.wetArea = np.pi * diameter * length * (1 - 2 / self.finenessRatio) ** (2.0 / 3.0) * (1 + 1 / self.finenessRatio ** 2)
         self.length = length
@@ -171,7 +171,7 @@ class Thrust:
 
 class Weight:
     def __init__(self, initialMTOW=100 * 9.81):
-        self.engine = 63 * 9.8  # Atobá Data
+        self.engine = 12.7 * 9.8  # Atobá Data
 
         self.initialMTOW = initialMTOW
         # weightEmpty, cgEmpty = MDO.weightCalc(self, method="Raymer")
@@ -186,8 +186,10 @@ class Weight:
 
         # self.MTOW = None
         self.allElse = {  # Atobá Data (kg, m)
-            "All": [20 * 9.8, 0],
+            "avionica": [13.88 * 9.8, 0],
+            "subsistemas": [18.45 * 9.8, 0]
         }
+        self.payload = 23.58 * 9.8
 
         self.wing = None
         self.horizontal = None
@@ -199,7 +201,7 @@ class Weight:
         if weightVar == 'Raymer':
             self.empty, _ = MDO.weightCalc(aircraftInfo, weightInfo=self, method="Raymer")
             self.MTOW = int(os.getenv("MTOW"))*9.81  # TODO: ADD MTOW variable
-            self.fuel = self.MTOW - self.empty
+            self.fuel = self.MTOW - self.empty - self.payload
 
             if self.fuel < 0:
                 raise ValueError(f"Aircraft too heavy: {self.empty}/{self.MTOW}")

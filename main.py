@@ -45,6 +45,7 @@ def main(x_states_global, logger=None, x_states_default_values=None):
     verticalXPosition = x_states_avl[8]
 
     fuselageLength = x_states_avl[9]
+    fuselageDiameter = 0.18
 
     if os.environ["DEBUG"] == 'yes':
         print(f"wingSpan: {wingSpan}")
@@ -57,6 +58,7 @@ def main(x_states_global, logger=None, x_states_default_values=None):
         print(f"verticalTipChord: {verticalTipChord}")
         print(f"verticalXPosition: {verticalXPosition}")
         print(f"fuselageLength: {fuselageLength}")
+        print(f"fuselageDiameter: {fuselageDiameter}")
 
 
     # endPlateTipChord = 0.4
@@ -77,7 +79,7 @@ def main(x_states_global, logger=None, x_states_default_values=None):
         horizontalTipChord=None,
         horizontalSpan=None, verticalRootChord=verticalRootChord, verticalTipChord=verticalTipChord,
         verticalSpan=verticalSpan, stabAirfoil=stabAirfoil,
-        fuselageLength=fuselageLength
+        fuselageLength=fuselageLength, fuselageDiameter=fuselageDiameter
     )
 
     # ---- Aircraft Info Class ----------------------------------------
@@ -142,8 +144,8 @@ if __name__ == '__main__':
 
     # b_stab_view_top = 99/330*3.9 = 1.17
     # c_stab_view_top = 62/96*0.55 = 0.355
-    # areaStab = 1.17*sqrt(2)*0.355 = 0.587 = 0.41535 sem sqrt(2)
-    # arStab = b_stab_view_to^2/ = 1.17^2/0.587 = 2.33 or 3.29 sem sqrt(2)
+    # areaStab = 1.17*sqrt(2)*0.355 = 0.587 = 0.41535 sem sqrt(2) == topview
+    # arStab = b_stab_view_to^2/areaStab = 1.17^2/0.587 = 2.33 or 3.29 sem sqrt(2)
     # fuselageLength = 3.4*312/580 = 1.83
     # posV = 3.4*350/580 = 2.05
     # fuselageDiam = 3.4*31/580 = 0.18

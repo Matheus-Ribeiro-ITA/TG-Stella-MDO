@@ -1,20 +1,14 @@
 ------------------TODO List---------------------------------
 
 ## Ask Ney
-# TODO: How to jump a function call on optimization. Useful when avl crashes
-# TODO: Run avl as python subprocess on linux
-# TODO: Well written TGs
 
 # TDO
 ## Polar:
-# TODO: Change polar adjust on Xfoil for 3 points of AVL
 
 ## Stella:
-# TODO:
 
 ## Geometry
 # TODO: ADD maxsweep constraint to AVLGeoBuild, so wing dont invert
-# TODO: Check if Component number is needed in AVL
 
 ## Performace
 # TODO: Weight estimation [Doing]

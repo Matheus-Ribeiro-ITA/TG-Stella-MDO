@@ -63,7 +63,7 @@ def plot_data(data=None, names=None, xlabel="X label", ylabel="Y label", saveNam
     plt.grid()
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.savefig("trendLines_dir/images/" + ylabel + saveName)
+    plt.savefig("literature_data/images/" + ylabel + saveName)
     plt.show()
 
 
@@ -71,8 +71,8 @@ def plot_data(data=None, names=None, xlabel="X label", ylabel="Y label", saveNam
 
 def aerodynamics_graphs():
     CWD = os.getcwd()
-    drag_df = pd.read_csv(os.path.join(CWD, "trendLines_dir", "shadow_data", "Drag_shadow.csv"), sep=';')
-    lift_df = pd.read_csv(os.path.join(CWD, "trendLines_dir", "shadow_data", "Lift_drag_datasets.csv"), sep=',')
+    drag_df = pd.read_csv(os.path.join(CWD, "literature_data", "shadow_data", "Drag_shadow.csv"), sep=';')
+    lift_df = pd.read_csv(os.path.join(CWD, "literature_data", "shadow_data", "Lift_drag_datasets.csv"), sep=',')
 
     data_drag, names_drag = pass_data(df=drag_df, COLORS=DRAG_INFO)
     data_lift, names_lift = pass_data(df=lift_df, COLORS=LIFT_INFO)
@@ -151,7 +151,7 @@ def weight_bar_graph():
         ax.annotate(f'{round(height, 1)} %', (x + width / 2, y + height * 1.02), ha='center')
 
     fig.tight_layout()
-    plt.savefig("trendLines_dir/images/" + "pesos_barras")
+    plt.savefig("literature_data/images/" + "pesos_barras")
     plt.show()
 
 
@@ -180,7 +180,7 @@ def weight_pie_graph():
     ax1.axis('equal')
     ax1.set_title("Distribuição de massa Shadow 200")
     plt.tight_layout()
-    plt.savefig("trendLines_dir/images/" + "pesos_pie")
+    plt.savefig("literature_data/images/" + "pesos_pie")
     plt.show()
 
 

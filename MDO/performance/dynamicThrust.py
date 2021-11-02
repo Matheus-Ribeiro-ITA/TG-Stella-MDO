@@ -92,7 +92,7 @@ def plotDynamicThrust(engineInfo):
     plt.ylabel("Empuxo (N)")
     plt.legend()
     plt.grid()
-    plt.savefig("trendLines_dir/images/" + "shadow_vs_disk")
+    plt.savefig("literature_data/images/" + "shadow_vs_disk")
     plt.show()
 
 
@@ -134,13 +134,13 @@ def plot_data(data=None, names=None, xlabel="X label", ylabel="Y label"):
     # plt.xlabel(xlabel)
     # plt.ylabel(ylabel)
     # plt.xlim([0, 60])
-    # plt.savefig("trendLines_dir/images/" + "thrust_shadow")
+    # plt.savefig("literature_data/images/" + "thrust_shadow")
     # plt.show()
 
 
 def thrust_graphs_shadow():
     CWD = os.getcwd()
-    thrust_df = pd.read_csv(os.path.join(CWD, "trendLines_dir", "shadow_data", "Thrust_datasets.csv"), sep=',')
+    thrust_df = pd.read_csv(os.path.join(CWD, "literature_data", "shadow_data", "Thrust_datasets.csv"), sep=',')
     data_thrust, names_drag = pass_data(df=thrust_df, COLORS=FLAP_INFO)
 
     print(data_thrust[8][:-5], data_thrust[9][:-5])

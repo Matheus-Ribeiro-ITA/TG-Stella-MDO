@@ -52,7 +52,7 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
                             * (100*tcRootWing/(np.cos(wingSweep))) ** (-0.3) \
                             * (mto6Btu * Nz) ** 0.49
 
-            wingWeightLbf = wingWeightLbf*3  # TODO: This is a correction of weight to make sense.
+            wingWeightLbf = wingWeightLbf*1  # TODO: This is a correction of weight to make sense.
 
         elif method_calc == 'Cargo Transport':
             controlAreaBtu = aileronArea * 10.7639  # Control Surface Area in ft^2.
@@ -88,8 +88,7 @@ def weightCalc(aircraftInfo, weightInfo=None, method="Raymer"):
             aircraftInfo.weight.vertical = weight
         elif name == 'vertical V':
             aircraftInfo.cg.vertical = [xcg, 0, 0]
-            weight = weight*2
-            aircraftInfo.weight.vertical = weight*2
+            aircraftInfo.weight.vertical = weight
 
         if os.environ["DEBUG"].lower() == 'yes':
             print("-" * 10)

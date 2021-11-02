@@ -187,7 +187,9 @@ class Weight:
         # self.MTOW = None
         self.allElse = {  # Atobá Data (kg, m)
             "avionica": [13.88 * 9.8, 0],
-            "subsistemas": [18.45 * 9.8, 0]
+            "subsistemas": [18.45 * 9.8, 0],
+            'growth': [7.9 * 9.8, 0],
+            'instalacao': [17 * 9.8, 0]
         }
         self.payload = 23.58 * 9.8
 

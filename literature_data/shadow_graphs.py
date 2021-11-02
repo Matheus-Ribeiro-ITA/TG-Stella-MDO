@@ -38,23 +38,43 @@ LIFT_INFO = {
 }
 
 SHADOW_WEIGHT_DATA = {
-    "estruturas": 46.55,
+    "estruturas": 38.8,
     "subsistemas": 18.45,
     "avionica": 13.88,
     "propulsao": 12.7,
     "combustivel": 28.25,
+    "growth": 7.9,
     "carga paga": 23.58,
-    "Peso bruto de projeto": 143.75
+    "Peso bruto de projeto": 38.8 + 18.45 + 13.88 + 12.7 + 28.25 + 7.9 + 23.58
+}
+
+SHADOW_WEIGHT_BREAKDOWN_DATA = {
+    "wing": 8.7,
+    "tail": 1.8,
+    "fuselage": 2.78,
+    "gear": 8.62,
+    "installation": 16.9,
+    "total": 8.7 + 1.8 + 2.78 + 8.62 + 16.9
 }
 
 aircraft_weight_data = {
-    "estruturas": 46.55,
+    "estruturas": 37.9,
     "subsistemas": 18.45,
     "avionica": 13.88,
     "propulsao": 12.7,
-    "combustivel": 28.25,
+    "combustivel": 29.5,
     "carga paga": 23.58,
-    "Peso bruto de projeto": 143.75
+    "growth": 7.9,
+    "Peso bruto de projeto": 37.9 + 18.45 + 13.88 + 12.7 + 29.5 + 23.58 + 7.9
+}
+
+aircraft_weight_breakdown_data = {
+    "wing": 7.49,
+    "tail": 2.94,
+    "fuselage": 6.32,
+    "gear": 0.65 + 3.65,
+    "installation": 16.9,
+    'total': 7.49 + 2.94 + 6.32 + 0.65 + 3.65 + 16.9
 }
 
 aircraft_polar_data = {
@@ -92,8 +112,6 @@ def plot_data(data=None, names=None, xlabel="X label", ylabel="Y label", saveNam
     plt.show()
 
 
-
-
 def aerodynamics_graphs():
     CWD = os.getcwd()
     drag_df = pd.read_csv(os.path.join(CWD, "literature_data", "shadow_data", "Drag_shadow.csv"), sep=';')
@@ -123,7 +141,7 @@ def aerodynamics_graphs():
         total += np.array(data_drag[i + 1])
 
     data_drag_comparison = [data_drag[0], total, cLAircraft, cDAircraft]
-    namesComparison = [('Gundlach', 'blue', 'v--'), '', ('Autor', 'darkorchid', '.--'), '']
+    namesComparison = [('Gundlach (2004)', 'blue', 'v--'), '', ('Autor', 'darkorchid', '.--'), '']
     plot_data(data=data_drag_comparison,
               names=namesComparison,
               xlabel="Coeficiente de sustentação (CL)",
@@ -141,7 +159,7 @@ def aerodynamics_graphs():
 
 
 def weight_bar_graph(in_percentage=False):
-    labels = ["Estruturas", "Subsistemas", "Aviônica", "Propulsão", "Combustível", "Carga paga",
+    labels = ["Estruturas", "Subsistemas", "Aviônica", "Propulsão", "Combustível",  "Carga paga", "Crescimento",
               None if in_percentage else "Peso total"]
     total_weight = SHADOW_WEIGHT_DATA["Peso bruto de projeto"]
 
@@ -151,6 +169,7 @@ def weight_bar_graph(in_percentage=False):
                  SHADOW_WEIGHT_DATA["propulsao"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_DATA["propulsao"],
                  SHADOW_WEIGHT_DATA["combustivel"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_DATA["combustivel"],
                  SHADOW_WEIGHT_DATA["carga paga"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_DATA["carga paga"],
+                 SHADOW_WEIGHT_DATA["growth"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_DATA["growth"],
                  None if in_percentage else SHADOW_WEIGHT_DATA["Peso bruto de projeto"]]
 
     men_means_our_aricraft = [aircraft_weight_data["estruturas"] / total_weight * 100 if in_percentage else aircraft_weight_data["estruturas"],
@@ -159,6 +178,7 @@ def weight_bar_graph(in_percentage=False):
                  aircraft_weight_data["propulsao"] / total_weight * 100 if in_percentage else aircraft_weight_data["propulsao"],
                  aircraft_weight_data["combustivel"] / total_weight * 100 if in_percentage else aircraft_weight_data["combustivel"],
                  aircraft_weight_data["carga paga"] / total_weight * 100 if in_percentage else aircraft_weight_data["carga paga"],
+                 aircraft_weight_data["growth"] / total_weight * 100 if in_percentage else aircraft_weight_data["growth"],
                  None if in_percentage else aircraft_weight_data["Peso bruto de projeto"]]
     # women_means = [25, 32, 34, 20, 25]
 
@@ -172,8 +192,69 @@ def weight_bar_graph(in_percentage=False):
     width = 0.35  # the width of the bars
 
     fig, ax = plt.subplots()
-    rects1 = ax.bar(x, men_means, width, label='Gundlach')
-    rects2 = ax.bar(x+width*1.05, men_means_our_aricraft, width, label='Autor')
+    rects1 = ax.bar(x, men_means, width, label='Gundlach (2004)')
+    rects2 = ax.bar(x+width*1.1, men_means_our_aricraft, width, label='Autor')
+    # rects2 = ax.bar(x + width / 2, women_means, width, label='Women')
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    if in_percentage:
+        ax.set_ylabel('Distribuição de peso (%)')
+    else:
+        ax.set_ylabel('Distribuição de peso (Kg)')
+    # ax.set_title('Distribuição de peso Shadow 200')
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, rotation=45)
+    ax.legend()
+
+    # ax.bar_label(rects1, padding=3)
+    # ax.bar_label(rects2, padding=3)
+    for i, p in enumerate(ax.patches):
+        width = p.get_width()
+        height = p.get_height()
+        x, y = p.get_xy()
+
+        if in_percentage:
+            ax.annotate(f'{round(height, 1)} %', (x + width / 2, y + height * 1.02), ha='center', fontsize=6.5)
+        else:
+            ax.annotate(f'{round(height, 1)}', (x + width / 2, y + height * 1.02), ha='center', fontsize=6.5)
+
+    fig.tight_layout()
+    plt.savefig("literature_data/images/" + "pesos_barras")
+    plt.show()
+
+
+def weight_breakdown_bar_graph(in_percentage=False):
+    labels = ["Asa", "Empenagem", "Fuselagem", "Trem de pouso", "Instalação",
+              None if in_percentage else "Peso total"]
+    total_weight = SHADOW_WEIGHT_BREAKDOWN_DATA["total"]
+
+    men_means = [SHADOW_WEIGHT_BREAKDOWN_DATA["wing"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_BREAKDOWN_DATA["wing"],
+                 SHADOW_WEIGHT_BREAKDOWN_DATA["tail"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_BREAKDOWN_DATA["tail"],
+                 SHADOW_WEIGHT_BREAKDOWN_DATA["fuselage"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_BREAKDOWN_DATA["fuselage"],
+                 SHADOW_WEIGHT_BREAKDOWN_DATA["gear"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_BREAKDOWN_DATA["gear"],
+                 SHADOW_WEIGHT_BREAKDOWN_DATA["installation"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_BREAKDOWN_DATA["installation"],
+                 None if in_percentage else SHADOW_WEIGHT_BREAKDOWN_DATA["total"]]
+
+    men_means_our_aricraft = [aircraft_weight_breakdown_data["wing"] / total_weight * 100 if in_percentage else aircraft_weight_breakdown_data["wing"],
+                 aircraft_weight_breakdown_data["tail"] / total_weight * 100 if in_percentage else aircraft_weight_breakdown_data["tail"],
+                 aircraft_weight_breakdown_data["fuselage"] / total_weight * 100 if in_percentage else aircraft_weight_breakdown_data["fuselage"],
+                 aircraft_weight_breakdown_data["gear"] / total_weight * 100 if in_percentage else aircraft_weight_breakdown_data["gear"],
+                 aircraft_weight_breakdown_data["installation"] / total_weight * 100 if in_percentage else aircraft_weight_breakdown_data["installation"],
+                 None if in_percentage else aircraft_weight_breakdown_data["total"]]
+    # women_means = [25, 32, 34, 20, 25]
+
+    if in_percentage:
+        labels = labels.pop()
+        men_means = men_means.pop()
+        men_means_our_aricraft = men_means_our_aricraft.pop()
+
+
+    x = np.arange(len(labels))  # the label locations
+    width = 0.35  # the width of the bars
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(x, men_means, width, label='Gundlach (2004)')
+    rects2 = ax.bar(x+width*1.1, men_means_our_aricraft, width, label='Autor')
     # rects2 = ax.bar(x + width / 2, women_means, width, label='Women')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
@@ -199,23 +280,25 @@ def weight_bar_graph(in_percentage=False):
             ax.annotate(f'{round(height, 1)}', (x + width / 2, y + height * 1.02), ha='center', fontsize=7)
 
     fig.tight_layout()
-    plt.savefig("literature_data/images/" + "pesos_barras")
+    plt.savefig("literature_data/images/" + "pesos_barras_breakdown")
     plt.show()
 
 
 def weight_pie_graph():
     fig1, ax1 = plt.subplots()
     # Pie chart
-    labels = ["Estruturas", "Aviônica", "Propulsão", "Combustível", "Carga paga"]
+    labels = ["Estruturas", "Aviônica", "Propulsão", "Combustível", "Carga paga", 'Crescimento', 'Subsistemas']
     total_weight = SHADOW_WEIGHT_DATA["Peso bruto de projeto"]
     sizes = [SHADOW_WEIGHT_DATA["estruturas"] / total_weight * 100,
              SHADOW_WEIGHT_DATA["avionica"] / total_weight * 100,
              SHADOW_WEIGHT_DATA["propulsao"] / total_weight * 100,
              SHADOW_WEIGHT_DATA["combustivel"] / total_weight * 100,
-             SHADOW_WEIGHT_DATA["carga paga"] / total_weight * 100]
+             SHADOW_WEIGHT_DATA["carga paga"] / total_weight * 100,
+             SHADOW_WEIGHT_DATA["growth"] / total_weight * 100,
+             SHADOW_WEIGHT_DATA["subsistemas"] / total_weight * 100]
     # colors
     # colors = ['#ff9999', '#66b3ff', '#99ff99', '#ffcc99', '#e38dd9']
-    colors = ['cornflowerblue', 'deepskyblue', 'slateblue', '#D6D6D6', 'slategray']
+    colors = ['cornflowerblue', 'deepskyblue', 'slateblue', '#D6D6D6', 'slategray', 'c', 'aquamarine']
     # explsion
     explode = ([0.05] * len(labels))
 
@@ -233,6 +316,7 @@ def weight_pie_graph():
 
 
 if __name__ == "__main__":
-    # aerodynamics_graphs()
-    # weight_pie_graph()
+    aerodynamics_graphs()
+    weight_pie_graph()
     weight_bar_graph(in_percentage=False)
+    weight_breakdown_bar_graph(in_percentage=False)

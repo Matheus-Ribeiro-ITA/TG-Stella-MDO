@@ -14,17 +14,17 @@ os.environ['fun_eval_count'] = '0'
 
 print('{0:4s} | {1:8s} {2:8s} {3:8s} {4:9s} |'.format('Iter', 'Range', 'Var1', 'Var2', 'Var3'))
 
-Xstates0 = np.array([7.07/10, 2.15/5, 0.41535, 2.05/5])
+scaleFactors = np.array([10, 5, 1, 5])
+ubFactor = 1.4
+lbFactor = 0.6
 
-ub = np.array([7.07*1.4/10,
-               2.15*1.4/5,
-               0.41535*1.4,
-               2.05*1.4/5])
+# Xstates0 = np.multiply(np.array([7.07, 2.15, 0.41535, 2.05]), 1 / scaleFactors)
+Xstates0 = np.multiply(np.array([6, 2.5, 0.335, 1.85]), 1 / scaleFactors)
 
-lb = np.array([7.07*0.6/10,
-               2.15*0.6/5,
-               0.41535*0.6,
-               2.05*0.6/5])
+
+ub = Xstates0*ubFactor
+
+lb = Xstates0*lbFactor
 
 bounds = Bounds(lb, ub)
 

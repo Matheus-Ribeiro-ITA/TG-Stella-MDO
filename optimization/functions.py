@@ -6,7 +6,10 @@ import pandas as pd
 import MDO
 from main import main
 
+global historyDfFun
+
 history_df = pd.DataFrame()
+historyDfFun = pd.DataFrame()
 
 config = ConfigParser()
 config.read(os.path.join("outputsConfig.cfg"))
@@ -21,6 +24,7 @@ logger.info("------------------BEGIN------------------")
 
 
 def objectiveFun(stateVars):
+    global historyDfFun
 
     stateVarsDict = {  # TODO: Create various cases
         'aspectRatio': stateVars[0]*10,
@@ -38,10 +42,12 @@ def objectiveFun(stateVars):
     try:
         results_df = main(stateVarsDict, logger=logger)
         os.environ['fun_eval_count'] = str(int(os.getenv('fun_eval_count')) + 1)
-        print(f"Call main {os.environ['fun_eval_count']}")
-        # print(stateVars)
-        print('Range km:', round(results_df.loc[0, 'range_all'], 1))
-        print("")
+        # print(f"Call main {os.environ['fun_eval_count']}")
+        # # print(stateVars)
+        # print('Range km:', round(results_df.loc[0, 'range_all'], 1))
+        # print("")
+        historyDfFun = historyDfFun.append(pd.Series(np.hstack((stateVars, -results_df['range_all'].iloc[0]/1000))), ignore_index=True)
+        historyDfFun.to_csv("optimization/history/historyFun.csv")
         return -results_df['range_all'].iloc[0]/1000
     except:
         print('Deu ruim')

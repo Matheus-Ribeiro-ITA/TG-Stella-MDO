@@ -2,8 +2,8 @@ import pandas as pd
 import  matplotlib.pyplot as plt
 
 
-def plotOptimizationHistory():
-    history_df = pd.read_csv("optimization/history/history.csv", index_col=0)
+def plotOptimizationHistory(filename='history'):
+    history_df = pd.read_csv(f"optimization/history/{filename}.csv", index_col=0)
 
     scaleList = [10, 5, 1, 5, -1000]
 
@@ -20,6 +20,7 @@ def _plot_one(history_df, column=str(4)):
     plt.xlabel("Iteration")
     plt.ylabel("Range (Km)")
     plt.show()
+    plt.savefig("optimization/images/outputHistory.png")
 
 
 def _plot_four(history_df, columns=['0', '1', '2', '3']):
@@ -43,7 +44,8 @@ def _plot_four(history_df, columns=['0', '1', '2', '3']):
         ax.label_outer()
 
     plt.show()
+    plt.savefig("optimization/images/statesHistory.png")
 
 
 if __name__ == '__main__':
-    plotOptimizationHistory()
+    plotOptimizationHistory(filename='historyFun')

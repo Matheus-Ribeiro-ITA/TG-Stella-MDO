@@ -24,7 +24,7 @@ def plot_doe(plot_type=0, filename='results'):
     if plot_type == 0:
 
         # Simple plot
-        fig = sns.pairplot(doe_df, corner=True)
+        fig = sns.pairplot(doe_df, kind="reg", corner=True)
 
     elif plot_type == 1:
 
@@ -81,9 +81,9 @@ def _filterDoe(doe_df):
     print(f"Cutted {numRows - doe_df.shape[0]}, stallPositionWing > 0")
 
     # -----------------------------------------
-    numRows = doe_df.shape[0]
-    doe_df = doe_df[doe_df['staticMargin'] > 0]
-    print(f"Cutted {numRows - doe_df.shape[0]}, staticMargin > 0")
+    # numRows = doe_df.shape[0]
+    # doe_df = doe_df[doe_df['staticMargin'] > 0]
+    # print(f"Cutted {numRows - doe_df.shape[0]}, staticMargin > 0")
 
     return doe_df
 

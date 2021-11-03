@@ -54,7 +54,7 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
     failed_count = 0
 
     for ii in range(n_samples):
-        print(f"Case {ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
+        print(f"Case {ii-failed_count}/{ii}/{n_samples}, Time used: {round(time.time() -startTime, 2)} s")
         # Evaluate sample
         try:
             results_to_append = main(list(X[ii, :]), logger=logger)
@@ -91,6 +91,8 @@ if __name__ == '__main__':
     # ----Config ----------------------------------------------
     MDO.parseConfig("outputsConfig.cfg")
 
+    n_samples = 500
+
     # ---------------------------------------------------------------
     # Case all variables
     inputs_names = ['aspectRatio', 'wingSecPercentage', 'wingArea', 'taperRatio1', 'taperRatio2',
@@ -105,8 +107,6 @@ if __name__ == '__main__':
     ub = [14, 0.8, 3.0, 1.0, 1.0,
           6, 1.5, 1, 2.5,
           2]
-
-    n_samples = 1500
 
     sampling_type = 'real_random'
 
@@ -130,8 +130,6 @@ if __name__ == '__main__':
           4, 0.6, 0.6, 1.5,
           1.5]
 
-    n_samples = 1500
-
     sampling_type = 'real_random'
 
     run_doe(n_inputs=n_inputs, lb=lb, ub=ub,
@@ -154,8 +152,6 @@ if __name__ == '__main__':
           6, 1, 0.8, 2.5,
           1.5]
 
-    n_samples = 1500
-
     sampling_type = 'real_random'
 
     run_doe(n_inputs=n_inputs, lb=lb, ub=ub,
@@ -177,8 +173,6 @@ if __name__ == '__main__':
     ub = [7, 0.5, 2, 0.6, 0.6,
           4, 0.6, 0.7, 1.5,
           2.5]
-
-    n_samples = 500
 
     sampling_type = 'real_random'
 

@@ -97,12 +97,12 @@ def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=No
 
     # ---- Control Surfaces definition --------------------------------------------
     controlVariables = {
-        "aileron": {
-            "spanStartPercentage": 0.67,
-            "cHinge": 0.7,  # From Leading Edge
-            "gain": 1,
-            "duplicateSign": 1
-        },
+        # "aileron": {  # TODO: Fix aileron bug with wingspan
+        #     "spanStartPercentage": 0.67,
+        #     "cHinge": 0.7,  # From Leading Edge
+        #     "gain": 1,
+        #     "duplicateSign": 1
+        # },
         "elevator": {
             "spanStartPercentage": 0.2,
             "cHinge": 0.5,
@@ -115,12 +115,12 @@ def set_state_variables(wingRootChord=None, wingAirfoil=None, wingMiddleChord=No
         #     "gain": 1,
         #     "duplicateSign": 1
         # },
-        "flap": {
-            "spanStartPercentage": 0.0,
-            "cHinge": 0.7,  # From Leading Edge
-            "gain": 1,
-            "duplicateSign": 1
-        },
+        # "flap": {
+        #     "spanStartPercentage": 0.0,
+        #     "cHinge": 0.7,  # From Leading Edge
+        #     "gain": 1,
+        #     "duplicateSign": 1
+        # },
     }
 
     # ---- Avl Cases to analyse --------------------------------------------

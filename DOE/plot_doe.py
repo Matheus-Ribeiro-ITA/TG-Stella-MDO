@@ -13,7 +13,7 @@ def plot_doe(plot_type=0, filename='results'):
 
     doe_df = pd.read_csv(f'DOE/database/{filename}.csv')
 
-    doe_df = _filterDoe(doe_df)
+    doe_df = _filterDoe(doe_df, type=filename)
     print("Df shape: ", doe_df.shape)
 
     filename_to_save = filename + f'_{doe_df.shape[0]}_por_{doe_df.shape[1]}'
@@ -24,7 +24,19 @@ def plot_doe(plot_type=0, filename='results'):
     if plot_type == 0:
 
         # Simple plot
-        fig = sns.pairplot(doe_df, kind="reg", corner=True)
+        fig = sns.pairplot(doe_df, kind="reg", corner=True, plot_kws={'line_kws': {'color': 'red'}})
+        for ax in fig.axes.flatten():
+            if ax is not None:
+                # rotate x axis labels
+                ax.set_xlabel(ax.get_xlabel(), rotation=45)
+                # rotate y axis labels
+                ax.set_ylabel(ax.get_ylabel(), rotation=45)
+                # set y labels alignment
+                ax.yaxis.get_label().set_horizontalalignment('right')
+
+        # for axes in fig.axes.flat:
+        #     if axes is not None:
+        #         axes.set_ylabel(axes.get_ylabel(), rotation=0, horizontalalignment='right')
 
     elif plot_type == 1:
 
@@ -42,16 +54,52 @@ def plot_doe(plot_type=0, filename='results'):
     fig.savefig(f'DOE/images/{filename_to_save}.png')
 
 
-def _filterDoe(doe_df):
+def _filterDoe(doe_df, type='resultsAll'):
 
-    outputs_to_drop = ['deflection_cruise_aileron', 'deflection_cruise_rudder',
-                       'deflection_cruise_flap',
-                       'descentTime', 'timeClimb', 'neutral_point', 'cDRunAvl', 'alphaRun',
-                       'timeTakeOff', 'fuelTakeOff',
-                       'cd0', 'cd1', 'cd2', 'cDRun',
-                       'cgPostionable', 'mtow']
+    default_to_drop = ['deflection_cruise_aileron', 'deflection_cruise_rudder',
+                           'deflection_cruise_flap',
+                           'descentTime', 'timeClimb', 'neutral_point', 'cDRunAvl', 'alphaRun',
+                           'timeTakeOff', 'fuelTakeOff',
+                           'cd0', 'cd1', 'cd2', 'cDRun',
+                           'cgPostionable', 'mtow', 'static_margin',
+                           'fuelDescent', 'fuelClimb', 'cruiseRange',
+                       'allElseCgPercentFuselage', 'speedTakeOff',
+                       'deflection_cruise_elevator', 'fuelTotal']
+
+    if type == 'resultsAll':
+        outputs_to_drop = default_to_drop
+    elif type == 'resultsWing':
+        outputs_to_drop = default_to_drop + ['aspectRatioV', 'areaV', 'taperV', 'posXV', 'fuselageLength']
+    elif type == 'resultsStab':
+        outputs_to_drop = default_to_drop + ['aspectRatio', 'wingSecPercentage', 'wingArea', 'taperRatio1',
+                                             'taperRatio2', 'fuselageLength']
+    elif type == 'resultsFuselage':
+        outputs_to_drop = default_to_drop + ['aspectRatio', 'wingSecPercentage', 'wingArea', 'taperRatio1',
+                                             'taperRatio2', 'aspectRatioV', 'areaV', 'taperV', 'posXV']
+
 
     doe_df = doe_df.drop(columns=outputs_to_drop)
+
+    renameColumns = {
+        'aspectRatio': 'Alongamento',
+        'wingSecPercentage': 'Divisão painel',
+        'wingArea': 'Área Asa ($m^2$)',
+        'taperRatio1': 'Afilamento primeira seção',
+        'taperRatio2': 'Afilamento segunda seção',
+        'aspectRatioV': 'Alongamento empenagem',
+        'areaV': 'Área Empenagem ($m^2$)',
+        'taperV': 'Afilamento empenagem',
+        'posXV': 'Distância empenagem (m)',
+        'fuselageLength': 'Comprimento fuselagem (m)',
+        'deflection_cruise_elevator': 'Deflexão profundor (º)',
+        'alphaStallWing': 'Ângulo de estol (º)',
+        'stallPositionWing': 'Posição de estol da asa (%)',
+        'weightEmpty': 'Peso vazio (kg)',
+        'fuelTotal': 'Peso combustível (kg)',
+        'runway': 'Pista de decolagem (m)',
+        'speedTakeOff': 'Velocidade decolagem (m/s)',
+        'range_all': 'Alcance (km)',
+    }
 
     # -----------------------------------------
     # numRows = doe_df.shape[0]
@@ -59,16 +107,21 @@ def _filterDoe(doe_df):
     # print(f"Cutted {numRows - doe_df.shape[0]}, range < 200")
     # -----------------------------------------
     numRows = doe_df.shape[0]
-    doe_df = doe_df[doe_df['cruiseRange'] > 0]
+    doe_df = doe_df[doe_df['range_all'] > 0]
     print(f"Cutted {numRows - doe_df.shape[0]}, range > 0")
+
+    # -----------------------------------------
+    numRows = doe_df.shape[0]
+    doe_df = doe_df[doe_df['range_all'] < 650]
+    print(f"Cutted {numRows - doe_df.shape[0]}, range < 650")
     # -----------------------------------------
     # numRows = doe_df.shape[0]
     # doe_df = doe_df[doe_df['deflection_cruise_elevator'] < 0]
     # print(f"Cutted {numRows - doe_df.shape[0]}, elevator < 0")
     # -----------------------------------------
     numRows = doe_df.shape[0]
-    doe_df = doe_df[doe_df['runway'] < 3000]
-    print(f"Cutted {numRows - doe_df.shape[0]}, runaway < 3000")
+    doe_df = doe_df[doe_df['runway'] < 1200]
+    print(f"Cutted {numRows - doe_df.shape[0]}, runaway < 1200")
 
     # -----------------------------------------
     numRows = doe_df.shape[0]
@@ -85,6 +138,8 @@ def _filterDoe(doe_df):
     # doe_df = doe_df[doe_df['staticMargin'] > 0]
     # print(f"Cutted {numRows - doe_df.shape[0]}, staticMargin > 0")
 
+    doe_df = doe_df.rename(columns=renameColumns)  # TODO:
+
     return doe_df
 
 
@@ -93,3 +148,26 @@ if __name__ == '__main__':
     plot_doe(filename='resultsWing')
     plot_doe(filename='resultsStab')
     plot_doe(filename='resultsFuselage')
+
+
+
+    # renameColumns = {
+    #     'aspectRatio': 'Alongamento',
+    #     'wingSecPercentage': 'Divisão painel',
+    #     'wingArea': 'Área Asa (m^2)',
+    #     'taperRatio1': 'Afilamento primeira seção',
+    #     'taperRatio2': 'Afilamento primeira seção',
+    #     'aspectRatioV': 'Alongamento empenagem',
+    #     'areaV': 'Área Empenagem (m^2)',
+    #     'taperV': 'Afilamento empenagem',
+    #     'posXV': 'Posição empenagem (m)',
+    #     'fuselageLength': 'Comprimento fuselagem (m)',
+    #     'deflection_cruise_elevator': 'Deflexão profundor (º)',
+    #     'alphaStallWing': 'Ângulo de estol (º)',
+    #     'stallPostionWing': 'Posição estol da asa (%)',
+    #     'weightEmpty': 'Peso vazio (kg)',
+    #     'fuelTotal': 'Peso combustível (kg)',
+    #     'runway': 'Pista de decolagem (m)',
+    #     'speedTakeOff': 'Velocidade decolagem (m/s)',
+    #     'range_all': 'Alcance (km)',
+    # }

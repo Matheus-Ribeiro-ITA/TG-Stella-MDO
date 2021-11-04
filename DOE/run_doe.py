@@ -91,7 +91,7 @@ if __name__ == '__main__':
     # ----Config ----------------------------------------------
     MDO.parseConfig("outputsConfig.cfg")
 
-    n_samples = 500
+    n_samples = 1500
 
     # ---------------------------------------------------------------
     # Case all variables

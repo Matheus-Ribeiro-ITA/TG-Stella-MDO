@@ -26,18 +26,32 @@ logger.info("------------------BEGIN------------------")
 def objectiveFun(stateVars):
     global historyDfFun
 
-    stateVarsDict = {  # TODO: Create various cases
-        'aspectRatio': stateVars[0]*10,
-        'wingSecPercentage': 0.5,
-        'wingArea': stateVars[1]*5,
-        'taperRatio1': 1,
-        'taperRatio2': 1,
-        'aspectRatioV': 3.29,  # AR from top view
-        'areaV': stateVars[2],  # Area from top view
-        'taperV': 1,
-        'posXV': stateVars[3]*5,
-        'fuselageLength': 1.83
-    }
+    if os.environ['optimization_num_vars'] == '4':
+        stateVarsDict = {
+            'aspectRatio': stateVars[0]*10,
+            'wingSecPercentage': 0.5,
+            'wingArea': stateVars[1]*5,
+            'taperRatio1': 1,
+            'taperRatio2': 1,
+            'aspectRatioV': 3.29,  # AR from top view
+            'areaV': stateVars[2],  # Area from top view
+            'taperV': 1,
+            'posXV': stateVars[3]*5,
+            'fuselageLength': 1.83
+        }
+    elif os.environ['optimization_num_vars'] == '10':
+        stateVarsDict = {
+            'aspectRatio': stateVars[0]*10,
+            'wingSecPercentage': stateVars[1]*1,
+            'wingArea': stateVars[2]*5,
+            'taperRatio1': stateVars[3]*1,
+            'taperRatio2': stateVars[4]*1,
+            'aspectRatioV': stateVars[5]*5,  # AR from top view
+            'areaV': stateVars[6]*1,  # Area from top view
+            'taperV': stateVars[7]*1,
+            'posXV': stateVars[8]*5,
+            'fuselageLength': stateVars[9]*5
+        }
 
     try:
         results_df = main(stateVarsDict, logger=logger)
@@ -47,7 +61,7 @@ def objectiveFun(stateVars):
         # print('Range km:', round(results_df.loc[0, 'range_all'], 1))
         # print("")
         historyDfFun = historyDfFun.append(pd.Series(np.hstack((stateVars, -results_df['range_all'].iloc[0]/1000))), ignore_index=True)
-        historyDfFun.to_csv("optimization/history/historyFun.csv")
+        historyDfFun.to_csv(f"optimization/history/historyFun_{os.environ['optimization_num_vars']}_{os.environ['optimization_type']}.csv")
         return -results_df['range_all'].iloc[0]/1000
     except:
         print('Deu ruim')
@@ -71,7 +85,7 @@ def callbackfun(Xstates, *_):
     # Acumula dados da otimização
 
     history_df = history_df.append(pd.Series(np.hstack((Xstates, objective_output))), ignore_index=True)
-    history_df.to_csv("optimization/history/history.csv")
+    history_df.to_csv(f"optimization/history/history_{os.environ['optimization_num_vars']}_{os.environ['optimization_type']}.csv")
     # Xstates_history = np.vstack([Xstates_history, Xstates])
     # outputs_history = np.vstack([outputs_history, np.hstack([objective_output])])
 

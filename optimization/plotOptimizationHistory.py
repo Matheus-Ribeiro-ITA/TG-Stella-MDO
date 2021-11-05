@@ -5,25 +5,25 @@ import  matplotlib.pyplot as plt
 def plotOptimizationHistory(filename='history'):
     history_df = pd.read_csv(f"optimization/history/{filename}.csv", index_col=0)
 
-    scaleList = [10, 5, 1, 5, -1000]
+    scaleList = [10, 5, 1, 5, 1000]
 
     for i, scale in enumerate(scaleList):
         history_df[str(i)] = history_df[str(i)]*scale
 
-    _plot_one(history_df, column=str(4))
-    _plot_four(history_df, columns=['0', '1', '2', '3'])
+    _plot_one(history_df, column=str(4), filename=filename)
+    _plot_four(history_df, columns=['0', '1', '2', '3'], filename=filename)
 
 
-def _plot_one(history_df, column=str(4)):
+def _plot_one(history_df, column=str(4), filename=None):
     plt.plot(history_df.index, history_df[column])
     plt.ylim([min(history_df[column])*0.95, max(history_df[column])*1.05])
     plt.xlabel("Iteration")
     plt.ylabel("Range (Km)")
     plt.show()
-    plt.savefig("optimization/images/outputHistory.png")
+    plt.savefig(f"optimization/images/outputHistory_{filename}.png")
 
 
-def _plot_four(history_df, columns=['0', '1', '2', '3']):
+def _plot_four(history_df, columns=['0', '1', '2', '3'], filename=None):
     fig, axs = plt.subplots(2, 2)
     axs[0, 0].plot(history_df.index, history_df[columns[0]])
     # axs[0, 0].set_title('Wing AR')
@@ -44,8 +44,11 @@ def _plot_four(history_df, columns=['0', '1', '2', '3']):
         ax.label_outer()
 
     plt.show()
-    plt.savefig("optimization/images/statesHistory.png")
+    plt.savefig(f"optimization/images/statesHistory_{filename}.png")
 
 
 if __name__ == '__main__':
-    plotOptimizationHistory(filename='historyFun')
+    vars_num = '10'
+    method = 'SLSQP'
+    plotOptimizationHistory(filename=f'historyFun_{vars_num}_{method}')
+    plotOptimizationHistory(filename=f'history_{vars_num}_{method}')

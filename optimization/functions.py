@@ -69,7 +69,7 @@ def objectiveFun(stateVars):
 
 
 
-def callbackfun(Xstates, *_):
+def callbackfun(Xstates, *args, **kwargs):
     global Nfeval, history_df, fb_history, outputs_history, time_history
     objective_output = objectiveFun(Xstates)
     dataStr = '{0:4d} | {1: 3.3f} {2:3.3f} {3:3.3f} {4:3.3f} |'.format(Nfeval,
@@ -89,21 +89,3 @@ def callbackfun(Xstates, *_):
     # Xstates_history = np.vstack([Xstates_history, Xstates])
     # outputs_history = np.vstack([outputs_history, np.hstack([objective_output])])
 
-
-# def callbackGenetic(Xstates, convergence=0.):
-#     global Nfeval, Xstates_history, fb_history, outputs_history, time_history
-#     objective_output = objectiveFun(Xstates)
-#     dataStr = '{0:4d} | {1: 3.3f} {2:3.3f} {3:3.3f} {4:3.3f} |'.format(Nfeval,
-#                                                                        objective_output,
-#                                                                        Xstates[0],
-#                                                                        Xstates[1],
-#                                                                        Xstates[2])
-#     print(dataStr)
-#     logger.info(dataStr)
-#
-#     # Mostra o progresso da otimização
-#     Nfeval += 1
-#     # Acumula dados da otimização
-#     Xstates_history = np.vstack([Xstates_history, Xstates])
-#     outputs_history = np.vstack([outputs_history, np.hstack([objective_output])])
-#

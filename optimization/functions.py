@@ -62,12 +62,16 @@ def objectiveFun(stateVars):
         # print("")
         historyDfFun = historyDfFun.append(pd.Series(np.hstack((stateVars, -results_df['range_all'].iloc[0]/1000))), ignore_index=True)
         historyDfFun.to_csv(f"optimization/history/historyFun_{os.environ['optimization_num_vars']}_{os.environ['optimization_type']}.csv")
-        return -results_df['range_all'].iloc[0]/1000
+
+        if 'alcance' in os.environ['optimization_type']:
+            return -results_df['range_all'].iloc[0]/1000
+        elif 'pista' in os.environ['optimization_type']:
+            return results_df['runway'].iloc[0] / 1000
+        else:
+            raise Exception("Fix optimization_type name")
     except:
         print('Deu ruim')
         return -1/1000
-
-
 
 def callbackfun(Xstates, *args, **kwargs):
     global Nfeval, history_df, fb_history, outputs_history, time_history

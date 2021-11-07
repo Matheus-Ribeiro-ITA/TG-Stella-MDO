@@ -1,0 +1,10 @@
+
+res = minimize(objectiveFun,
+               Xstates0,
+               method='SLSQP',
+               bounds=bounds,
+               callback=callbackfun,
+               tol=1e-6,
+               options={'maxiter': 500,
+                        'disp': True,
+                        'eps': 10**-2})

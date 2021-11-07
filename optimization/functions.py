@@ -60,18 +60,25 @@ def objectiveFun(stateVars):
         # # print(stateVars)
         # print('Range km:', round(results_df.loc[0, 'range_all'], 1))
         # print("")
-        historyDfFun = historyDfFun.append(pd.Series(np.hstack((stateVars, -results_df['range_all'].iloc[0]/1000))), ignore_index=True)
-        historyDfFun.to_csv(f"optimization/history/historyFun_{os.environ['optimization_num_vars']}_{os.environ['optimization_type']}.csv")
 
         if 'alcance' in os.environ['optimization_type']:
+            historyDfFun = historyDfFun.append(
+                pd.Series(np.hstack((stateVars, -results_df['range_all'].iloc[0] / 1000))), ignore_index=True)
+            historyDfFun.to_csv(f"optimization/history/historyFun_{os.environ['optimization_num_vars']}_{os.environ['optimization_type']}.csv")
             return -results_df['range_all'].iloc[0]/1000
         elif 'pista' in os.environ['optimization_type']:
+            historyDfFun = historyDfFun.append(
+                pd.Series(np.hstack((stateVars, results_df['runway'].iloc[0] / 1000))), ignore_index=True)
+            historyDfFun.to_csv(f"optimization/history/historyFun_{os.environ['optimization_num_vars']}_{os.environ['optimization_type']}.csv")
             return results_df['runway'].iloc[0] / 1000
         else:
             raise Exception("Fix optimization_type name")
     except:
         print('Deu ruim')
-        return -1/1000
+        if 'alcance' in os.environ['optimization_type']:
+            return -1/1000
+        else:
+            return 1/1000
 
 def callbackfun(Xstates, *args, **kwargs):
     global Nfeval, history_df, fb_history, outputs_history, time_history
@@ -93,3 +100,25 @@ def callbackfun(Xstates, *args, **kwargs):
     # Xstates_history = np.vstack([Xstates_history, Xstates])
     # outputs_history = np.vstack([outputs_history, np.hstack([objective_output])])
 
+
+def objectiveFunPymoo(stateVars):
+
+    stateVarsDict = {
+        'aspectRatio': stateVars[0]*10,
+        'wingSecPercentage': stateVars[1]*1,
+        'wingArea': stateVars[2]*5,
+        'taperRatio1': stateVars[3]*1,
+        'taperRatio2': stateVars[4]*1,
+        'aspectRatioV': stateVars[5]*5,  # AR from top view
+        'areaV': stateVars[6]*1,  # Area from top view
+        'taperV': stateVars[7]*1,
+        'posXV': stateVars[8]*5,
+        'fuselageLength': stateVars[9]*5
+    }
+
+    try:
+        results_df = main(stateVarsDict, logger=logger)
+        return -results_df['range_all'].iloc[0]/1000, results_df['runway'].iloc[0] / 1000
+    except:
+        print('Deu ruim')
+        return -1/1000, 1/1000

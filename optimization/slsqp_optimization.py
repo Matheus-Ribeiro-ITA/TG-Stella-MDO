@@ -30,7 +30,7 @@ print('{0:4s} | {1:8s} {2:8s} {3:8s} {4:9s} |'.format('Iter', 'Range', 'Var1', '
 # ------------------------------------------------------------------------------------------------
 # Case 02: 10 var SLSQP
 os.environ['optimization_num_vars'] = '10'
-os.environ['optimization_type'] = 'SLSQP_pista'
+os.environ['optimization_type'] = 'trust-constr_alcance'
 scaleFactors = np.array([10, 1, 5, 1, 1,
                          5, 1, 1, 5, 5])
 
@@ -49,7 +49,7 @@ bounds = Bounds(lb, ub)
 
 res = minimize(objectiveFun,
                Xstates0,
-               method='SLSQP',
+               method='trust-constr',
                bounds=bounds,
                callback=callbackfun,
                tol=1e-6,

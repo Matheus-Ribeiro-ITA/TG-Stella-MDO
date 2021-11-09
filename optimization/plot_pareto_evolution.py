@@ -30,17 +30,7 @@ def plot_pareto_evolution_together(n_var=10, genereation_list=None, color_list=N
     filesnames = os.listdir(folder_path)
     generation_number = [int(filename.rsplit('_')[-1].split('.')[0]) for filename in filesnames]
 
-    # filesnames_ordered = []
-    # generation_number_ordered = generation_number.copy()
-    # generation_number_ordered.sort()
-    #
-    # for i in generation_number_ordered:
-    #     for filename in filesnames:
-    #         if str(i) in filename:
-    #             filesnames_ordered.append(filename)
-
     color_count = 0
-    print(filesnames)
     for i, filename in enumerate(filesnames):
         if generation_number[i] in genereation_list:
             df = pd.read_csv(folder_path + '/' + filename, index_col=0)

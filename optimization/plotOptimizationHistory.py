@@ -79,12 +79,15 @@ def _plot_together(column=-1, folder_name=None, scaleList=None, filename=None):
     values_02 = history_df_diff_evo.iloc[:, column]
 
     max_index = max((max(history_df_diff_evo.index), max(history_df_slsqp.index)))
-    max_value = max((max(values_01), max(values_02)))
+    if 'alcance' in filename:
+        max_value = max((max(values_01), max(values_02)))
+    elif 'pista' in filename:
+        max_value = min((min(values_01), min(values_02)))
 
     plt.plot(history_df_slsqp.index, values_01, '--.', label='SLSQP')
     plt.plot(history_df_diff_evo.index, values_02, '--+', label='Differential Evolution')
     plt.plot([0, max_index], [max_value, max_value], '--', label='Maior Valor', color='red')
-    plt.ylim([min(values_01)*0.95, max(values_01)*1.05])
+    plt.ylim([min((min(values_01), min(values_02)))*0.95, max((max(values_01), max(values_02)))*1.05])
     plt.xlabel("Iterações")
 
     if 'alcance' in filename:
@@ -100,7 +103,7 @@ def _plot_together(column=-1, folder_name=None, scaleList=None, filename=None):
 
 if __name__ == '__main__':
     vars_num = '10'
-    method = 'diff_evo_alcance'  # 'SLSQP_alcance'
+    method = 'SLSQP_alcance'  # 'SLSQP_alcance', 'SLSQP_pista', 'diff_evo_alcance', 'diff_evo_pista'
     folder_name = 'rodada_final'
     scaleFactors = np.array([10, 1, 5, 1, 1,
                              5, 1, 1, 5, 5,

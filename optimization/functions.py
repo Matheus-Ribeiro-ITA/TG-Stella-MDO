@@ -78,7 +78,7 @@ def objectiveFun(stateVars):
         if 'alcance' in os.environ['optimization_type']:
             return -1/1000
         else:
-            return 1/1000
+            return 2000/1000
 
 def callbackfun(Xstates, *args, **kwargs):
     global Nfeval, history_df, fb_history, outputs_history, time_history

@@ -162,17 +162,43 @@ if __name__ == '__main__':
     # x_states_global[8] = 2.05  # posXV
     # x_states_global[9] = 1.83  # fuselageLength
 
-    x_states_global = {
-        'aspectRatio': 7.07,
-        'wingSecPercentage': 0.5,
-        'wingArea': 2.15,
-        'taperRatio1': 1,
-        'taperRatio2': 1,
-        'aspectRatioV': 3.29,  # AR from top view
-        'areaV': 0.41535,  # Area from top view
-        'taperV': 1,
-        'posXV': 2.05,
-        'fuselageLength': 1.83
+    #
+    # x_states_global = {  # Otimização mono-objetiva de alcance
+    #     'aspectRatio': 13.9314,
+    #     'wingSecPercentage': 0.675,
+    #     'wingArea': 0.20076*5,
+    #     'taperRatio1':  0.725,
+    #     'taperRatio2': 0.406,
+    #     'aspectRatioV': 0.334*5,  # AR from top view
+    #     'areaV': 0.321,  # Area from top view
+    #     'taperV': 0.316,
+    #     'posXV':  0.433*5,
+    #     'fuselageLength': 0.1680*5
+    # }
+
+    # x_states_global = {  # Otimização mono-objetiva de tamanho de pista
+    #     'aspectRatio': 1.3840681241377664*10,
+    #     'wingSecPercentage': 0.5222421951345299,
+    #     'wingArea': 0.5977726509080452*5,
+    #     'taperRatio1':  0.91038399497762,
+    #     'taperRatio2': 0.37506074830000413,
+    #     'aspectRatioV': 0.32783229631*5,  # AR from top view
+    #     'areaV': 1.3359631,  # Area from top view
+    #     'taperV': 0.48973280,
+    #     'posXV':  0.4928859*5,
+    #     'fuselageLength': 0.1986*5
+    # }
+    x_states_global = {  # projeto ótimo final
+        'aspectRatio': 13.9,
+        'wingSecPercentage': 0.67,
+        'wingArea': 2.47,
+        'taperRatio1': 0.75,
+        'taperRatio2': 0.31,
+        'aspectRatioV': 4.55,  # AR from top view
+        'areaV': 0.306,  # Area from top view
+        'taperV': 0.32,
+        'posXV': 2.5,
+        'fuselageLength': 0.80
     }
 
     x_states_default_values = {

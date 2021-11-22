@@ -3,7 +3,7 @@ from setuptools import setup
 
 HERE = pathlib.Path(__file__).parent
 
-README = (HERE / "README.md").read_text()
+README = (HERE / "DOCUMENTATION.txt").read_text()
 
 setup(
     name="MDO-Stella",

@@ -188,18 +188,74 @@ if __name__ == '__main__':
     #     'posXV':  0.4928859*5,
     #     'fuselageLength': 0.1986*5
     # }
+    # x_states_global = {  # projeto ótimo final
+    #     'aspectRatio': 13.9,
+    #     'wingSecPercentage': 0.67,
+    #     'wingArea': 2.47,
+    #     'taperRatio1': 0.75,
+    #     'taperRatio2': 0.31,
+    #     'aspectRatioV': 4.55,  # AR from top view
+    #     'areaV': 0.306,  # Area from top view
+    #     'taperV': 0.32,
+    #     'posXV': 2.5,
+    #     'fuselageLength': 0.80
+    # }
+    # 44, 0.8091479136428312, 0.6157898823230807, 0.5957155623044272, 0.3909394837252448, 0.8135191602727404, 0.6190261723993528, 0.3230627180986147, 0.9572100781787451, 0.45569767511203, 0.16712699841702863, -10.97606990307842, 0.2079895728158605
+    # 45, 0.8107805061937362, 0.6157898823230807, 0.5957155623044272, 0.3909394837252448, 0.8135191602727404, 0.6190261723993528, 0.3230627180986147, 0.884711854135352, 0.45569767511203, 0.16712847942164183, -2.5879800399001556, 0.20798775505789635
+
+
+    # x_states_global = {  # Aeronave estranha
+    #     'aspectRatio': 0.8091479136428312*10,
+    #     'wingSecPercentage': 0.6157898823230807,
+    #     'wingArea': 0.5957155623044272*5,
+    #     'taperRatio1': 0.3909394837252448,
+    #     'taperRatio2': 0.8135191602727404,
+    #     'aspectRatioV': 0.6190261723993528*5,  # AR from top view
+    #     'areaV': 0.3230627180986147,  # Area from top view
+    #     'taperV': 0.9572100781787451,
+    #     'posXV':  0.45569767511203*5,
+    #     'fuselageLength': 0.16712699841702863*5
+    # }
+
+    # x_states_global = {  # Aeronave estranha
+    #     'aspectRatio': 0.8107805061937362*10,
+    #     'wingSecPercentage': 0.6157898823230807,
+    #     'wingArea': 0.5957155623044272*5,
+    #     'taperRatio1': 0.3909394837252448,
+    #     'taperRatio2': 0.8135191602727404,
+    #     'aspectRatioV': 0.6190261723993528*5,  # AR from top view
+    #     'areaV': 0.3230627180986147,  # Area from top view
+    #     'taperV': 0.9572100781787451,
+    #     'posXV':  0.45569767511203*5,
+    #     'fuselageLength': 0.16712699841702863*5
+    # }
+
     x_states_global = {  # projeto ótimo final
-        'aspectRatio': 13.9,
-        'wingSecPercentage': 0.67,
-        'wingArea': 2.47,
-        'taperRatio1': 0.75,
-        'taperRatio2': 0.31,
-        'aspectRatioV': 4.55,  # AR from top view
-        'areaV': 0.306,  # Area from top view
-        'taperV': 0.32,
-        'posXV': 2.5,
-        'fuselageLength': 0.80
+        'aspectRatio': 1.1836851520621035*10,
+        'wingSecPercentage': 0.6828271627065576,
+        'wingArea': 0.479545353002881*5,
+        'taperRatio1': 0.7503373812423733,
+        'taperRatio2': 0.4526662366887399,
+        'aspectRatioV': 0.8357522085631572*5,  # AR from top view
+        'areaV': 0.32051602780323585,  # Area from top view
+        'taperV': 0.31408649182402026,
+        'posXV': 0.49818264232832843*5,
+        'fuselageLength': 0.16042898056803084*5
     }
+
+    #
+    # x_states_global = {
+    #     'aspectRatio': 7.07,
+    #     'wingSecPercentage': 0.5,
+    #     'wingArea': 2.15,
+    #     'taperRatio1': 1,
+    #     'taperRatio2': 1,
+    #     'aspectRatioV': 3.29,  # AR from top view
+    #     'areaV': 0.41535,  # Area from top view
+    #     'taperV': 1,
+    #     'posXV': 2.05,
+    #     'fuselageLength': 1.83
+    # }
 
     x_states_default_values = {
         'aspectRatio': 7.07,

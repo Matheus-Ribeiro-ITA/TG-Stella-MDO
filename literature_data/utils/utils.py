@@ -53,7 +53,7 @@ class UavDataFrame:
 
         else:
             self.df = pd.read_excel(
-                os.path.join(dirFolder, "literature_data", "04_Visualization.xlsx"),
+                os.path.join(dirFolder, "literature_data", "UAVs_database.xlsx"),
                 engine='openpyxl',
             )
             self.df.to_pickle(dataFrameName)

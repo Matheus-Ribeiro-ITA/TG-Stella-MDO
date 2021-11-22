@@ -17,7 +17,7 @@ print('{0:4s} | {1:8s} {2:8s} {3:8s} {4:9s} |'.format('Iter', 'Range', 'Var1', '
 # ------------------------------------------------------------------------------------------------
 # Case 01: 10 var SLSQP
 os.environ['optimization_num_vars'] = '10'
-os.environ['optimization_type'] = 'diff_evo_pista'
+os.environ['optimization_type'] = 'diff_evo_alcance'
 scaleFactors = np.array([10, 1, 5, 1, 1,
                          5, 1, 1, 5, 5])
 
@@ -25,7 +25,7 @@ scaleFactors = np.array([10, 1, 5, 1, 1,
 Xstates0 = np.multiply(np.array([6, 0.5, 2.5, 0.6, 0.6,
                                  3, 0.4, 0.6, 2, 2]), 1 / scaleFactors)
 
-ub = np.multiply(np.array([14, 1, 3, 1, 1,
+ub = np.multiply(np.array([12, 1, 3, 1, 1,
                            5, 1.5, 1, 2.5, 2]), 1 / scaleFactors)
 
 lb = np.multiply(np.array([4, 0.3, 1, 0.3, 0.3,

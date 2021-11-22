@@ -1,0 +1,15 @@
+############################################################
+Literature Folder
+############################################################
+
+Folder for data from literature or internet to compare with current project.
+
+
+There is data drom an UAV database that I found on the internet on the UAVs_database.xlsx
+
+and
+
+some data from the Thesis:
+Multi-Disciplinary Design Optimization of Subsonic Fixed-Wing Unmanned Aerial Vehicles Projected Through 2025
+on the folder reference_pdf. There is data from some UAVs like Shadow 200 and Predator. The data from the Shadow 200 is
+already parsed to Python on the Shadow_data folder.

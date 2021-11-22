@@ -1,3 +1,8 @@
+"""
+Graphs and data.
+
+Source: Raymer book
+"""
 import pandas as pd
 import os
 import matplotlib.pyplot as plt

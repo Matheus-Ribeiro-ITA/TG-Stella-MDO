@@ -32,11 +32,14 @@ def plotStall(aircraftInfo):
     zippedPairs = zip(aircraftInfo.yStripsWing, aircraftInfo.alphaStallsWing)
     alphaStallsWing = [x for _, x in sorted(zippedPairs)]
     yStripsWing = sorted(aircraftInfo.yStripsWing)
-    plt.plot(yStripsWing, alphaStallsWing)
-    plt.xlabel(' Wing Span (m)')
-    plt.ylabel(' Angle of Stall (deg)')
+    plt.plot(yStripsWing/aircraftInfo.wing.span*100*2, alphaStallsWing, label='Estol das seções da asa')
+    plt.plot([-100, 100], [14.2, 14.2], '--.', color='red', label='Estol Método da seção crítica')
+    plt.xlabel(' Posição da asa (%)')
+    plt.ylabel('Ângulo de estol ($^{\circ}$)')
     plt.ylim((10, 20))
+    plt.legend()
     plt.grid()
+    plt.savefig('metodo_secao_critica.png')
     plt.show()
 
     # zippedPairs = zip(aircraftInfo.yStripsHorizontal, aircraftInfo.alphaStallsHorizontal)

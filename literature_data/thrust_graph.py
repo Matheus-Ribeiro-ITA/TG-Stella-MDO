@@ -1,3 +1,10 @@
+"""
+Graphs and data for the Shadow 200 aircraft.
+
+Source: 'Multi-Disciplinary Design Optimization of Subsonic Fixed-Wing Unmanned Aerial
+Vehicles Projected Through 2025', Gundlach
+"""
+
 import pandas as pd
 import os
 import matplotlib.pyplot as plt

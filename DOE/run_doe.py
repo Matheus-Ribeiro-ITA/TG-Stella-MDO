@@ -13,20 +13,6 @@ import MDO
 
 #=========================================
 
-# SETUP
-
-# Define design function
-# def des_funcs(Xinp):
-#
-#     x1, x2, x3 = Xinp
-#
-#     f1 = x1**2 + (x2-2)**2 - 0.0001*x3
-#
-#     f2 = -x2**2
-#
-#     # Returns
-#     return f1, f2
-
 
 def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
             logger=None, filename='results', inputs_names=None):
@@ -44,10 +30,6 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
     # so we need to scale them to the desired interval
     for ii in range(n_inputs):
         X[:,ii] = lb[ii] + (ub[ii] - lb[ii])*X[:,ii]
-
-    # Execute all cases and store outputs
-    f1_samples = []
-    f2_samples = []
 
     df_results = pd.DataFrame()
 
@@ -71,13 +53,6 @@ def run_doe(n_inputs=None, lb=None, ub=None, n_samples=None, sampling_type=None,
         df_results.to_csv(f'DOE/database/{filename}.csv', index=False)
 
     print(f"Done {n_samples - failed_count}/{n_samples}")
-
-    # # Create a pandas dataframe with all the information
-    # df = pd.DataFrame({'x1' : X[:,0],
-    #                    'x2' : X[:,1],
-    #                    'x3' : X[:,2],
-    #                    'f1' : f1_samples,
-    #                    'f2' : f2_samples})
 
 
 if __name__ == '__main__':

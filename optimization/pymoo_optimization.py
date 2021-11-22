@@ -18,8 +18,8 @@ from configparser import ConfigParser
 import MDO
 
 
-config = ConfigParser()
-config.read(os.path.join("outputsConfig.cfg"))
+# config = ConfigParser()
+# config.read(os.path.join("outputsConfig.cfg"))
 MDO.parseConfig("outputsConfig.cfg")
 
 
@@ -43,7 +43,7 @@ class SphereWithConstraint(Problem):
     def __init__(self):
         scaleFactors = np.array([10, 1, 5, 1, 1,
                                  5, 1, 1, 5, 5])
-        xu = np.multiply(np.array([14, 1, 3, 1, 1,
+        xu = np.multiply(np.array([12, 1, 3, 1, 1,
                                    5, 1.5, 1, 2.5, 2]), 1 / scaleFactors)
         xl = np.multiply(np.array([4, 0.3, 1, 0.3, 0.3,
                                    1.5, 0.3, 0.3, 1, 0.8]), 1 / scaleFactors)

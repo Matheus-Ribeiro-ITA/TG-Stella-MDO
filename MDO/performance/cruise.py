@@ -9,7 +9,7 @@ def cruise(aircraftInfo=None, avlCases=None, fuelKg=None, fuelDescentKg=None, nS
     t1 = aircraftInfo.thrust.v1
     t2 = aircraftInfo.thrust.v2
 
-    velocityCruise = avlCases['cruise']['vCruise']
+    # velocityCruise = avlCases['cruise']['vCruise']
 
 
     heightSlope = aircraftInfo.thrust.slopeHeight

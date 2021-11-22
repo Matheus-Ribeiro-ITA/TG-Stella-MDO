@@ -19,7 +19,7 @@ def plot_pareto_evolution_all(n_var=10, n_obj=2):
         plt.ylabel('Tamanho de pista (m)')
         plt.xlabel('Alcance (km)')
         plt.ylim([0, 900])
-        plt.xlim([150, 720])
+        plt.xlim([150, 1000])
         plt.grid()
         plt.savefig(f"optimization/images/GA/{filename.split('.')[0]}.png")
         plt.show()
@@ -41,20 +41,24 @@ def plot_pareto_evolution_together(n_var=10, genereation_list=None, color_list=N
             plt.scatter(f1 * -1000, f2 * 1000, label=f'Geração {generation_number[i] + 1}',
                         color=color_list[color_count])
             color_count += 1
+    plt.scatter(-0.7753294923671022*-1000, 0.19813446869477017*1000, label=f'Ponto ótimo',
+                color='red')
     plt.legend()
     plt.ylabel('Tamanho de pista (m)')
     plt.xlabel('Alcance (km)')
     plt.ylim([0, 900])
-    plt.xlim([150, 720])
+    plt.xlim([150, 1000])
     plt.grid()
-    plt.savefig(f"optimization/images/GA/NSGA2_together.png")
+    plt.savefig(f"optimization/images/GA/NSGA2_together_ponto_otimo.png")
     plt.show()
 
 
 if __name__ == '__main__':
-    # plot_pareto_evolution_all()
-
-    plot_pareto_evolution_together(n_var=10, genereation_list=[0, 5, 15, 19], color_list=['deepskyblue',
-                                                                                          'cornflowerblue',
-                                                                                          'blue',
-                                                                                          'darkblue'])
+    plot_pareto_evolution_all()
+    #
+    # plot_pareto_evolution_together(n_var=10,
+    #                                genereation_list=[0, 5, 15, 19],
+    #                                color_list=['deepskyblue',
+    #                                            'cornflowerblue',
+    #                                            'blue',
+    #                                            'darkblue'])

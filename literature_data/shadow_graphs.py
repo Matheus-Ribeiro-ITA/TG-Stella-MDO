@@ -1,5 +1,4 @@
 """
-
 Graphs and data for the Shadow 200 aircraft.
 
 Source: 'Multi-Disciplinary Design Optimization of Subsonic Fixed-Wing Unmanned Aerial
@@ -78,9 +77,9 @@ aircraft_weight_breakdown_data = {
 }
 
 aircraft_polar_data = {
-    'cD0': 0.0555,
-    'cD1': 0.0039,
-    'cD2': 0.0649
+    'cD0': 0.0251,
+    'cD1': 0.003,
+    'cD2': 0.0586
 }
 
 
@@ -225,7 +224,7 @@ def weight_bar_graph(in_percentage=False):
 
 def weight_breakdown_bar_graph(in_percentage=False):
     labels = ["Asa", "Empenagem", "Fuselagem", "Trem de pouso", "Instalação",
-              None if in_percentage else "Peso total"]
+              None if in_percentage else "Peso estrutural \n total"]
     total_weight = SHADOW_WEIGHT_BREAKDOWN_DATA["total"]
 
     men_means = [SHADOW_WEIGHT_BREAKDOWN_DATA["wing"] / total_weight * 100 if in_percentage else SHADOW_WEIGHT_BREAKDOWN_DATA["wing"],
@@ -316,7 +315,7 @@ def weight_pie_graph():
 
 
 if __name__ == "__main__":
-    aerodynamics_graphs()
-    weight_pie_graph()
-    weight_bar_graph(in_percentage=False)
+    # aerodynamics_graphs()
+    # weight_pie_graph()
+    # weight_bar_graph(in_percentage=False)
     weight_breakdown_bar_graph(in_percentage=False)

@@ -1,0 +1,11 @@
+############################################################
+AVL Executor
+############################################################
+
+The avl executor program was forked from:
+
+jbussemaker / AVLWrapper, https://github.com/jbussemaker/AVLWrapper
+
+
+
+Some modifications from the original code where necessary to run the program on this project.

@@ -103,7 +103,7 @@ def _plot_together(column=-1, folder_name=None, scaleList=None, filename=None):
 
 if __name__ == '__main__':
     vars_num = '10'
-    method = 'SLSQP_alcance'  # 'SLSQP_alcance', 'SLSQP_pista', 'diff_evo_alcance', 'diff_evo_pista'
+    method = 'SLSQP_pista'  # 'SLSQP_alcance', 'SLSQP_pista', 'diff_evo_alcance', 'diff_evo_pista'
     folder_name = 'rodada_final'
     scaleFactors = np.array([10, 1, 5, 1, 1,
                              5, 1, 1, 5, 5,

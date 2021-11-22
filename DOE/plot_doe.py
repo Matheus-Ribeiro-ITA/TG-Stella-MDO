@@ -1,9 +1,6 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from pymoo.factory import get_sampling
-from pymoo.interface import sample
 from DOE.utils.aux_tools import corrdot
 
 
@@ -39,7 +36,6 @@ def plot_doe(plot_type=0, filename='results'):
         #         axes.set_ylabel(axes.get_ylabel(), rotation=0, horizontalalignment='right')
 
     elif plot_type == 1:
-
         # Complete plot
         # based on: https://stackoverflow.com/questions/48139899/correlation-matrix-plot-with-coefficients-on-one-side-scatterplots-on-another
         fig = sns.PairGrid(doe_df, diag_sharey=False)
@@ -148,26 +144,3 @@ if __name__ == '__main__':
     plot_doe(filename='resultsWing')
     plot_doe(filename='resultsStab')
     plot_doe(filename='resultsFuselage')
-
-
-
-    # renameColumns = {
-    #     'aspectRatio': 'Alongamento',
-    #     'wingSecPercentage': 'Divisão painel',
-    #     'wingArea': 'Área Asa (m^2)',
-    #     'taperRatio1': 'Afilamento primeira seção',
-    #     'taperRatio2': 'Afilamento primeira seção',
-    #     'aspectRatioV': 'Alongamento empenagem',
-    #     'areaV': 'Área Empenagem (m^2)',
-    #     'taperV': 'Afilamento empenagem',
-    #     'posXV': 'Posição empenagem (m)',
-    #     'fuselageLength': 'Comprimento fuselagem (m)',
-    #     'deflection_cruise_elevator': 'Deflexão profundor (º)',
-    #     'alphaStallWing': 'Ângulo de estol (º)',
-    #     'stallPostionWing': 'Posição estol da asa (%)',
-    #     'weightEmpty': 'Peso vazio (kg)',
-    #     'fuelTotal': 'Peso combustível (kg)',
-    #     'runway': 'Pista de decolagem (m)',
-    #     'speedTakeOff': 'Velocidade decolagem (m/s)',
-    #     'range_all': 'Alcance (km)',
-    # }

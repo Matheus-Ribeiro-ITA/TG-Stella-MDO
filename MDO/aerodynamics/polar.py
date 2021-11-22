@@ -52,7 +52,7 @@ def _parasiteDrag(aircraftInfo):
         frontalArea = aircraftInfo.fuselage.gimbalFrontalArea
         return sphereDragCoefficient*frontalArea/wingArea
 
-    return _fuselageDrag() + _sphereDrag() + 0.03
+    return _fuselageDrag() + _sphereDrag()
 
 
 def plotPolar(aircraftInfo):

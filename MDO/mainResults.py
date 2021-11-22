@@ -163,8 +163,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         output_dict['cruiseRange'] = aircraftInfo.performance.cruise.range / 1000
         output_dict['timeClimb'] = aircraftInfo.performance.climb.time
     # ---- Lift Distribution ----------------------
-    if 'y' in config['output']['LIFT_DIST'].lower():
-        MDO.liftDistNewton(results, avlCases)
+    # TODO: lift distribution
 
     # ---- Hinge Moment ---------------------------
     if 'y' in config['output']['TOTAL_HINGE_MOMENT'].lower():

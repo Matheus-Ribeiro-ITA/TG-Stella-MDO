@@ -1,6 +1,32 @@
 # TG-Stella-MDO
 Welcome to the Multi Disciplinary Optimization (MDO) software built for Stella Aviation as an ITA undergraduate final theses.
 
+# Overview
+
+Inside this program there is:
+- Integration of Xfoil with Python, on subfolder: MDO/airfoils.
+- Integration of AVL (Athena Vortex Lattice by Drela MIT) with Python, on subfolder: MDO/avl and avl. Forked from https://github.com/jbussemaker/AVLWrapper
+- Takeoff calculation with integral of forces, on subfolder: MDO/performance/takeOff.py
+- Cruise, climb and descent equations.
+- Mass estimation.
+- Stall estimation with Critical section method.
+- Otimization with deterministic and stochastic algorithms.
+
+
+# Getting started
+
+1) Install requirements
+
+```pip install -r requirements.txt```
+
+2) Change outputs config on outputsConfig.cfg
+3) Run main.py
+
+# Tutorial in portuguese
+
+
+
+
 ## We Love Standards
 #### Variables Units
 [S.I units](https://en.wikipedia.org/wiki/International_System_of_Unitsuote
@@ -25,4 +51,4 @@ If you can helps the program in any way feel free to contact us.
 Matheus Ribeiro Sampaio  <br>
 matheus.ribeiro.aer@gmail.com
 
-Capt. Ney Secco
+Prof. Dr. Ney Secco

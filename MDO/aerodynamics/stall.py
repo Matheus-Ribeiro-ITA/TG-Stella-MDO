@@ -19,11 +19,6 @@ def stall(results, aircraftInfo):
     alphaStallsWing = _slopAproximation(aoaWing, clStripsWing, clMaxWing)
     _updateAircraftInfo(aircraftInfo, yStripsWing, alphaStallsWing, clStripsWing, surface="Wing")
 
-    # clMaxHorizontal = aircraftInfo.cLMaxHorizontalAirfoil
-    # aoaHorizontal, clStripsHorizontal, yStripsHorizontal = _getStrips(results, surface="horizontal")
-    # alphaStallsHorizontal = _slopAproximation(aoaHorizontal, clStripsHorizontal, clMaxHorizontal)
-    # _updateAircraftInfo(aircraftInfo, yStripsHorizontal, alphaStallsHorizontal, clStripsHorizontal, surface="Horizontal")
-
     # Get cLmax Aircraft
     aircraftInfo.cLMax, aircraftInfo.cLAlpha0, aircraftInfo.cLSlope = _getcLmaxAircraft(results, aircraftInfo.alphaStallWing)
 
@@ -41,16 +36,6 @@ def plotStall(aircraftInfo):
     plt.grid()
     plt.savefig('metodo_secao_critica.png')
     plt.show()
-
-    # zippedPairs = zip(aircraftInfo.yStripsHorizontal, aircraftInfo.alphaStallsHorizontal)
-    # alphaStallsHorizontal = [x for _, x in sorted(zippedPairs)]
-    # yStripsHorizontal = sorted(aircraftInfo.yStripsHorizontal)
-    # plt.plot(yStripsHorizontal, alphaStallsHorizontal)
-    # plt.xlabel(' Horizontal Span (m)')
-    # plt.ylabel(' Angle of Stall (deg)')
-    # # plt.ylim((10, 20))
-    # plt.show()
-
 
 def _slopAproximation(aoa, clStrips, clMaxAirfoil):
     

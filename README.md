@@ -24,7 +24,7 @@ Inside this program there is:
 
 # Tutorial in portuguese
 
-
+https://youtu.be/YhGX458KBaI
 
 
 ## We Love Standards

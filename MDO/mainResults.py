@@ -216,7 +216,7 @@ def mainResults(results=None, aircraftInfo=None, avlCases=None, missionProfile=N
         output_dict['cgPostionable'] = cgPositionable
         output_dict['allElseCgPercentFuselage'] = allElseCgPercentFuselage
 
-    # ---- Check CG Positionable ---------------------------
+    # ---- Check all outputs ---------------------------
     MDO.checkOutputValues(output_dict, aircraftInfo)
 
     # ---- End ---------------------------
